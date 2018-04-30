@@ -1,0 +1,14 @@
+RewriteEngine On
+#RewriteBase /
+#RewriteRule ^([^\.]+)$ /index.php?page=$1 [L]
+#RewriteRule ^post([a-zA-Z0-9]+)-chapitre([a-zA-Z0-9]+)$ index.php?action=post&id=$1&chapitre=$2 [L]
+RewriteRule ^chapitre-([0-9]+)-(.*)-([0-9]+)\.html$ index.php?action=post&id=$3 [L]
+#RewriteRule ^([0-9]+)\.chapitre(.*)\.(.*)\.html$ index.php?action=post&id=$1 [L]
+RewriteRule ^commentaire([a-zA-Z0-9]+)$ index.php?action=addComment&id=$1 [L]
+RewriteRule ^signalement([a-zA-Z0-9]+)-([a-zA-Z0-9]+)$ index.php?action=enableSignal&commId=$1&id=$2 [L]
+RewriteRule ^acceuil$ index.php [L]
+#ErrorDocument 401 /index.php
+#ErrorDocument 403 /index.php
+ErrorDocument 404 http://projet5.lionelclaudey.com/index.php
+#ErrorDocument 500 /index.php
+Options -Indexes

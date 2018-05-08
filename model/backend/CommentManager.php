@@ -12,7 +12,7 @@ class CommentManager extends Manager {
 
     public function getComments($postId) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT COMM_ID,COMM_ARTID,COMM_PSEUDO,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr FROM p5_comments WHERE COMM_ARTID = ? ORDER BY COMM_DATE DESC');
+        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? ORDER BY COMM_DATE DESC');
         $comments->execute(array($postId));
 
         return $comments;

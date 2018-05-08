@@ -1,10 +1,25 @@
 <?php $title = 'Jean FORTEROCHE'; ?>
 
-<?php ob_start(); ?>
+<?php
+ob_start();
+
+// Statut de l'utilisateur 
+$droits = unserialize($_SESSION['Rights']);
+if (isset($droits[$_GET['ouv_id']])) {
+    $statut = $droits[$_GET['ouv_id']];
+} else {
+    throw new Exception("Vous n'avez de droit d'accès 11 ");
+}
+?>
 <div class='resume'>
-    <a href="indexadmin.php?action=newPost" title="Ajouter un article"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un chapitre..</a>
+    <?php
+    if(($statut == 'ADMINISTRATEUR')||($statut == 'REDACTEUR')){
+        
+    ?>
+    <a href="indexadmin.php?action=newPost&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Ajouter un article"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un chapitre..</a>
 </div>
 <?php
+    }
 while ($data = $posts->fetch()) {
     ?>
 
@@ -19,6 +34,9 @@ while ($data = $posts->fetch()) {
   }
         ?>
         <h3>
+          
+            <p>id: <?= $_GET['ouv_id'] ?>
+           <p>Ouvrage:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p>
             <p>Chapitre:  <?= htmlspecialchars($data['ART_CHAPTER']) ?></p>
             <?= htmlspecialchars($data['ART_TITLE']) ?>
 
@@ -35,20 +53,31 @@ while ($data = $posts->fetch()) {
             <br />
         </div>
         <div class='icone-admin'>
-            <a href="indexadmin.php?action=post&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>" title="Accédez aux commentaires"><div class ='nbcomm'><?= htmlspecialchars($data['NBCOMMENT']) ?></div><i class="fa fa-commenting-o fa-2x"></i></a>
-            <a href="indexadmin.php?action=updatePost&amp;id=<?= $data['ART_ID'] ?>" title="Modifiez l'article"><i class="fa  fa-edit  fa-2x "></i></a>
+            <a href="indexadmin.php?action=post&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= htmlspecialchars($_GET['ouv_id']) ?>" title="Accédez aux commentaires"><div class ='nbcomm'><?= htmlspecialchars($data['NBCOMMENT']) ?></div><i class="fa fa-commenting-o fa-2x"></i></a>
+            <?php if($statut == 'ADMINISTRATEUR'){ ?>
+            <a href="indexadmin.php?action=updatePost&amp;id=<?= $data['ART_ID'] ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Modifiez l'article"><i class="fa  fa-edit  fa-2x "></i></a>
 
             <?php
             $desactive = htmlspecialchars($data['ART_DESACTIVE']);
             if ($desactive) {
-                echo '<a href="indexadmin.php?action=enablePost&amp;id=' . htmlspecialchars($data['ART_ID']) . '" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>';
+                echo '<a href="indexadmin.php?action=enablePost&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id='.$_GET['ouv_id']. '" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>';
             } else {
-                echo '<a href="indexadmin.php?action=disablePost&amp;id=' . htmlspecialchars($data['ART_ID']) . '" title="Mettre l\'article en cours de rédaction"><i class="fa fa-eye  fa-2x "></i></a>';
+                echo '<a href="indexadmin.php?action=disablePost&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id='.$_GET['ouv_id']. '" title="Mettre l\'article en cours de rédaction"><i class="fa fa-eye  fa-2x "></i></a>';
             }
+            }else {
+                $desactive = htmlspecialchars($data['ART_DESACTIVE']);
+            if ($desactive) {
+                echo '<i class="fa fa-eye-slash  fa-2x "></i>';
+            } else {
+                echo '<i class="fa fa-eye  fa-2x "></i>';
+            }
+            }
+            if($statut == 'ADMINISTRATEUR'){
             ?> 
 
 
             <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['ART_ID']) ?>" title="Supprimez l'article"><i class="fa fa-remove  fa-2x"></i></a>
+            <?php  }  ?>
         </div> 
     </div>
     <!-- Modal -->

@@ -10,9 +10,11 @@
 ?>   
 </div>
 <?php
-
+// tableau construcyion des droits utilisateurs
+$droits=array();
 while ($data = $books->fetch()) {
- $niveau=0;  
+ $niveau=0; 
+ 
  ?>
 
     <div class='resume'>
@@ -21,13 +23,17 @@ while ($data = $books->fetch()) {
         if($_SESSION['superAdmin']==1){
             echo" SuperAdmin";
             $niveau=1;
+         $droits[$data['OUV_ID']]='ADMINISTRATEUR';   
         }else{
-echo htmlspecialchars($data['p5_STATUT_LISTE_STATUT']);
+//echo htmlspecialchars($data['p5_STATUT_LISTE_STATUT']);
+echo htmlspecialchars($data['STATUT']);
+ $droits[$data['OUV_ID']]=$data['STATUT'];   
         }
-
-if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']=="ADMINISTRATEUR"))){
-    $niveau=1;
-}
+        
+//if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']=="ADMINISTRATEUR"))){
+//if (((isset($data['STATUT']))AND($data['STATUT']=="ADMINISTRATEUR"))){
+//    $niveau=1;
+//}
 ?>
         <h2>
             <p>Titre:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p> </h2>
@@ -50,7 +56,7 @@ if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']
             <?php
             if($niveau===1){
                 ?>
-            <a href="indexadmin.php?action=updateBook&amp;id=<?= $data['OUV_ID'] ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
+            <a href="indexadmin.php?action=updateBook&amp;ouv_id=<?= $data['OUV_ID'] ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
             <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['OUV_ID']) ?>" title="Supprimez l'ouvrage"><i class="fa fa-remove  fa-2x"></i></a>
             <?php
             
@@ -64,7 +70,7 @@ if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']
             }
             ?>
 
-               <a href="indexadmin.php?action=listPosts&amp;id=<?= $data['OUV_ID'] ?>" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>
+               <a href="indexadmin.php?action=listPosts&amp;ouv_id=<?= $data['OUV_ID'] ?>" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>
     
         </div> 
     </div>
@@ -81,7 +87,7 @@ if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']
                 <div class="modal-body">
                     <form role="form" action="indexadmin.php" method="get">
                         <input type="hidden" class="form-control" id="action" name="action"value="delOuvrage">
-                        <input type="hidden" class="form-control" id="id" name="id"value="<?= htmlspecialchars($data['OUV_ID']) ?>">   
+                        <input type="hidden" class="form-control" id="id" name="ouv_id"value="<?= htmlspecialchars($data['OUV_ID']) ?>">   
                         <button type="submit" class="btn btn-block">Supprimer
                             <span class="glyphicon glyphicon-ok"></span>
                         </button>
@@ -98,6 +104,8 @@ if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']
     </div>
     <?php
 }
+//Mise en variable de session du tableau des droits de l'utilisateur 
+$_SESSION['Rights']= serialize($droits);
 $books->closeCursor();
 ?>
 <?php $content = ob_get_clean(); ?>

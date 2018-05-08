@@ -34,9 +34,10 @@ function changePsswd() {
 //   Liste des chapitres en résumé 
 //╚════════════════════════════════════════╝
 // 
-function listPosts() {
+function listPosts($ouvId) {
+    $id=$ouvId;
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-    $posts = $postManager->getPostsResume();
+    $posts = $postManager->getPostsResume($id);
 
     require('view/backend/listPostsView.php');
 }
@@ -45,9 +46,11 @@ function listPosts() {
 //   Liste des chapitres en résumé 
 //╚════════════════════════════════════════╝
 //
-function listPostsResume() {
+function listPostsResume($ouvId) {
+    $id=$ouvId;
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-    $posts = $postManager->getPostsResume();
+    
+    $posts = $postManager->getPostsResume($id);
 
     require('view/backend/listPostsView.php');
 }
@@ -60,13 +63,15 @@ function listPostsResume() {
 function post() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $commentManager = new OpenClassrooms\DWJP5\Backend\Model\CommentManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
+    $ouvrage = $bookManager->getBook($_GET['ouv_id']);
     $article = $postManager->getPost($_GET['id']);
 
     if ($article) {
         $comments = $commentManager->getComments($_GET['id']);
         require('view/backend/postView.php');
     } else {
-        throw new Exception('Chapitre inconnu');
+        throw new Exception('Chapitre inconnu 74');
     }
 }
 
@@ -76,11 +81,13 @@ function post() {
 //
 function formModifyPost() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
+    $ouvrage = $bookManager -> getBook($_GET['ouv_id']);
     $article = $postManager->getPost($_GET['id']);
     if($article){
     require('view/backend/updatePostView.php');
 }else {
-    throw new Exception ('Chapitre inconnu');
+    throw new Exception ('Chapitre inconnu 90');
 }
 }
 
@@ -91,11 +98,13 @@ function formModifyPost() {
 //   Récupération Chapitre num Max 
 //╚════════════════════════════════════════╝
 //
-function formNewPost() {
+function formNewPost($ouvId) {
 
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-    $chapter = $postManager->getMaxChapter(); 
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    $ouvrage = $bookManager -> getBook($ouvId);
+    $chapter = $postManager-> getMaxChapter($ouvId); 
     require('view/backend/newPostView.php');
 }
 
@@ -175,14 +184,17 @@ function majPost() {
     $description = preg_replace($regex, '', $_POST['art_description']);
     $chapter = preg_replace($regex, '', $_POST['art_chapter']);
     $subtitle = preg_replace($regex, '', $_POST['art_subtitle']);
-    $titre = preg_replace($regex, '', $_POST['art_title']);
+    $titre = preg_replace($regex, '', $_POST['art_title']); 
+    $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
+    $ouvrage =preg_replace($regex, '', $_POST['ouvrage']);
     $image = uploadImage($id);
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
 
-    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $id, $description, $keywords, $image);
+    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $id, $description, $keywords, $image, $ouvId);
     if($article){
     $_GET['id'] = $id;
+    $_GET['ouv_id']=$ouvId;
     post();
 }else{
     throw new Exception ('Le chapitre est introuvable');
@@ -197,16 +209,18 @@ function ajouterPost() {
     $chapter = preg_replace($regex, '', $_POST['art_chapter']);
     $subtitle = preg_replace($regex, '', $_POST['art_subtitle']);
     $titre = preg_replace($regex, '', $_POST['art_title']);
-
+    $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
 
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords);
+    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords,$ouvId);
     $image = uploadImage($dernierId);
-    
-
-    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image);
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+////////////////////////////////////////////////////
+    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId);
     $_GET['id'] = $dernierId;
+    $_GET['ouvId']=$ouvId;
     post();
 }
 
@@ -220,9 +234,9 @@ function supprimePost() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $post = $postManager->delPost($_GET['id']);
   if($post){
-     listPostsResume();
+  listPostsResume($_GET['ouv_id']);
   }else{
- throw new Exception ('Elément inconnu');   
+ throw new Exception ('Elément inconnu 239');   
 }
 }
 
@@ -239,7 +253,7 @@ function desactiverPost() {
     if($post){
     post();
 }else{
- throw new Exception ('Chapitre inconnu');   
+ throw new Exception ('Chapitre inconnu 256');   
 }
 }
 //╔══════════════════════════════════════════╗  
@@ -253,7 +267,7 @@ function publierPost() {
     if($post){
     post();
 }else{
- throw new Exception ('Chapitre inconnu');   
+ throw new Exception ('Chapitre inconnu 270');   
 }
 }
 
@@ -289,6 +303,7 @@ function verifUser() {
         $_SESSION['user'] = $_POST['usrname'];
         $_SESSION['superAdmin']= $user[0]['ROOT'];
         $userValid = TRUE;
+   
     } else {
        $userValid = FALSE;
    }
@@ -305,7 +320,7 @@ function activeComment() {
     if($comment){
     post();
 }else{
- throw new Exception ('Elément inconnu');   
+ throw new Exception ('Elément inconnu 323');   
 }
 }
 
@@ -319,7 +334,7 @@ function desactiveComment() {
     if($comment){
     post();
 }else{
- throw new Exception ('Elément inconnu');   
+ throw new Exception ('Elément inconnu 337');   
 }
 }
 
@@ -333,7 +348,7 @@ function activeSignal() {
     if($comment){
     post();
 }else{
- throw new Exception ('Elément inconnu');   
+ throw new Exception ('Elément inconnu 351');   
 }
 }
 //╔══════════════════════════════════════════╗  
@@ -348,7 +363,7 @@ function desactiveSignal() {
     if($comment){
     post();
 }else{
- throw new Exception ('Elément inconnu');   
+ throw new Exception ('Elément inconnu 366');   
 }
 }
 function codeValidation(){
@@ -441,8 +456,8 @@ function listOuvrages() {
 //
 function book() {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
-        $book = $bookManager->getBook($_GET['id']);
-       require('view/backend/bookView.php');
+    $book = $bookManager->getBook($_GET['ouv_id']);
+    require('view/backend/bookView.php');
 }
 
 //╔════════════════════════════════════════╗  
@@ -452,7 +467,7 @@ function book() {
 function bookUser() {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
 
-    $book = $bookManager->getBookUser($_GET['id']);
+    $book = $bookManager->getBookUser($_GET['ouv_id']);
     require('view/backend/bookView.php');
 }
 
@@ -463,7 +478,7 @@ function bookUser() {
 function formModifyBook() {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
 
-    $book = $bookManager->getBook($_GET['id']);
+    $book = $bookManager->getBook($_GET['ouv_id']);
 
     require('view/backend/updateBookView.php');
 }
@@ -475,7 +490,7 @@ function formModifyBook() {
 function formModifyBookUser() {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
 
-    $book = $bookManager->getBookUser($_GET['id']);
+    $book = $bookManager->getBookUser($_GET['ouv_id']);
 
     require('view/backend/updateBookView.php');
 }
@@ -508,12 +523,12 @@ function majBook() {
     if($_SESSION['superAdmin']==1){
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
     $book = $bookManager->updateBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords, 0, $id);
-    $_GET['id'] = $id;
+    $_GET['ouv_id'] = $id;
     book();
     }else {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
     $book = $bookManager->updateBookUser($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords, 0, $id);
-    $_GET['id'] = $id;
+    $_GET['ouv_id'] = $id;
     book();    
         
     }
@@ -553,13 +568,13 @@ if($_SESSION['superAdmin']==1){
 function supprimeOuvrage() {
 
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
-    $book = $bookManager->delBook($_GET['id']);
+    $book = $bookManager->delBook($_GET['ouv_id']);
     listOuvrages();
    }
 function supprimeOuvrageUser() {
 
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
-    $book = $bookManager->delBookUser($_GET['id']);
+    $book = $bookManager->delBookUser($_GET['ouv_id']);
     listOuvragesUser($_SESSION['userId']);
 }
 
@@ -570,7 +585,7 @@ function supprimeOuvrageUser() {
 function desactiverBook() {
        if($_SESSION['superAdmin']==1){
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
-    $book = $bookManager->disableBook($_GET['id']);
+    $book = $bookManager->disableBook($_GET['ouv_id']);
     book();
      }else{
     throw new Exception('Vous n\'avez pas les droits pour changer le statut');
@@ -586,7 +601,7 @@ function activerBook() {
     
     if($_SESSION['superAdmin']==1){
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
-    $book = $bookManager->enableBook($_GET['id']);
+    $book = $bookManager->enableBook($_GET['ouv_id']);
     book();
     }else{
     throw new Exception('Vous n\'avez pas les droits pour publier un ouvrage');

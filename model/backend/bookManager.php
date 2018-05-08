@@ -96,7 +96,7 @@ class BookManager extends Manager {
         return $req;
         $req->closeCursor ();
     }
-// Modofication de l'ouvrage si l'utilisateur en est asministrateur    
+// Modification de l'ouvrage si l'utilisateur en est asministrateur    
      public function updateBookUser($title, $preface, $subtitle, $description, $keywords, $enable, $id) {
 
         $db = $this->dbConnect();

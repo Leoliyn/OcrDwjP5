@@ -6,6 +6,7 @@
 
 
 <?php
+$statut = $_SESSION['superAdmin'];
 $data = $book;
 ?>
 <div class='resume'>
@@ -29,22 +30,37 @@ $data = $book;
 
 
         <div class='icone-admin'>
-
-
-            <?php
+   <?php
             $desactive = htmlspecialchars($data['OUV_ENABLE']);
+            if($statut==1){
             if (!$desactive) {
-                echo '<a href="indexadmin.php?action=enableBook&amp;id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour activer  l\'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>';
+                echo '<a href="indexadmin.php?action=enableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour activer  l\'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>';
             } else {
-                echo '<a href="indexadmin.php?action=disableBook&amp;id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour désactiver  l\'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>';
+                echo '<a href="indexadmin.php?action=disableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour désactiver  l\'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>';
             }
             ?>
 
 
-            <a href="indexadmin.php?action=updateBook&amp;id=<?= htmlspecialchars($data['OUV_ID']) ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
+            <a href="indexadmin.php?action=updateBook&amp;ouv_id=<?= htmlspecialchars($data['OUV_ID']) ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
             <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['OUV_ID']) ?>" title="Supprimez l'ouvrage"><i class="fa fa-remove  fa-2x"></i></a>
             <a href="indexadmin.php?action=listBooks" title="Retour à la liste des ouvrages"><i class="fa fa-arrow-left  fa-2x "></i></a>
+        <?php
+            }else{
+             
+              if (!$desactive) {
+                echo '<i class="fa fa-eye-slash  fa-2x "></i>';
+            } else {
+                echo '<i class="fa fa-eye  fa-2x "></i>';
+               
+
+                } 
+                echo' <a href="indexadmin.php?action=listBooks" title="Retour à la liste des ouvrages"><i class="fa fa-arrow-left  fa-2x "></i></a> ';  
+            }
+            ?> 
+
+            
         </div> 
+
     </div>
     <!-- Modal -->
     <div class="modal fade" id="deleteModal<?= htmlspecialchars($data['OUV_ID']) ?>" role="dialog">
@@ -59,7 +75,7 @@ $data = $book;
                 <div class="modal-body">
                     <form role="form" action="indexadmin.php" method="get">
                         <input type="hidden" class="form-control" id="action" name="action"value="delBook">
-                        <input type="hidden" class="form-control" id="id" name="id"value="<?= htmlspecialchars($data['OUV_ID']) ?>">   
+                        <input type="hidden" class="form-control" id="ouv_id" name="id"value="<?= htmlspecialchars($data['OUV_ID']) ?>">   
                         <button type="submit" class="btn btn-block">Supprimer
                             <span class="glyphicon glyphicon-ok"></span>
                         </button>

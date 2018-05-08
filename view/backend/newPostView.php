@@ -3,7 +3,9 @@
 
 <?php ob_start(); 
   
-  $chapitre= $chapter[0] +1;  
+  $chapitre= $chapter[0] +1;
+  $ouvrageTitre = $ouvrage['OUV_TITRE'];
+  $ouvId = $_GET['ouvId'];
 ?>
 
 <div class='resume'>
@@ -16,8 +18,9 @@
 
 
     <form enctype="multipart/form-data"  action='indexadmin.php?action=addPost' method='post'>
-
-        <label> Chapitre</label><input type="texte" class="form-control" id="art_chapter" name = "art_chapter" value="<?= $chapitre ?>">
+        <input type ="hidden" id ="ouv_id"name="ouv_id" value ="<?= $ouvId ?>">
+        <label> Ouvrage</label><input type="texte" class="form-control" id="ouvrage" name = "ouvrage" value="<?= $ouvrageTitre ?>" readOnly >
+         <label> Chapitre</label><input type="texte" class="form-control" id="art_chapter" name = "art_chapter" value="<?= $chapitre ?>">
         <label> Titre</label><input type="texte" class="form-control" id="art_title" name = "art_title" value="">
         <label> Sous-titre</label><input type="texte" class="form-control" id="art_subtitle" name = "art_subtitle" value="">
         <label> Article</label><textarea style="width: 100%;" name="art_content"><br /></textarea>

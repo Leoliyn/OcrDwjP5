@@ -77,7 +77,17 @@ class UsersManager extends Manager {
         $req->closeCursor ();
     }
 
+   //////////////////////////////// FONCTION  OBTENTION DES DROITS de l'utilisateur sur ouvrage ////////
+//    public function getUserRights($id) {
+//        $db = $this->dbConnect();
+//        $req = $db->query('SELECT * FROM p5_gere_ouvrage INNER JOIN p5_statut_liste ON p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID = p5_statut_liste.p5_STATUT_ID  WHERE p5_gere_ouvrage.p5_USERS_USER_ID = ?');
+//        $req->execute(array($id));
+//        $result = $req->fetchAll();
+//        return $result;
+//        $req->closeCursor ();
+//    }
     
+   ///////////////////////////////////////////////////////////////////////
    
     public function updateUser($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut) {
         $db = $this->dbConnect();

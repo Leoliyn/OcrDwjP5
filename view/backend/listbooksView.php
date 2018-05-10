@@ -16,24 +16,37 @@ while ($data = $books->fetch()) {
  $niveau=0; 
  
  ?>
-
-    <div class='resume'>
         <?php
-        echo "Vous êtes :";
         if($_SESSION['superAdmin']==1){
-            echo" SuperAdmin";
-            $niveau=1;
+             $niveau=1;
          $droits[$data['OUV_ID']]='ADMINISTRATEUR';   
         }else{
-//echo htmlspecialchars($data['p5_STATUT_LISTE_STATUT']);
-echo htmlspecialchars($data['STATUT']);
+
+
  $droits[$data['OUV_ID']]=$data['STATUT'];   
         }
+  if(($data['OUV_ENABLE']==0)AND ($droits[$data['OUV_ID']]=='LECTEUR')){
+ $niveau=2;
+  }       
+
+?>
+    <?php 
+    if($niveau==2){
+            
+        }else{
+    echo"<div class='resume'>";
+ 
         
-//if (((isset($data['p5_STATUT_LISTE_STATUT']))AND($data['p5_STATUT_LISTE_STATUT']=="ADMINISTRATEUR"))){
-//if (((isset($data['STATUT']))AND($data['STATUT']=="ADMINISTRATEUR"))){
-//    $niveau=1;
-//}
+        
+            
+      echo "Vous êtes :"; 
+        if($niveau==1){
+        
+        echo" SuperAdmin";    
+        }else{
+            echo htmlspecialchars($data['STATUT']);
+        }
+
 ?>
         <h2>
             <p>Titre:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p> </h2>
@@ -45,7 +58,9 @@ echo htmlspecialchars($data['STATUT']);
         <p><em>Description :  <?= htmlspecialchars($data['OUV_DESCRIPTION']) ?></em></p>
         <div class='contenu'>
             <?php
-            $contenu = htmlspecialchars($data['OUV_PREFACE']);
+           // $contenu = htmlspecialchars($data['OUV_PREFACE']);
+            $contenu = $data['OUV_PREFACE'];
+           
             /* $resume=substr($contenu,1,350); */
             ?>
             <?= $contenu ?>
@@ -54,6 +69,7 @@ echo htmlspecialchars($data['STATUT']);
         </div>
         <div class='icone-admin'>
             <?php
+             $enable = htmlspecialchars($data['OUV_ENABLE']);
             if($niveau===1){
                 ?>
             <a href="indexadmin.php?action=updateBook&amp;ouv_id=<?= $data['OUV_ID'] ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
@@ -61,19 +77,33 @@ echo htmlspecialchars($data['STATUT']);
             <?php
             
             
-            }
-            $enable = htmlspecialchars($data['OUV_ENABLE']);
+          
+           
             if (!$enable) {
-                echo '<i title="En cours de rédaction " class="fa fa-eye-slash  fa-2x "></i>';
+           echo '<a href="indexadmin.php?action=enableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour activer  l\'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>';
             } else {
-                echo '<i title="Publié" class="fa fa-eye  fa-2x "></i>';
+           echo '<a href="indexadmin.php?action=disableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour désactiver  l\'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>';
             }
-            ?>
-
-               <a href="indexadmin.php?action=listPosts&amp;ouv_id=<?= $data['OUV_ID'] ?>" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>
+         
+              }else {
+                   if (!$enable) {
+           echo '<i class="fa fa-eye-slash  fa-2x "></i>';
+            } else {
+           echo '<i class="fa fa-eye  fa-2x "></i>';
+            }
+                  
+              }  
     
+             echo' <a href="indexadmin.php?action=listPosts&amp;ouv_id='.$data['OUV_ID'].'" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>';
+          
+             ?>
         </div> 
-    </div>
+       
+    </div> 
+        <?php 
+        
+            } 
+            ?>
     <!-- Modal -->
     <div class="modal fade" id="deleteModal<?= htmlspecialchars($data['OUV_ID']) ?>" role="dialog">
         <div class="modal-dialog">

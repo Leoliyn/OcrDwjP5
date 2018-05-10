@@ -19,6 +19,10 @@ if (isset($droits[$ouvId])) {
 ?>
 <?php
 $data = $article;
+$desactive = htmlspecialchars($data['ART_DESACTIVE']);
+    if(($statut=='LECTEUR')AND ($desactive)){
+        
+    }else{
 ?>
 <div class=''>
     <?php
@@ -44,7 +48,7 @@ $data = $article;
 
 
 <?php
-$desactive = htmlspecialchars($data['ART_DESACTIVE']);
+
 if(($statut == 'ADMINISTRATEUR')){
 if ($desactive) {
     echo '<a href="indexadmin.php?action=enablePost&amp;id=' . htmlspecialchars($data['ART_ID']) . '&amp;ouv_id='.$_GET['ouv_id'].'" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>';
@@ -61,6 +65,9 @@ if ($desactive) {
         <a href="indexadmin.php?action=listPosts&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Retour à la liste"><i class="fa fa-arrow-left  fa-2x "></i></a>
     </div> 
 </div>
+<?php
+    }
+    ?>
 <!-- Modal -->
 <div class="modal fade" id="deleteModal<?= htmlspecialchars($data['ART_ID']) ?>" role="dialog">
     <div class="modal-dialog">

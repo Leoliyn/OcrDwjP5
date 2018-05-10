@@ -8,7 +8,21 @@
 <?php
 $statut = $_SESSION['superAdmin'];
 $data = $book;
+$niveau=0;
+
+$droits =unserialize($_SESSION['Rights']);
+  if((isset($droits[$data['OUV_ID']]))AND($data['OUV_ENABLE']==0)AND ($droits[$data['OUV_ID']]=='LECTEUR')){
+ $niveau=2;
+  } 
 ?>
+
+    <?php
+    if($niveau==2){
+        
+    }else{
+        
+    
+    ?>
 <div class='resume'>
     <h2>
         <p>Titre:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p> </h2>
@@ -20,7 +34,8 @@ $data = $book;
     <p><em>Description :  <?= htmlspecialchars($data['OUV_DESCRIPTION']) ?></em></p>
     <div class='contenu'>
         <?php
-        $contenu = htmlspecialchars($data['OUV_PREFACE']);
+       // $contenu = htmlspecialchars($data['OUV_PREFACE']);
+        $contenu = $data['OUV_PREFACE'];
         /* $resume=substr($contenu,1,350); */
         ?>
         <?= $contenu ?>
@@ -28,7 +43,7 @@ $data = $book;
         <br /> 
 
 
-
+   </div> 
         <div class='icone-admin'>
    <?php
             $desactive = htmlspecialchars($data['OUV_ENABLE']);
@@ -59,7 +74,7 @@ $data = $book;
             ?> 
 
             
-        </div> 
+     
 
     </div>
     <!-- Modal -->
@@ -91,7 +106,9 @@ $data = $book;
         </div>
     </div>
 </div>
-
+<?php 
+    } 
+    ?>
 <?php $content = ob_get_clean(); ?>
 
 <?php require('view/backend/template.php'); ?>

@@ -21,6 +21,11 @@ if (isset($droits[$_GET['ouv_id']])) {
 <?php
     }
 while ($data = $posts->fetch()) {
+     $desactive = htmlspecialchars($data['ART_DESACTIVE']);
+   // Si chapitre desactive et statut lecteur pas d'affichage d u post
+     if(($statut=='LECTEUR')AND ($desactive)){
+        
+    }else{
     ?>
 
     <div class='resume'>
@@ -58,7 +63,7 @@ while ($data = $posts->fetch()) {
             <a href="indexadmin.php?action=updatePost&amp;id=<?= $data['ART_ID'] ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Modifiez l'article"><i class="fa  fa-edit  fa-2x "></i></a>
 
             <?php
-            $desactive = htmlspecialchars($data['ART_DESACTIVE']);
+           
             if ($desactive) {
                 echo '<a href="indexadmin.php?action=enablePost&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id='.$_GET['ouv_id']. '" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>';
             } else {
@@ -80,6 +85,7 @@ while ($data = $posts->fetch()) {
             <?php  }  ?>
         </div> 
     </div>
+<?php  }  ?>
     <!-- Modal -->
     <div class="modal fade" id="deleteModal<?= htmlspecialchars($data['ART_ID']) ?>" role="dialog">
         <div class="modal-dialog">
@@ -93,6 +99,8 @@ while ($data = $posts->fetch()) {
                 <div class="modal-body">
                     <form role="form" action="indexadmin.php" method="get">
                         <input type="hidden" class="form-control" id="action" name="action"value="delPost">
+                        
+                          <input type="hidden" class="form-control" id="ouv_id" name="ouv_id"value="<?= $_GET['ouv_id'] ?>">   
                         <input type="hidden" class="form-control" id="id" name="id"value="<?= htmlspecialchars($data['ART_ID']) ?>">   
                         <button type="submit" class="btn btn-block">Supprimer
                             <span class="glyphicon glyphicon-ok"></span>

@@ -73,7 +73,7 @@ class BookManager extends Manager {
 
 
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT into p5_ouvrage (OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE) VALUES(?,?,?,?,?,?,?)');
+        $req = $db->prepare('INSERT into p5_ouvrage (OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE) VALUES(?,?,?,?,?,?)');
         $req->execute(array($title, $preface, $subtitle, $description, $keywords, 0));
         $req->closeCursor ();
     

@@ -30,7 +30,7 @@ try {
             if(isset($_GET['action'])AND ($_GET['action']=='enablePost')AND (isset($_GET['id']))AND (isset($_GET['ouv_id']))AND (isset($_SESSION['Rights'])))
             {
               $droits= unserialize($_SESSION['Rights']);
-                if($droits[$_GET['ouv_id']]){
+                if($droits[$_GET['ouv_id']]=='ADMINISTRATEUR'){
                   publierPost();
                 }else{
                     throw new Exception("Vous n'avez pas les droits d/'accès pour publier un chapitre");
@@ -40,7 +40,7 @@ try {
             elseif(isset($_GET['action'])AND ($_GET['action']=='disablePost')AND (isset($_GET['id']))AND (isset($_GET['ouv_id']))AND (isset($_SESSION['Rights'])))
             {
                   $droits= unserialize($_SESSION['Rights']);
-                if($droits[$_GET['ouv_id']]){
+                if($droits[$_GET['ouv_id']]=='ADMINISTRATEUR'){
                desactiverPost();
                 }else{
                     throw new Exception("Vous n'avez pas les droits d/'accès pour publier un chapitre");
@@ -140,9 +140,9 @@ try {
             {
             majBook();
             }
-            elseif(isset($_GET['action'])AND ($_GET['action']=='newPost')AND (isset($_GET['ouvId'])))
+            elseif(isset($_GET['action'])AND ($_GET['action']=='newPost')AND (isset($_GET['ouv_id'])))
             {
-            formNewPost($_GET['ouvId']);
+            formNewPost($_GET['ouv_id']);
             }
             elseif(isset($_GET['action'])AND ($_GET['action']=='newBook'))
             {

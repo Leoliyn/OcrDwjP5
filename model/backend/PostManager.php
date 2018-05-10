@@ -9,7 +9,7 @@ require_once("model/commun/Manager.php");
 use OpenClassrooms\DWJP5\Commun\Model\Manager;
 
 class PostManager extends Manager {
-// OK
+
     //récupération du numéro de chapitre maximum
     public function getMaxChapter($ouvId) {
         $db = $this->dbConnect();
@@ -19,7 +19,7 @@ class PostManager extends Manager {
 
         return $chapter;
     }
-// OK
+
     //recuperation des posts enable d'un ouvrage $ouvId
     public function getPosts($ouvId) {
 
@@ -28,7 +28,7 @@ class PostManager extends Manager {
         $req->execute(array(0,$ouvId));
         return $req;
     }
-// OK
+
     // recuperation des tous les posts  disable et enable
     public function getPostsResume($ouvId) {
         $db = $this->dbConnect();
@@ -39,7 +39,7 @@ class PostManager extends Manager {
         $req->execute(array($ouvId));
         return $req;
     }
-    // OK
+   
     // recuperation des tous les posts  disable et enable sans les comm
     public function getPostsResume2($ouvId) {
         $db = $this->dbConnect();
@@ -49,7 +49,7 @@ class PostManager extends Manager {
         $req->execute(array($ouvId));
         return $req;
     }
-// ok
+
     public function getPost($postId) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT, ART_DESACTIVE,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE FROM p5_posts WHERE ART_ID = ?');
@@ -58,7 +58,7 @@ class PostManager extends Manager {
 
         return $post;
     }
-// AFAIRE
+
     public function addPost($chapter, $title, $subtitle, $content, $description, $keywords,$ouvId) {
 
         $date = (new \DateTime())->format('Y-m-d H:i:s');
@@ -78,7 +78,7 @@ class PostManager extends Manager {
         $lastId = $db->lastInsertId();
         return $lastId;
     }
-// A FAIRE
+
     public function delPost($id) {
         $db = $this->dbConnect();
         $req0 = $db->prepare('SELECT ART_IMAGE FROM p5_posts WHERE ART_ID = ?');
@@ -129,7 +129,21 @@ class PostManager extends Manager {
         $lastId = $db->lastInsertId();
         return $req;
     }
-// A FAIRE 
+
+public function enablePostsBook($ouvid) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE p5_posts SET  ART_DESACTIVE = ? WHERE OUVRAGE_OUV_ID= ?');
+        $req->execute(array(0, $ouvid));
+        return $req;
+    }
+
+    public function disablePostsBook($ouvid) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE p5_posts SET  ART_DESACTIVE = ? WHERE OUVRAGE_OUV_ID= ?');
+        $req->execute(array(1, $ouvid));
+        return $req;
+    }
+ 
     public function enablePost($id) {
         $activ = 0;
         $db = $this->dbConnect();
@@ -137,14 +151,14 @@ class PostManager extends Manager {
         $req->execute(array($activ, $id));
         return $req;
     }
-// A FAIRE 
+
     public function disablePost($id) {
         $db = $this->dbConnect();
         $req = $db->prepare('UPDATE p5_posts SET  ART_DESACTIVE = ? WHERE ART_ID= ?');
         $req->execute(array(1, $id));
         return $req;
     }
-// A FAIRE 
+
     // OBTENION DE LA LISTE DES CHAPITRES SUIVANTS AU CHAPITRE EN REFERENCE 
  public function getSuivants($id) {
      $db = $this->dbConnect();
@@ -153,7 +167,7 @@ class PostManager extends Manager {
      $suivant = $req->fetch();
      return $suivant;      
     }
-// A FAIRE 
+
     // OBTENTION DU CHAPITRE PRECEDENT de CHAPITRE ACTUEL 
      public function getPrecedent($id) {
      $db = $this->dbConnect();

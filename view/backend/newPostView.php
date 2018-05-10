@@ -5,7 +5,7 @@
   
   $chapitre= $chapter[0] +1;
   $ouvrageTitre = $ouvrage['OUV_TITRE'];
-  $ouvId = $_GET['ouvId'];
+  $ouvId = $_GET['ouv_id'];
 ?>
 
 <div class='resume'>

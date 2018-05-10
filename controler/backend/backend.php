@@ -220,7 +220,7 @@ function ajouterPost() {
 ////////////////////////////////////////////////////
     $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId);
     $_GET['id'] = $dernierId;
-    $_GET['ouvId']=$ouvId;
+    $_GET['ouv_id']=$ouvId;
     post();
 }
 
@@ -579,37 +579,58 @@ function supprimeOuvrageUser() {
 }
 
 //╔══════════════════════════════════════════╗  
-//    desactive un ouvrage
+//    desactive un ouvrage ainsi que ts les chapitres
 //╚══════════════════════════════════════════╝
 //
 function desactiverBook() {
-       if($_SESSION['superAdmin']==1){
+       
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\postManager();
     $book = $bookManager->disableBook($_GET['ouv_id']);
-    book();
+    $post= $postManager ->disablePostsBook($_GET['ouv_id']);
+   if($book AND $post){ 
+       book();
      }else{
-    throw new Exception('Vous n\'avez pas les droits pour changer le statut');
+   throw new Exception('requête non aboutie');
         
     }
 }
 
 //╔══════════════════════════════════════════╗  
-//    active un ouvrage
+//    active un ouvrage sans activer les chapitres
 //╚══════════════════════════════════════════╝
 //
 function activerBook() {
     
-    if($_SESSION['superAdmin']==1){
+  
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    //$postManager = new OpenClassrooms\DWJP5\Backend\Model\postManager();
     $book = $bookManager->enableBook($_GET['ouv_id']);
+      if($book){
     book();
     }else{
-    throw new Exception('Vous n\'avez pas les droits pour publier un ouvrage');
+    throw new Exception('requête non aboutie');
         
     }
     
 }
-
+//╔══════════════════════════════════════════╗  
+//    active les chapitres d'un ouvrage
+//╚══════════════════════════════════════════╝
+//
+function activerPostsBook() {
+    
+   
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\postManager();
+    $post= $postManager ->enablePostsBook($_GET['ouv_id']);
+    if($post){
+    book();
+    }else{
+    throw new Exception('requête non aboutie');
+        
+    }
+    
+}
 
 //╔════════════════════════════════════════╗  
 //   Liste des messages non supprimés pour un utilisateur

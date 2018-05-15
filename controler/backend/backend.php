@@ -38,7 +38,7 @@ function listPosts($ouvId) {
     $id=$ouvId;
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $posts = $postManager->getPostsResume($id);
-
+  
     require('view/backend/listPostsView.php');
 }
 
@@ -66,7 +66,7 @@ function post() {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
     $ouvrage = $bookManager->getBook($_GET['ouv_id']);
     $article = $postManager->getPost($_GET['id']);
-
+    $statutPost = $postManager->libelleStatutPost($article['p5_statut_post_STATUT_POST_ID']);
     if ($article) {
         $comments = $commentManager->getComments($_GET['id']);
         require('view/backend/postView.php');
@@ -188,10 +188,11 @@ function majPost() {
     $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
     $ouvrage =preg_replace($regex, '', $_POST['ouvrage']);
     $image = uploadImage($id);
-
+    $auteur = preg_replace($regex, '', $_POST['auteur']);
+    $statut_post = preg_replace($regex, '', $_POST['statut_post']);
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-
-    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $id, $description, $keywords, $image, $ouvId);
+    $idStatutDuPost=$postManager->idStatut($statut_post);
+    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $id, $description, $keywords, $image, $ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     if($article){
     $_GET['id'] = $id;
     $_GET['ouv_id']=$ouvId;
@@ -202,6 +203,26 @@ function majPost() {
 
     }
 
+//function ajouterPost() {
+//    $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
+//    $keywords = preg_replace($regex, '', $_POST['art_keywords']);
+//    $description = preg_replace($regex, '', $_POST['art_description']);
+//    $chapter = preg_replace($regex, '', $_POST['art_chapter']);
+//    $subtitle = preg_replace($regex, '', $_POST['art_subtitle']);
+//    $titre = preg_replace($regex, '', $_POST['art_title']);
+//    $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
+//    $auteur = preg_replace($regex, '', $_POST['auteur']);
+//    $statut_post = preg_replace($regex, '', $_POST['statut_post']);
+//
+//    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+//    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords,$ouvId, $auteur);
+//    $image = uploadImage($dernierId);
+//    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId, $auteur);
+//    $_GET['id'] = $dernierId;
+//    $_GET['ouv_id']=$ouvId;
+//    post();
+//}
+// SVG ajouterPost()
 function ajouterPost() {
     $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
     $keywords = preg_replace($regex, '', $_POST['art_keywords']);
@@ -210,15 +231,14 @@ function ajouterPost() {
     $subtitle = preg_replace($regex, '', $_POST['art_subtitle']);
     $titre = preg_replace($regex, '', $_POST['art_title']);
     $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
-
+    $auteur = preg_replace($regex, '', $_POST['auteur']);
+    $statut_post = preg_replace($regex, '', $_POST['statut_post']);
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords,$ouvId);
+    $idStatutDuPost=$postManager->idStatut($statut_post);
+    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords,$ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     $image = uploadImage($dernierId);
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-////////////////////////////////////////////////////
-    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId);
+    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     $_GET['id'] = $dernierId;
     $_GET['ouv_id']=$ouvId;
     post();
@@ -270,7 +290,22 @@ function publierPost() {
  throw new Exception ('Chapitre inconnu 270');   
 }
 }
+// CHanger le statut du post redaction propose refuse accepter vote
+function changementStatut($libelleStatut){
+  $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+  $idStatut = $postManager->idStatut($libelleStatut);// on recupere l id du libelle 
+  $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'],$_GET['id']);
+  
+  if($post){
+    desactiverPost();
+   // execution de post() dans desactiverPOst()
+}else{
+ throw new Exception ('Changement impossible'.$idStatut['STATUT_POST_ID'].$_GET['id']);   
+} 
+}
 
+
+//
 
 //╔══════════════════════════════════════════════╗  
 //    si identification ok on affiche la page identification sinon page erreur 

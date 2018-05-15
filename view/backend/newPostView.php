@@ -21,6 +21,9 @@
         <input type ="hidden" id ="ouv_id"name="ouv_id" value ="<?= $ouvId ?>">
         <label> Ouvrage</label><input type="texte" class="form-control" id="ouvrage" name = "ouvrage" value="<?= $ouvrageTitre ?>" readOnly >
          <label> Chapitre</label><input type="texte" class="form-control" id="art_chapter" name = "art_chapter" value="<?= $chapitre ?>">
+         <label> Auteur</label><input type="texte" class="form-control" id="art_auteur" name = "art_auteur" value="<?= $_SESSION['user'] ?>" readOnly>
+        <input type="hidden" class="form-control" id="auteur" name = "auteur" value="<?= $_SESSION['userId'] ?>">
+         <label> Statut du post</label><input type="texte" class="form-control" id="statut_post" name = "statut_post" value="REDACTION" readOnly>
         <label> Titre</label><input type="texte" class="form-control" id="art_title" name = "art_title" value="">
         <label> Sous-titre</label><input type="texte" class="form-control" id="art_subtitle" name = "art_subtitle" value="">
         <label> Article</label><textarea style="width: 100%;" name="art_content"><br /></textarea>

@@ -291,3 +291,17 @@ textarea {
     font-size:1.8em;
  
 }
+.right {
+    float:right;
+    
+}
+.left {
+    float:left;
+    
+}
+.outils {
+    color:red;
+    background-color:white;
+    
+}
+

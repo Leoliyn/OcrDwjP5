@@ -25,6 +25,9 @@ $ouvId = $_GET['ouv_id'];
          <input type ="hidden" id ="ouv_id"name="ouv_id" value ="<?= $ouvId ?>">
         <label> Ouvrage</label><input type="texte" class="form-control" id="ouvrage" name = "ouvrage" value="<?= $ouvrageTitre ?>" readOnly >
         <label> Chapitre</label><input type="texte" class="form-control" id="art_chapter" name = "art_chapter" value="<?= htmlspecialchars($data['ART_CHAPTER']) ?>">
+        <label> Auteur</label><input type="texte" class="form-control" id="art_auteur" name = "art_auteur" value="<?= htmlspecialchars($data['USER_PSEUDO'])  ?>" readOnly>
+        <input type="hidden" class="form-control" id="auteur" name = "auteur" value="<?= htmlspecialchars($data['ART_AUTEUR']) ?>">
+        <label> Statut</label><input type="texte" class="form-control" id="statut_post" name = "statut_post" value="<?= htmlspecialchars($data['STATUT_POST_LIBELLE']) ?>"readOnly >
         <label> Titre</label><input type="texte" class="form-control" id="art_title" name = "art_title" value="<?= htmlspecialchars($data['ART_TITLE']) ?>">
         <label> Sous-titre</label><input type="texte" class="form-control" id="art_subtitle" name = "art_subtitle" value="<?= htmlspecialchars($data['ART_SUBTITLE']) ?>">
         <label> Article</label><textarea style="width: 100%;" name="art_content"><?= $data['ART_CONTENT'] ?> </textarea>

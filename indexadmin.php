@@ -129,7 +129,7 @@ try {
             elseif(isset($_GET['action'])AND ($_GET['action']=='majPost')AND (isset($_POST['ouv_id']))AND (isset($_SESSION['Rights'])))
             {
              $droits= unserialize($_SESSION['Rights']);
-                if($droits[$_POST['ouv_id']]=='ADMINISTRATEUR'){
+                if(($droits[$_POST['ouv_id']]=='ADMINISTRATEUR')||(($droits[$_POST['ouv_id']]=='REDACTEUR'))){
             majPost();
             }else{
                     throw new Exception("Vous n'avez pas les droits d/'accès pour modifier un chapitre");
@@ -164,7 +164,7 @@ try {
             elseif(isset($_GET['action'])AND ($_GET['action']=='addPost')AND (isset($_POST['ouv_id']))AND (isset($_SESSION['Rights'])))
             {
                   $droits= unserialize($_SESSION['Rights']);
-                if($droits[$_POST['ouv_id']]=='ADMINISTRATEUR'){
+                if(($droits[$_POST['ouv_id']]=='ADMINISTRATEUR')||($droits[$_POST['ouv_id']]=='REDACTEUR')){
             ajouterPost($_POST['ouv_id']);
             }else{
                     throw new Exception("Vous n'avez pas les droits d/'accès pour ajouter un chapitre");
@@ -174,6 +174,16 @@ try {
             {
             ajouterOuvrage();
             }
+            elseif (isset($_GET['action'])AND ( $_GET['action'] == 'chgtStatut')AND ( isset($_GET['libelle']))AND ( isset($_GET['ouv_id']))AND ( isset($_SESSION['Rights']))) {
+            $droits = unserialize($_SESSION['Rights']);
+            if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR')) {
+                changementStatut($_GET['libelle']);
+            } elseif (($droits[$_GET['ouv_id']] == 'REDACTEUR' AND ( ($_GET['libelle'] == 'PROPOSE') || ($_GET['libelle'] == 'REDACTION')))) {
+                changementStatut($_GET['libelle']);
+            } else {
+                throw new Exception("Vous n'avez pas les droits d/'accès pour effectuer ces changements");
+            }
+        }
             elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id']))AND ( $_GET['action'] == 'listPosts')AND ( isset($_SESSION['Rights']))) {
             $droits = unserialize($_SESSION['Rights']);
             if ($droits[$_GET['ouv_id']]) {
@@ -184,6 +194,7 @@ try {
         } else {
                     if($_SESSION['superAdmin']==1){
                        listOuvrages();
+                    
                     }else {
                 listOuvragesUser($_SESSION['userId']);
                     }

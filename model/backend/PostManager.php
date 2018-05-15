@@ -13,8 +13,8 @@ class PostManager extends Manager {
     //récupération du numéro de chapitre maximum
     public function getMaxChapter($ouvId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT MAX(ART_CHAPTER) FROM `p5_posts` WHERE OUVRAGE_OUV_ID = ?');
-        $req->execute(array($ouvId));
+        $req = $db->prepare('SELECT MAX(ART_CHAPTER) FROM `p5_posts` WHERE OUVRAGE_OUV_ID = ? AND ART_PRECEDENT = ?');
+        $req->execute(array($ouvId,0));
         $chapter = $req->fetch();
 
         return $chapter;
@@ -24,8 +24,8 @@ class PostManager extends Manager {
     public function getPosts($ouvId) {
 
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT ART_ID, ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT, DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE FROM p5_posts WHERE ART_DESACTIVE = ? AND OUVRAGE_OUV_ID = ? ORDER BY ART_CHAPTER DESC ');
-        $req->execute(array(0,$ouvId));
+        $req = $db->prepare('SELECT ART_ID, ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT, DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE,ART_AUTEUR,p5_statut_post_STATUT_POST_ID FROM p5_posts WHERE ART_DESACTIVE = ? AND OUVRAGE_OUV_ID = ?  AND ART_PRECEDENT = ? ORDER BY ART_CHAPTER DESC ');
+        $req->execute(array(0,$ouvId,0));
         return $req;
     }
 
@@ -34,9 +34,10 @@ class PostManager extends Manager {
         $db = $this->dbConnect();
 
         $req = $db->prepare('SELECT ART_ID, LEFT(`ART_CONTENT`,300) AS ART_CONTENT,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,
-    DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESACTIVE,ART_IMAGE, COUNT(p5_comments.p5_POSTS_ART_ID) AS NBCOMMENT,p5_ouvrage.OUV_TITRE FROM p5_posts 
-    LEFT JOIN p5_comments ON p5_posts.ART_ID = p5_comments.p5_POSTS_ART_ID  INNER JOIN p5_ouvrage ON p5_posts.OUVRAGE_OUV_ID = p5_ouvrage.OUV_ID   WHERE p5_posts.OUVRAGE_OUV_ID = ? group by p5_posts.ART_TITLE ORDER BY ART_CHAPTER DESC ');
-        $req->execute(array($ouvId));
+    DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESACTIVE,ART_IMAGE,ART_AUTEUR,p5_statut_post_STATUT_POST_ID,
+    COUNT(p5_comments.p5_POSTS_ART_ID) AS NBCOMMENT,p5_ouvrage.OUV_TITRE,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts 
+    LEFT JOIN p5_comments ON p5_posts.ART_ID = p5_comments.p5_POSTS_ART_ID INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_ouvrage ON p5_posts.OUVRAGE_OUV_ID = p5_ouvrage.OUV_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE p5_posts.OUVRAGE_OUV_ID = ?  AND p5_posts.ART_PRECEDENT = ? group by p5_posts.ART_TITLE ORDER BY ART_CHAPTER DESC ');
+        $req->execute(array($ouvId,0));
         return $req;
     }
    
@@ -45,26 +46,75 @@ class PostManager extends Manager {
         $db = $this->dbConnect();
 
         $req = $db->prepare('SELECT ART_ID, LEFT(`ART_CONTENT`,300) AS ART_CONTENT,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,
-    DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESACTIVE,ART_IMAGE FROM p5_posts WHERE OUVRAGE_OUV_ID = ?');
-        $req->execute(array($ouvId));
+    DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESACTIVE,ART_IMAGE,ART_AUTEUR, p5_statut_post_STATUT_POST_ID ,p5_ouvrage.OUV_TITRE,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_ouvrage ON p5_posts.OUVRAGE_OUV_ID = p5_ouvrage.OUV_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR WHERE OUVRAGE_OUV_ID = ?  AND p5_posts.ART_PRECEDENT = ? ');
+        $req->execute(array($ouvId,0));
         return $req;
     }
 
     public function getPost($postId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT, ART_DESACTIVE,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE FROM p5_posts WHERE ART_ID = ?');
+        $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT, ART_DESACTIVE,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE, ART_AUTEUR, p5_statut_post_STATUT_POST_ID,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE ART_ID = ?');
         $req->execute(array($postId));
         $post = $req->fetch();
 
         return $post;
     }
 
-    public function addPost($chapter, $title, $subtitle, $content, $description, $keywords,$ouvId) {
+//    public function addPost($chapter, $title, $subtitle, $content, $description, $keywords,$ouvId,$auteur) {
+//
+//        $date = (new \DateTime())->format('Y-m-d H:i:s');
+//        $db = $this->dbConnect();
+//        $req = $db->prepare('INSERT into p5_posts (ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,DATE,ART_DESACTIVE,ART_DESCRIPTION,ART_KEYWORDS,OUVRAGE_OUV_ID,ART_AUTEUR) VALUES(?,?,?,?,?,?,?,?,?,?)');
+//        $req->execute(array($chapter, $title, $subtitle, $content, $date, 1, $description, $keywords,$ouvId,$auteur));
+//        $lastId = $db->lastInsertId();
+//        return $lastId;
+//    }
+
+    // Renvoi l id du statut d'un post
+//    public function idStatutPost($statut_post){
+//     $db = $this->dbConnect();
+//     $req = $db->prepare('SELECT STATUT_POST_ID FROM p5_statut_post WHERE STATUT_POST_LIBELLE = ?');
+//     $req->execute(array($statut_post));
+//     $idStatut = $req->fetch();
+//     
+//     return $idStatut;  
+//    }
+       // Renvoi le libelle du statut  depuis un id
+    public function libelleStatutPost($statut_id){
+     $db = $this->dbConnect();
+     $req = $db->prepare('SELECT STATUT_POST_LIBELLE FROM p5_statut_post WHERE STATUT_POST_ID = ?');
+     $req->execute(array($statut_id));
+     $libelleStatut = $req->fetch();
+     
+     return $libelleStatut;  
+    }
+    
+    // Renvoi l'id d'un statut depuis un libellé
+    public function idStatut($libelleStatut){
+     $db = $this->dbConnect();  
+     $req = $db->prepare('SELECT STATUT_POST_ID FROM p5_statut_post WHERE  STATUT_POST_LIBELLE = ?');
+     $req->execute(array($libelleStatut));
+     $idStatut = $req->fetch();
+     
+     return $idStatut;  
+    }
+     
+     
+    // change le statut du post
+    
+        public function changeStatutPost($idStatut, $id) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE `p5_posts` SET `p5_statut_post_STATUT_POST_ID`=? WHERE `ART_ID`= ?');
+        $req->execute(array($idStatut, $id));
+        return $req;
+    }
+// le champ ART_PRECEDENT dera mis à 0 par défaut 
+    public function addPost($chapter, $title, $subtitle, $content, $description, $keywords,$ouvId,$auteur,$statutId) {
 
         $date = (new \DateTime())->format('Y-m-d H:i:s');
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT into p5_posts (ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,DATE,ART_DESACTIVE,ART_DESCRIPTION,ART_KEYWORDS,OUVRAGE_OUV_ID) VALUES(?,?,?,?,?,?,?,?,?)');
-        $req->execute(array($chapter, $title, $subtitle, $content, $date, 1, $description, $keywords,$ouvId));
+        $req = $db->prepare('INSERT into p5_posts (ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,DATE,ART_DESACTIVE,ART_DESCRIPTION,ART_KEYWORDS,OUVRAGE_OUV_ID,ART_AUTEUR,p5_statut_post_STATUT_POST_ID) VALUES(?,?,?,?,?,?,?,?,?,?,?)');
+        $req->execute(array($chapter, $title, $subtitle, $content, $date, 1, $description, $keywords,$ouvId,$auteur,$statutId));
         $lastId = $db->lastInsertId();
         return $lastId;
     }
@@ -73,8 +123,8 @@ class PostManager extends Manager {
 
 
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT into p5_posts (ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,DATE,ART_DESACTIVE,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE) VALUES(?,?,?,?,?,?,?,?,?)');
-        $req->execute(array($chapter, $title, $subtitle, $content, $date, 1, $description, $keywords, $image));
+        $req = $db->prepare('INSERT into p5_posts (ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,DATE,ART_DESACTIVE,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE,ART_AUTEUR,p5_statut_post_STATUT_POST_ID) VALUES(?,?,?,?,?,?,?,?,?,?,?');
+        $req->execute(array($chapter, $title, $subtitle, $content, $date, 1, $description, $keywords, $image,$auteur,$statutId));
         $lastId = $db->lastInsertId();
         return $lastId;
     }
@@ -110,7 +160,7 @@ class PostManager extends Manager {
         $req->execute(array($image, $id));
     }
 // A  FAIRE
-    public function updatePost($chapter, $title, $subtitle, $content, $disable, $id, $description, $keywords, $image,$ouvId) {
+    public function updatePost($chapter, $title, $subtitle, $content, $disable, $id, $description, $keywords, $image,$ouvId,$auteur,$statutId) {
         $date = (new \DateTime())->format('Y-m-d H:i:s');
         $db = $this->dbConnect();
         $req = $db->prepare('UPDATE `p5_posts` SET  '
@@ -123,9 +173,11 @@ class PostManager extends Manager {
                 . 'p5_posts.ART_DESCRIPTION= ?,'
                 . 'p5_posts.ART_KEYWORDS=?,'
                 . 'p5_posts.ART_IMAGE=?,'
-                . ' p5_posts.OUVRAGE_OUV_ID = ?'
+                . ' p5_posts.OUVRAGE_OUV_ID = ?,'
+                . 'p5_posts.ART_AUTEUR= ?,'
+                . 'p5_posts.p5_statut_post_STATUT_POST_ID= ? '
                 . ' WHERE p5_posts.ART_ID = ?');
-        $req->execute(array($chapter, $title, $subtitle, $content, $date, $disable, $description, $keywords, $image,$ouvId,$id));
+        $req->execute(array($chapter, $title, $subtitle, $content, $date, $disable, $description, $keywords, $image,$ouvId, $auteur,$statutId,$id));
         $lastId = $db->lastInsertId();
         return $req;
     }
@@ -158,23 +210,41 @@ public function enablePostsBook($ouvid) {
         $req->execute(array(1, $id));
         return $req;
     }
+    
+    //OBTENTION DE LA LISTE DES SUITES PROPOSEES DONT LE CHAPITRE ACTUEL EST LE PRECEDENT
+     public function getSuivants($id) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT p5_POSTS_ART_ID FROM p5_POSTS WHERE p5_POSTS_ART_PRECEDENT = ? ');
+        $req->execute(array($id));
+        $precedent = $req->fetch();
+        return $precedent;
+    }
+
+    //OBTENTION DE LA LISTE DES SUITES PROPOSEES DONT LE CHAPITRE ACTUEL EST LE PRECEDENT
+     public function getPrecedent($id) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT p5_POSTS_ART_PRECEDENT FROM p5_POSTS WHERE p5_POSTS_ART_ID = ? ');
+        $req->execute(array($id));
+        $precedent = $req->fetch();
+        return $precedent;
+    }
 
     // OBTENION DE LA LISTE DES CHAPITRES SUIVANTS AU CHAPITRE EN REFERENCE 
- public function getSuivants($id) {
-     $db = $this->dbConnect();
-     $req = $db->prepare('SELECT p5_POSTS_ART_ID_SUIVANT FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID = ? AND ART_DESACTIVE = ?');
-     $req->execute(array($id,0));
-     $suivant = $req->fetch();
-     return $suivant;      
-    }
+// public function getSuivants($id) {
+//     $db = $this->dbConnect();
+//     $req = $db->prepare('SELECT p5_POSTS_ART_ID_SUIVANT FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID = ? AND ART_DESACTIVE = ?');
+//     $req->execute(array($id,0));
+//     $suivant = $req->fetch();
+//     return $suivant;      
+//    }
 
-    // OBTENTION DU CHAPITRE PRECEDENT de CHAPITRE ACTUEL 
-     public function getPrecedent($id) {
-     $db = $this->dbConnect();
-      $req = $db->prepare('SELECT p5_POSTS_ART_ID FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID_SUIVANT = ? AND ART_DESACTIVE = ?');
-     $req->execute(array($id,0));
-     $precedent = $req->fetch();
-     return $precedent;          
-    }
+//    // OBTENTION DU CHAPITRE PRECEDENT de CHAPITRE ACTUEL 
+//     public function getPrecedent($id) {
+//     $db = $this->dbConnect();
+//      $req = $db->prepare('SELECT p5_POSTS_ART_ID FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID_SUIVANT = ? AND ART_DESACTIVE = ?');
+//     $req->execute(array($id,0));
+//     $precedent = $req->fetch();
+//     return $precedent;          
+//    }
     
 }

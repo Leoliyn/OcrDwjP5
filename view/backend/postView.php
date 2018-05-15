@@ -25,6 +25,32 @@ $desactive = htmlspecialchars($data['ART_DESACTIVE']);
     }else{
 ?>
 <div class=''>
+     <div class='icone-admin right outils'>
+  <?php
+  $redaction=' ';$propose=' ';$accepte=' ';$refuse=' '; $vote=' ';
+if($statutPost['STATUT_POST_LIBELLE']=='REDACTION'){
+//    echo ' <i class="fa fa-wrench  fa-2x "></i>';
+   $redaction= ' outils ';
+}elseif($statutPost['STATUT_POST_LIBELLE']=='PROPOSE'){
+//    echo'<i class="fa fa-lock  fa-2x "></i>';
+   $propose=' outils ';
+}elseif($statutPost['STATUT_POST_LIBELLE']=='ACCEPTE'){
+//    echo'<i class="fa fa-thumbs-o-up  fa-2x "></i>';
+   $accepte=' outils ';
+}elseif($statutPost['STATUT_POST_LIBELLE']=='REFUSE'){
+//    echo'<i class="fa fa-thumbs-o-down  fa-2x "></i>';
+   $refuse=' outils ';
+}elseif($statutPost['STATUT_POST_LIBELLE']=='VOTE'){
+//    echo' <i class="fa fa-balance-scale  fa-2x "></i>';
+   $vote=' outils ';
+}
+  ?>
+
+ 
+ 
+ 
+
+     </div>
     <?php
     $file="./uploads/".htmlspecialchars($data['ART_IMAGE']);
     if(is_file($file))
@@ -42,11 +68,10 @@ $desactive = htmlspecialchars($data['ART_DESACTIVE']);
 
     </h3>
 
-    <p><em>le <?= $data['DATE_fr'] ?></em></p>
+    <p><em>le <?= $data['DATE_fr'] ?></em>par :<?= htmlspecialchars($data['USER_PSEUDO']) ?></p>
     <p><?= ($data['ART_CONTENT']) ?></p>
     <div class='icone-admin'>
-
-
+        
 <?php
 
 if(($statut == 'ADMINISTRATEUR')){
@@ -63,7 +88,26 @@ if ($desactive) {
         <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['ART_ID']) ?>" title="Supprimez l'article"><i class="fa fa-remove  fa-2x"></i></a>
  <?php } ?>
         <a href="indexadmin.php?action=listPosts&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Retour à la liste"><i class="fa fa-arrow-left  fa-2x "></i></a>
-    </div> 
+        
+      
+ <?php
+ if(($statut == 'REDACTEUR')||($statut == 'ADMINISTRATEUR')){
+     ?>
+ 
+    
+            <i class="fa fa-wrench  fa-2x <?= $redaction ?>"></i>  
+            <i class="fa fa-lock  fa-2x <?= $propose ?>"></i>
+ <?php
+ }
+ if($statut == 'ADMINISTRATEUR'){
+ ?>
+            <i class="fa fa-thumbs-o-up  fa-2x <?= $accepte ?>"></i>
+            <i class="fa fa-thumbs-o-down  fa-2x <?= $refuse ?>"></i>
+            <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i>
+            <?php
+ }
+ ?>
+          </div> 
 </div>
 <?php
     }

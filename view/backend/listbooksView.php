@@ -12,6 +12,7 @@
 <?php
 // tableau construcyion des droits utilisateurs
 $droits=array();
+
 while ($data = $books->fetch()) {
  $niveau=0; 
  

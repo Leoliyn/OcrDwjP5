@@ -33,7 +33,7 @@ try {
                 if($droits[$_GET['ouv_id']]=='ADMINISTRATEUR'){
                   publierPost();
                 }else{
-                    throw new Exception("Vous n'avez pas les droits d/'accès pour publier un chapitre");
+                    throw new Exception("Vous n'avez pas les droits d'accès pour publier un chapitre");
                 }    
             
             }
@@ -43,7 +43,7 @@ try {
                 if($droits[$_GET['ouv_id']]=='ADMINISTRATEUR'){
                desactiverPost();
                 }else{
-                    throw new Exception("Vous n'avez pas les droits d/'accès pour publier un chapitre");
+                    throw new Exception("Vous n'avez pas les droits d'accès pour publier un chapitre");
                 }
            
             }
@@ -63,10 +63,22 @@ try {
                 if($droits[$_GET['ouv_id']]=='ADMINISTRATEUR'){
             supprimePost();
             }else{
-                    throw new Exception("Vous n'avez pas les droits d/'accès(delpost ligne 59 indexAdmin");
+                    throw new Exception("Vous n'avez pas les droits d'accès(delpost ligne 59 indexAdmin");
                 }  
            
             }
+            ////////////////// DELSUITE
+            elseif(isset($_GET['action'])AND ($_GET['action']=='delSuite')AND (isset($_GET['id']))AND (isset($_GET['ouv_id']))AND (isset($_SESSION['Rights']))AND (isset($_GET['precedent']))AND (isset($_GET['auteur'])))
+            {
+                $droits= unserialize($_SESSION['Rights']);
+                if(($droits[$_GET['ouv_id']])|| ($_GET['auteur']==$_SESSION['userId'])){
+            supprimeSuite();
+            }else{
+                    throw new Exception("Vous n'avez pas les droits d'accès");
+                }  
+           
+            }
+            //////////////////////////////////////////////////////////////////
             elseif(isset($_GET['action'])AND ($_GET['action']=='delOuvrage')AND (isset($_GET['ouv_id'])))
             {
                 if(isset($_SESSION['superAdmin'])AND $_SESSION['superAdmin']== 1){
@@ -81,7 +93,16 @@ try {
                 if($droits[$_GET['ouv_id']]){
                    post();   
                 }else{
-                    throw new Exception("Vous n'avez pas les droits d/'accès ligne 78 idxAdm");
+                    throw new Exception("Vous n'avez pas les droits d'accès ligne 78 idxAdm");
+                }   
+        ////////////////////////////////////////////////////////////////////////////////////////////
+            }elseif((isset($_GET['action']))AND ($_GET['action']=='votation')AND (isset($_GET['precedent']))AND (isset($_GET['bulletin']))AND (isset($_GET['id']))AND (isset($_GET['ouv_id']))AND (isset($_SESSION['Rights'])))
+            {
+              $droits= unserialize($_SESSION['Rights']);
+                if($droits[$_GET['ouv_id']]){
+             vote();   
+                }else{
+                    throw new Exception("Pb Vote . Alertez vore administrateur");
                 }   
         
             }
@@ -116,6 +137,9 @@ try {
             elseif(isset($_GET['action'])AND ($_GET['action']=='updatePost')AND (isset($_GET['id'])))
             {
             formModifyPost();
+            }elseif(isset($_GET['action'])AND ($_GET['action']=='updateSuite')AND (isset($_GET['id'])))
+            {
+            formModifySuite();
             }
             elseif(isset($_GET['action'])AND ($_GET['action']=='updateBook')AND (isset($_GET['ouv_id'])))
                 {
@@ -132,7 +156,18 @@ try {
                 if(($droits[$_POST['ouv_id']]=='ADMINISTRATEUR')||(($droits[$_POST['ouv_id']]=='REDACTEUR'))){
             majPost();
             }else{
-                    throw new Exception("Vous n'avez pas les droits d/'accès pour modifier un chapitre");
+                    throw new Exception("Vous n'avez pas les droits d'accès pour modifier un chapitre");
+                }   
+            
+            }
+            elseif(isset($_GET['action'])AND ($_GET['action']=='majSuite')AND (isset($_POST['ouv_id']))AND (isset($_SESSION['Rights']))AND(isset($_POST['auteur'])))
+            {
+                
+            $droits= unserialize($_SESSION['Rights']);
+                if((($droits[$_POST['ouv_id']])AND ($_POST['auteur']==$_SESSION['userId']))||($droits[$_POST['ouv_id']]=='ADMINISTRATEUR')){
+            majSuite();
+            }else{
+                   throw new Exception("Vous n'avez pas les droits d'accès pour modifier ce texte !!");
                 }   
             
             }
@@ -167,29 +202,86 @@ try {
                 if(($droits[$_POST['ouv_id']]=='ADMINISTRATEUR')||($droits[$_POST['ouv_id']]=='REDACTEUR')){
             ajouterPost($_POST['ouv_id']);
             }else{
-                    throw new Exception("Vous n'avez pas les droits d/'accès pour ajouter un chapitre");
+                    throw new Exception("Vous n'avez pas les droits d'accès pour ajouter un chapitre");
                 }
             }
             elseif(isset($_GET['action'])AND ($_GET['action']=='addBook')AND (isset($_SESSION['superAdmin'])AND ($_SESSION['superAdmin']==1)))
             {
             ajouterOuvrage();
             }
-            elseif (isset($_GET['action'])AND ( $_GET['action'] == 'chgtStatut')AND ( isset($_GET['libelle']))AND ( isset($_GET['ouv_id']))AND ( isset($_SESSION['Rights']))) {
+              elseif (isset($_GET['action'])AND ( $_GET['action'] == 'chgtStatutSuite')AND ( isset($_GET['libelle']))AND ( isset($_GET['ouv_id']))AND ( isset($_SESSION['Rights'])))
+                {
+            $droits = unserialize($_SESSION['Rights']);
+            if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR')) {
+                changementStatutSuite($_GET['libelle']);
+            } elseif (($droits[$_GET['ouv_id']]  AND ( ($_GET['libelle'] == 'PROPOSE') || ($_GET['libelle'] == 'REDACTION')))) 
+                {
+                changementStatutSuite($_GET['libelle']);
+            } else {
+                throw new Exception("Vous n'avez pas les droits d'accès pour effectuer ces changements");
+            }
+            } 
+            elseif (isset($_GET['action'])AND ( $_GET['action'] == 'chgtStatut')AND ( isset($_GET['libelle']))AND ( isset($_GET['ouv_id']))AND ( isset($_SESSION['Rights'])))
+                {
             $droits = unserialize($_SESSION['Rights']);
             if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR')) {
                 changementStatut($_GET['libelle']);
-            } elseif (($droits[$_GET['ouv_id']] == 'REDACTEUR' AND ( ($_GET['libelle'] == 'PROPOSE') || ($_GET['libelle'] == 'REDACTION')))) {
+            } elseif (($droits[$_GET['ouv_id']] == 'REDACTEUR' AND ( ($_GET['libelle'] == 'PROPOSE') || ($_GET['libelle'] == 'REDACTION')))||($_GET['auteur']==$_SESSION['userId'])) 
+                {
                 changementStatut($_GET['libelle']);
             } else {
-                throw new Exception("Vous n'avez pas les droits d/'accès pour effectuer ces changements");
+                throw new Exception("Vous n'avez pas les droits d'accès pour effectuer ces changements");
             }
-        }
-            elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id']))AND ( $_GET['action'] == 'listPosts')AND ( isset($_SESSION['Rights']))) {
+            } elseif((isset($_GET['action']))AND ( isset($_POST['precedent']))AND ( isset($_POST['ouv_id']))AND ( $_GET['action'] == 'addSuite')AND ( isset($_SESSION['Rights']))){
+             $droits = unserialize($_SESSION['Rights']);
+               if ($droits[$_POST['ouv_id']]) {
+                ajouterSuite();
+            } else {
+                throw new Exception("Vous n'avez pas les droits d'accès pour continuer ");
+            }  
+            } elseif((isset($_GET['action']))AND ( isset($_GET['id']))AND ( isset($_GET['ouv_id']))AND ( $_GET['action'] == 'newSuite')AND ( isset($_SESSION['Rights']))){
+             $droits = unserialize($_SESSION['Rights']);
+               if ($droits[$_GET['ouv_id']]) {
+                formNewSuite($_GET['id'],$_GET['ouv_id']);
+            } else {
+                throw new Exception("Vous n'avez pas les droits d'accès continuer ");
+            }     
+        }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'dashboard')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            cokpit();
+         }elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'rightsBook')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            accesBook($_GET['ouv_id']);
+         }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'delUser')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+                     supprimeUser($_GET['id']);
+                      
+             }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'initUser')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+                     initUser($_GET['id']);
+               }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'majUser')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+                  majUser($_POST['user_id'], $_POST['nom'], $_POST['prenom'], $_POST['pseudo'], $_POST['email'], $_POST['superviseur']);
+            
+                  }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'newUser')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+                  formNewUser();
+         
+                  }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'addUser')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+                  ajouterUser($_POST['nom'], $_POST['prenom'], $_POST['pseudo'], $_POST['email'],$_POST['passwd'], $_POST['superviseur']);
+         
+               }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'updateUser')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+                userGet();
+                        
+            }  elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id']))AND ( $_GET['action'] == 'listPosts')AND ( isset($_SESSION['Rights']))) 
+            {
             $droits = unserialize($_SESSION['Rights']);
             if ($droits[$_GET['ouv_id']]) {
                 listPosts($_GET['ouv_id']);
             } else {
-                throw new Exception("Vous n'avez pas les droits d/'accès pour afficher les chapitres de cet ouvrage");
+                throw new Exception("Vous n'avez pas les droits d'accès pour afficher les chapitres de cet ouvrage");
             }
         } else {
                     if($_SESSION['superAdmin']==1){

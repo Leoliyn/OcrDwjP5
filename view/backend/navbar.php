@@ -15,6 +15,14 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
+               <?php
+               if((isset($_SESSION['superAdmin']))AND($_SESSION['superAdmin']==1)){
+               ?>
+                <li><a href='indexadmin.php?action=dashboard'title="DashBoard"><i class="fa fa-gears fa-3x"></i></a></li>
+                
+                <?php
+               }
+               ?>
                 <li><a href='backend-mess.php?action=message'title="Messagerie interne"><i class="fa fa-envelope   fa-3x "></i><span class="badge">5</span></a></li>
                 <li><a href='indexadmin.php?action=changePsswd'title="Changement Password"><i class="fa fa-user   fa-3x "></i><span class="badge"><?php if(isset($_SESSION['user'])){ echo $_SESSION['user'];} ?></span></a></li>
     <?php 

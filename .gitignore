@@ -2,6 +2,9 @@ model/commun/Config.php
 
 
 model/commun/Configdistant.php
+
+model/commun/Configlocal.php
+
 public/images
 uploads
 

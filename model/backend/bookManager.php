@@ -12,7 +12,23 @@ class BookManager extends Manager {
     
     
 //methode qui retourne la liste des ouvrages / à UserId
-    public function getBooksUser($userId) {
+//    public function getBooksUser($userId) {
+//        $db = $this->dbConnect();
+////        $req = $db->prepare("SELECT * FROM `p5_ouvrage` INNER JOIN `p5_gere_ouvrage` ON 
+////        p5_ouvrage.OUV_ID = p5_gere_ouvrage.OUVRAGE_OUV_ID   
+////        AND p5_gere_ouvrage.p5_USERS_USER_ID = ? ");
+//        $req = $db->prepare("SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE, STATUT FROM `p5_ouvrage` 
+//        INNER JOIN `p5_gere_ouvrage` ON 
+//        p5_ouvrage.OUV_ID = p5_gere_ouvrage.OUVRAGE_OUV_ID  
+//        INNER JOIN `p5_statut_liste` ON
+//        p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID = p5_statut_liste.p5_STATUT_ID
+//        AND p5_gere_ouvrage.p5_USERS_USER_ID = ? ");
+//        $req->execute(array($userId));
+//        //$books = $req->fetch();
+//        //return $books
+//        return $req;
+//    }
+     public function getBooksUser($userId) {
         $db = $this->dbConnect();
 //        $req = $db->prepare("SELECT * FROM `p5_ouvrage` INNER JOIN `p5_gere_ouvrage` ON 
 //        p5_ouvrage.OUV_ID = p5_gere_ouvrage.OUVRAGE_OUV_ID   
@@ -33,10 +49,24 @@ class BookManager extends Manager {
 
         $db = $this->dbConnect();
         $req = $db->query('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE FROM p5_ouvrage');
-
         return $req;
     }
+    
+    
 
+    public function getBooksRights($ouvId) { 
+        $db = $this->dbConnect();
+        $req = $db->prepare(' SELECT * FROM p5_ouvrage '
+                . 'INNER JOIN p5_gere_ouvrage ON p5_ouvrage.OUV_ID=p5_gere_ouvrage.OUVRAGE_OUV_ID '
+                . 'INNER JOIN p5_statut_liste ON p5_statut_liste.p5_STATUT_ID=p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID '
+                . 'INNER JOIN p5_users ON p5_users.USER_ID = p5_gere_ouvrage.p5_USERS_USER_ID '
+                . 'WHERE p5_ouvrage.OUV_ID= ? ');
+         $req->execute(array($ouvId));
+        return $req;
+        $req->closeCursor();
+    }
+    
+    
     public function getBooksEnable() {
 
         $db = $this->dbConnect();
@@ -130,6 +160,19 @@ class BookManager extends Manager {
         return $req;
         $req->closeCursor ();
     }
+//    public function getBookRights($bookId) {
+//        $db = $this->dbConnect();
+//
+//        $req = $db->prepare(' SELECT * FROM p5_gere_ouvrage '
+//                . 'INNER JOIN p5_ouvrage ON p5_ouvrage.OUV_ID=p5_gere_ouvrage.OUVRAGE_OUV_ID '
+//                . 'INNER JOIN p5_statut_liste ON p5_statut_liste.p5_STATUT_ID=p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID '
+//                . 'INNER JOIN p5_users ON p5_users.USER_ID = p5_gere_ouvrage.p5_USERS_USER_ID '
+//                . 'WHERE p5_gere_ouvrage.OUVRAGE_OUV_ID= ? ');
+//        $req->execute(array($bookId));
+//        $bookRight = $req->fetch();
+//        $req->closeCursor();
+//        return $bookRight;
+//    }
     
-    
-}
+
+} 

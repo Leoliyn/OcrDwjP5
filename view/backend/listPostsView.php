@@ -17,10 +17,27 @@ if (isset($droits[$_GET['ouv_id']])) {
         
     ?>
     <a href="indexadmin.php?action=newPost&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Ajouter un article"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un chapitre..</a>
-</div>
+
 <?php
     }
+    echo'</div>';
+    $num_rows=0;
+    
+  
+
+ $lesSuites = $postsSuite->fetchAll();
+$num_rows = count($lesSuites); 
+$postsSuite->closeCursor();
+
+echo ' nb ligne :'.$num_rows;
 while ($data = $posts->fetch()) {
+    $compteurSuite=0;
+    for($i = 0;$i < $num_rows;$i++){
+      //  echo $lesSuites[$i]['ART_PRECEDENT'].' | '.$data['ART_ID']."  ";
+        if($lesSuites[$i]['ART_PRECEDENT']== $data['ART_ID']){
+            $compteurSuite = $compteurSuite +1; echo "Compteur : ".$compteurSuite."  ";
+        }
+    }
      $desactive = htmlspecialchars($data['ART_DESACTIVE']);
    // Si chapitre desactive et statut lecteur pas d'affichage d u post
      if(($statut=='LECTEUR')AND ($desactive)){
@@ -30,6 +47,7 @@ while ($data = $posts->fetch()) {
 
     <div class='resume'>
          <?php
+        
   $redaction='';$propose='';$accepte='';$refuse=''; $vote='';
 if($data['STATUT_POST_LIBELLE']=='REDACTION'){
 //    echo ' <i class="fa fa-wrench  fa-2x "></i>';
@@ -55,10 +73,11 @@ if($data['STATUT_POST_LIBELLE']=='REDACTION'){
         ?>
         <img src='./uploads/<?= htmlspecialchars($data['ART_IMAGE']) ?>' class="miniature" />
         <?php
-  }
+  }   
+
         ?>
         <h3>
-          
+       
             <p>id: <?= $_GET['ouv_id'] ?>
            <p>Ouvrage:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p>
             <p>Chapitre:  <?= htmlspecialchars($data['ART_CHAPTER']) ?></p>
@@ -126,12 +145,23 @@ if($data['STATUT_POST_LIBELLE']=='REDACTION'){
                                             
                          <a href='indexadmin.php?action=chgtStatut&amp;libelle=ACCEPTE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='Validé'><i class="fa fa-thumbs-o-up  fa-2x <?= $accepte ?>"></i></a>
                          <a href='indexadmin.php?action=chgtStatut&amp;libelle=REFUSE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='Refusé'><i class="fa fa-thumbs-o-down  fa-2x <?= $refuse ?>"></i></a>
-                         <a href='indexadmin.php?action=chgtStatut&amp;libelle=VOTE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='Vote en cours'> <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i></a>
+<!--                         <a href='indexadmin.php?action=chgtStatut&amp;libelle=VOTE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='Vote en cours'> <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i></a>-->
                          <?php
+ }
+ if(($statut == 'LECTEUR')||($statut == 'ADMINISTRATEUR')) {
+     
+     
+     ?>
+       <span class="badge"><?= $compteurSuite ?> </span>Suite(s)                  
+     <a href="indexadmin.php?action=newSuite&amp;id=<?= $data['ART_ID']?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Proposer une suite "><i class="fa fa-plus-square  fa-2x "></i> Proposer votre suite ...</a>
+  <?php
  }
 ?>
             
         </div> 
+        <div class='icone-admin'>
+       
+        </div>
     </div>
 <?php  }  ?>
     <!-- Modal -->
@@ -167,6 +197,8 @@ if($data['STATUT_POST_LIBELLE']=='REDACTION'){
     <?php
 }
 $posts->closeCursor();
+$lesSuites=[];
+    $num_rows = 0; 
 ?>
 <?php $content = ob_get_clean(); ?>
 

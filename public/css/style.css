@@ -262,7 +262,17 @@ textarea {
     box-shadow: 10px 10px 50px #656565;
 
 }
+.avoter {
+    margin: 10px;
+    padding: 5%;
+    border: 2px solid red;
+    border-radius: 10px;
+    -moz-box-shadow: 10px 10px 5px #656565;
+    -webkit-box-shadow: 10px 10px 5px #656565;
+    -o-box-shadow: 10px 10px 5px #656565;
+    box-shadow: 10px 10px 50px #656565;
 
+}
 
 .red { color:red;}
 .vert { color:green;}
@@ -304,4 +314,8 @@ textarea {
     background-color:white;
     
 }
-
+.termine {
+    color:black;
+    background-color:white;
+    
+}

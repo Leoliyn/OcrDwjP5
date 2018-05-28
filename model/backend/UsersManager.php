@@ -23,7 +23,14 @@ class UsersManager extends Manager {
         } 
     }
     
-            
+     public function getUsers(){
+       $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM p5_users WHERE ? ');
+        $req->execute(array(1));
+       
+        return $req;
+        $req->closeCursor();  
+     }        
 
     // Méthode création bcrypt du password
     public function passwordUser($password) {
@@ -34,12 +41,12 @@ class UsersManager extends Manager {
   public function updatePsswd($userPsswd,$pseudo) {
         $psswd = $this->passwordUser($userPsswd);
         $db = $this->dbConnect();
-        $req = $db->prepare('UPDATE p5_users SET  USER_PASSWD=? WHERE USER_PSEUDO= ?');
+        $req = $db->prepare('UPDATE p5_users SET  USER_PASSWD= ? WHERE USER_PSEUDO= ?');
         $req->execute(array($psswd, $pseudo));
         return $req;
         $req->closeCursor ();
     }
- // RECUPERE LE TABLEAU DE DROIT ACCES  D'UN NUTILISATEUR //non utilisee ?????
+ // RECUPERE LE TABLEAU DE DROIT ACCES  D'UN UTILISATEUR //non utilisee ?????
  public function droitsUser($userId) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT * FROM p5_GERE_OUVRAGE WHERE p5_USERS_USER_ID = ? ');
@@ -66,14 +73,15 @@ class UsersManager extends Manager {
         }
     }
 
-/////////////////////////////////
+
  
 
     public function getUser($id) {
         $db = $this->dbConnect();
-        $req = $db->query('SELECT USER_NAME,USER_LASTNAME,USER_PSEUDO,USER_MAIL,USER_PSSWD,USER_STATUT FROM users WHERE USER_ID= ?');
+        $req = $db->prepare('SELECT USER_ID,USER_NAME,USER_LASTNAME,USER_PSEUDO,USER_MAIL,USER_PASSWD,ROOT FROM p5_users WHERE USER_ID = ?');
         $req->execute(array($id));
-        return $req;
+        $user = $req->fetchAll();
+        return $user[0];
         $req->closeCursor ();
     }
 
@@ -87,20 +95,38 @@ class UsersManager extends Manager {
 //        $req->closeCursor ();
 //    }
     
-   ///////////////////////////////////////////////////////////////////////
+
    
-    public function updateUser($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut) {
+    public function updateUser($userId,$userName, $userLastname, $userPseudo, $userMail,  $userStatut) {
         $db = $this->dbConnect();
-        $req = $db->prepare('UPDATE users SET  USER_NAME= ?,USER_LASTNAME=?,USER_PSEUDO=?,USER_MAIL=?,USER_PASSWD=?,USER_STATUT=?, WHERE id= ?');
-        $req->execute(array($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut));
+        $req = $db->prepare('UPDATE p5_users SET  USER_NAME= ?,USER_LASTNAME=?,USER_PSEUDO=?,USER_MAIL=?,ROOT=? WHERE USER_ID= ?');
+        $req->execute(array($userName, $userLastname, $userPseudo, $userMail, $userStatut, $userId));
         $req->closeCursor ();
     }
 
-/////////////////////////////////
+ public function addUser($userName, $userLastname, $userPseudo, $userMail,$userPasswd,  $userStatut) {
+        $db = $this->dbConnect();
+        $psswd = $this->passwordUser($userPasswd);
+        $req = $db->prepare('INSERT INTO p5_users (USER_NAME,USER_LASTNAME,USER_PSEUDO,USER_MAIL,USER_PASSWD,ROOT)VALUES(?,?,?,?,?,?)');
+        $req->execute(array($userName, $userLastname, $userPseudo, $userMail,$psswd, $userStatut));
+        $req->closeCursor ();
+    }
   
     
+     public function delUser($user_id) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('DELETE FROM `p5_users` WHERE USER_ID = ?');
+        $req->execute(array($user_id));
+        $req->closeCursor ();
+    }
+  
     
-    
+   public function initUser($user_id,$passwd) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE p5_users SET USER_PASSWD = ?  WHERE USER_ID = ?');
+        $req->execute(array($passwd,$user_id));
+        $req->closeCursor ();
+    }
     
     
 }

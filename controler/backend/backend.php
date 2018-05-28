@@ -8,7 +8,7 @@ require_once('model/backend/CommentManager.php');
 require_once('model/backend/UsersManager.php');
 require_once('model/backend/BookManager.php');
 require_once('model/backend/MessageManager.php');
-
+require_once('model/backend/VoteManager.php');
 function changePsswd() {
     
     if ((!empty($_POST['oldmdp']))AND ( strlen($_POST['mdp']) >= 6)AND ($_POST['mdp']===$_POST['remdp'])) {
@@ -36,9 +36,11 @@ function changePsswd() {
 // 
 function listPosts($ouvId) {
     $id=$ouvId;
+  
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $posts = $postManager->getPostsResume($id);
-  
+    $postsSuite=$postManager->getPostsSuite($id);
+   
     require('view/backend/listPostsView.php');
 }
 
@@ -50,7 +52,8 @@ function listPostsResume($ouvId) {
     $id=$ouvId;
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     
-    $posts = $postManager->getPostsResume($id);
+    $posts=$postManager->getPostsResume($id);
+   
 
     require('view/backend/listPostsView.php');
 }
@@ -61,12 +64,18 @@ function listPostsResume($ouvId) {
 //╚════════════════════════════════════════╝
 //
 function post() {
+    
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $commentManager = new OpenClassrooms\DWJP5\Backend\Model\CommentManager();
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
     $ouvrage = $bookManager->getBook($_GET['ouv_id']);
     $article = $postManager->getPost($_GET['id']);
     $statutPost = $postManager->libelleStatutPost($article['p5_statut_post_STATUT_POST_ID']);
+    $suites = $postManager -> getSuivants($_GET['id']);
+    $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+ //contrelo des vote e nfin de delai     
+ $voteControle=$voteManager ->controleVote();
+  
     if ($article) {
         $comments = $commentManager->getComments($_GET['id']);
         require('view/backend/postView.php');
@@ -75,6 +84,20 @@ function post() {
     }
 }
 
+// >Fonction depouillement scrutin 
+function depouillementYes($suite_id){
+    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+    $voteId= $voteManager-> quelVote($suite_id);
+    $scoreYes= $voteManager->countScoreYes($voteId);
+    return $scoreYes;
+    }
+function depouillementNo($suite_id){
+    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+    $voteId= $voteManager-> quelVote($suite_id);
+    $scoreNo= $voteManager->countScoreNo($voteId);
+    return $scoreNo;
+    }
+ 
 //╔════════════════════════════════════════╗  
 //   1 chapitre depuis son ID - vue formulaire modification chapitre
 //╚════════════════════════════════════════╝
@@ -90,7 +113,17 @@ function formModifyPost() {
     throw new Exception ('Chapitre inconnu 90');
 }
 }
-
+function formModifySuite() {
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
+    $ouvrage = $bookManager -> getBook($_GET['ouv_id']);
+    $suite = $postManager->getSuite($_GET['id']);
+    if($suite){
+    require('view/backend/updateSuiteView.php');
+}else {
+    throw new Exception ('Chapitre inconnu 90');
+}
+}
 //╔══════════════════════════════════════════╗  
 //    vue formulaire nouveau chapitre
 //╚══════════════════════════════════════════╝
@@ -107,8 +140,16 @@ function formNewPost($ouvId) {
     $chapter = $postManager-> getMaxChapter($ouvId); 
     require('view/backend/newPostView.php');
 }
+// formulaire saisie Suite d'un lecteur 
+function formNewSuite($precedent ,$ouvId) {
 
 
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    $ouvrage = $bookManager -> getBook($ouvId);
+   // $chapter = $postManager-> getMaxChapter($ouvId); 
+    require('view/backend/newSuiteView.php');
+}
 //╔══════════════════════════════════════════╗  
 //    fonction upload image
 //╚══════════════════════════════════════════╝
@@ -202,7 +243,29 @@ function majPost() {
 }
 
     }
+   
+function majSuite() {
+    $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
+    $id = preg_replace('([^0-9]+)', '', $_POST['art_id']);
+   
+    $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
+    $ouvrage = preg_replace($regex, '', $_POST['ouvrage']);
+    $precedent = preg_replace($regex, '', $_POST['precedent']);
+    $auteur = preg_replace($regex, '', $_POST['auteur']);
+    $statut_post = preg_replace($regex, '', $_POST['statut_post']);
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $idStatutDuPost=$postManager->idStatut('REDACTION');
+    //$idStatutDuPost=$postManager->idStatut($statut_post);
+    $suite = $postManager->updateSuite($_POST['art_content'], 1, $id, $ouvId,$precedent, $auteur, $idStatutDuPost['STATUT_POST_ID']);
+    if($suite){
+    $_GET['id'] = $precedent;
+    $_GET['ouv_id']=$ouvId;
+    post();
+}else{
+    throw new Exception ('Le chapitre est introuvable');
+}
 
+    }
 //function ajouterPost() {
 //    $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
 //    $keywords = preg_replace($regex, '', $_POST['art_keywords']);
@@ -243,7 +306,31 @@ function ajouterPost() {
     $_GET['ouv_id']=$ouvId;
     post();
 }
+function ajouterSuite() {
+    $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
+    //$keywords = preg_replace($regex, '', $_POST['art_keywords']);
+    //$description = preg_replace($regex, '', $_POST['art_description']);
+    $chapter = preg_replace($regex, '', $_POST['art_chapter']);
+    $precedent = preg_replace($regex, '', $_POST['precedent']);
+    //$subtitle = preg_replace($regex, '', $_POST['art_subtitle']);
+    //$titre = preg_replace($regex, '', $_POST['art_title']);
+    $contenu = preg_replace($regex, '', $_POST['art_content']);
+    $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
+    $auteur = preg_replace($regex, '', $_POST['auteur']);
+    $statut_post = preg_replace($regex, '', $_POST['statut_post']);
 
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $idStatutDuPost=$postManager->idStatut($statut_post);
+    $dernierId = $postManager->addSuite($contenu, $ouvId, $precedent, $auteur, $idStatutDuPost['STATUT_POST_ID']);
+   if(!$idStatutDuPost){throw new Exception('Pb idstatutdupost');}
+    if(!$dernierId){throw new Exception('Pb addsuite');}
+// $image = uploadImage($dernierId);
+   // $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
+    $_GET['id'] = $dernierId;
+    $_GET['ouv_id']=$ouvId;
+    listPosts($ouvId);
+      
+}
 
 //╔══════════════════════════════════════════╗  
 //    Supprimer un chapitre
@@ -260,7 +347,17 @@ function supprimePost() {
 }
 }
 
+function supprimeSuite() {
 
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $suite = $postManager->delPost($_GET['id']);
+  if($suite){
+      $_GET['id']=$_GET['precedent'];
+  post();
+  }else{
+ throw new Exception ('Elément inconnu');   
+}
+}
 //╔══════════════════════════════════════════╗  
 //    Désactive un chapitre ( non visible - en cours de rédaction)
 //╚══════════════════════════════════════════╝
@@ -271,11 +368,25 @@ function desactiverPost() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $post = $postManager->disablePost($_GET['id']);
     if($post){
+       
     post();
 }else{
  throw new Exception ('Chapitre inconnu 256');   
 }
 }
+
+function desactiverSuite() {
+
+    $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $suite = $postManager->disablePost($_GET['id']);
+    if($suite){
+     $_GET['id']= $_GET['precedent'];  
+    post();
+}else{
+ throw new Exception ('Chapitre inconnu 256');   
+}
+}
+
 //╔══════════════════════════════════════════╗  
 //    Publie un chapitre ( rendre visible )
 //╚══════════════════════════════════════════╝
@@ -291,6 +402,24 @@ function publierPost() {
 }
 }
 // CHanger le statut du post redaction propose refuse accepter vote
+function changementStatutSuite($libelleStatut){
+  $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+  $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+  $idStatut = $postManager->idStatut($libelleStatut);// on recupere l id du libelle 
+  $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'],$_GET['id']);
+  // pour test throw new Exception ($libelleStatut.' '.$idStatut['STATUT_POST_ID'].' et '.$_GET['id']);
+   if($post){
+       if($libelleStatut == 'VOTE'){
+          $vote = $voteManager -> vote($_GET['id']);// vote début maintenant durée 15 jours statut vote ouvert 
+       }
+    desactiverSuite();
+   // execution de post() dans desactiverPOst()
+}else{
+ throw new Exception ('Changement impossible');   
+} 
+}
+
+
 function changementStatut($libelleStatut){
   $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
   $idStatut = $postManager->idStatut($libelleStatut);// on recupere l id du libelle 
@@ -300,10 +429,9 @@ function changementStatut($libelleStatut){
     desactiverPost();
    // execution de post() dans desactiverPOst()
 }else{
- throw new Exception ('Changement impossible'.$idStatut['STATUT_POST_ID'].$_GET['id']);   
+ throw new Exception ('Changement impossible');   
 } 
 }
-
 
 //
 
@@ -679,3 +807,107 @@ function listMessage($userId) {
 
 
 
+function voteControle() {
+    
+   
+    $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+    $vote= $voteManager ->controleVote();
+    if($vote){
+   
+    }else{
+    throw new Exception('pas de vérification des votes');
+        
+    }
+}
+    
+    function vote() {
+    
+   
+    $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+    $vote= $voteManager ->jeVote($_GET['bulletin'],$_GET['id']);
+    $_GET['id'] =$_GET['precedent'];
+    
+    post();
+    
+}
+
+function dejaVote (){
+   $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+   $aVote= $voteManager ->aVote($_GET['id']);
+   //throw new Exception ('id'.$_GET['id'].' A vote ? : '.$aVote);
+   //return $aVote;   
+    
+}  
+function accesBook($ouvId){
+       $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager(); 
+       $rightsBooks =$bookManager->getBooksRights($ouvId);
+     require_once('view/backend/dashBoardBookAccesView.php');
+}
+
+function cokpit() {
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+    $listUsers = $usersManager->getUsers(); // Liste utilisateurs
+    $listBooks = $bookManager->getBooks(); //Liste des ouvrages 
+   
+
+    require_once('view/backend/dashBoardView.php');
+}
+
+function supprimeUser($user_id){
+ if(($_SESSION['superAdmin']==1)AND ($_SESSION['userId']<> $user_id)){
+  $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+  $delUser= $usersManager ->delUser($user_id); 
+     
+cokpit();  
+    }else{
+        throw new Exception('Vous n\'avez pas les droits d\'accès pour effectuer cette opération ');
+    }
+}
+
+function initUser($user_id){
+ if(($_SESSION['superAdmin']==1)AND ($_SESSION['userId']<> $user_id)){
+  $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+  $passwd = $usersManager -> passwordUser(codeValidation());
+  $initUser= $usersManager ->initUser($user_id,$passwd); 
+     
+cokpit();  
+    }else{
+        throw new Exception('Vous n\'avez pas les droits d\'accès pour effectuer cette opération ');
+    }
+}
+
+function majUser($userId, $userName, $userLastname, $userPseudo, $userMail, $userStatut){
+ if($_SESSION['superAdmin']==1){
+  $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+  $majUser= $usersManager ->updateUser($userId,$userName, $userLastname, $userPseudo, $userMail, $userStatut); 
+   cokpit();  
+    
+}
+}
+function userGet(){
+  $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();   
+   $user= $usersManager ->getUser($_GET['id']); 
+    
+ require('view/backend/updateUserView.php');    
+}
+
+//function visuPost(){
+//   
+//  cokpit();
+//    
+// 
+//}
+
+function ajouterUser($userName, $userLastname, $userPseudo, $userMail,$userPasswd,$userStatut) {
+ if($_SESSION['superAdmin']==1){
+  $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+  $newUser= $usersManager ->addUser($userName, $userLastname, $userPseudo, $userMail,$userPasswd, $userStatut); 
+   cokpit();  
+    
+}   
+}
+function formNewUser() {
+
+    require('view/backend/newUserView.php');
+}

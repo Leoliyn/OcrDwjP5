@@ -2,6 +2,7 @@
 
 <?php ob_start(); 
 // Statut de l'utilisateur 
+$statut= null;
 $droits = unserialize($_SESSION['Rights']);
 if (isset($_POST['ouv_id'])){
     $ouvId= $_POST['ouv_id']; 
@@ -265,49 +266,39 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 ?>
 <h2>Commentaire(s)</h2>
 <?php
-while ($comment = $comments->fetch()) {
-    ?>
-    <div class=''>
-        <p><strong><?= htmlspecialchars($comment['USER_PSEUDO']) ?></strong> le <?= htmlspecialchars($comment['COMM_date_fr']) ?></p>
-        <div >  
-            <p><?= nl2br(htmlspecialchars($comment['COMM_TITRE'])) ?></p>
-            <p><?= nl2br(htmlspecialchars($comment['COMM_CONTENU'])) ?></p>
+$commentParent = $comments->fetchAll();
+$commentChild =$commentsChild -> fetchAll();
 
-        </div>
-    <?php
-    $commentdesactive = htmlspecialchars($comment['DISABLE']); 
-    $commentSignale = htmlspecialchars($comment['SIGNALE']);
-    if($statut=='ADMINISTRATEUR'){
-    
-    if ($commentdesactive) {
-        echo '<a href="indexadmin.php?action=enableComment&amp;commId=' . htmlspecialchars($comment['COMM_ID']) . '&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) .'" title="Cliquez pour publiez le commentaire"><i class="fa fa-eye-slash  fa-2x "></i></a> - ';
-    } else {
-        echo '<a href="indexadmin.php?action=disableComment&amp;commId=' . htmlspecialchars($comment['COMM_ID']) . '&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) . '" title="Cliquez pour désactiver le commentaire"><i class="fa fa-eye  fa-2x "></i></a> - ';
-    }
+//echo'<ul>';
+foreach($commentParent as $cle => $element)//parcours de chaque element du tab parent
+
+    {
+   // echo 'test pour '.$cle.': '.$commentParent[$cle]['COMM_CONTENU'].'<br/>';
+   // echo'<li>';
+   
+    require('view/backend/commentView.php');
+  //  echo'</li>';
+    $position =rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut);
+   // echo '';
   
-    if ($commentSignale) {
-        echo '<a href="indexadmin.php?action=disableSignal&amp;commId=' . htmlspecialchars($comment['COMM_ID']) . '&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) . '" title="Cliquez pour enlever l\'alerte"><i class="fa fa-thumbs-down  fa-2x red"> </i></a>';
-    } else {
-        echo '<a href="indexadmin.php?action=enableSignal&amp;commId=' . htmlspecialchars($comment['COMM_ID']) . '&amp;id=' . htmlspecialchars($data['ART_ID']) .'&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) . '" title="Cliquez pour signaler le commentaire"><i class="fa fa-thumbs-o-up  fa-2x vert"></i></a>';
-    }
-    }elseif(($statut=='REDACTEUR')||($statut == 'LECTEUR')){
-     if ($commentdesactive) {
-        echo '<i class="fa fa-eye-slash  fa-2x "></i> - ';
-    } else {
-        echo '<i class="fa fa-eye  fa-2x "></i></a> - ';
-    }
-  
-    if ($commentSignale) {
-        echo '<i class="fa fa-thumbs-down  fa-2x red"> </i></a>';
-    } else {
-        echo '<a href="indexadmin.php?action=enableSignal&amp;commId=' . htmlspecialchars($comment['COMM_ID']) . '&amp;id=' . htmlspecialchars($data['ART_ID']) . '&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) .'" title="Cliquez pour signaler le commentaire"><i class="fa fa-thumbs-o-up  fa-2x vert"></i></a>';
-    }   
-    }
+//foreach($commentParent[$cle] as $cle2 => $element2)//affichage de chaque comm parent
+//{
+//  // 
+//    
+//    echo 'tab:'.$cle.'->'.$cle2.':'.$element2 . '<br />'; // affichera $prenoms[0], $prenoms[1] etc.
+//}
+ //echo'</ul>'; 
+ echo '</div>';//fermeture container commentView.php
+}
+
+//    if ($comment['COMM_PARENT']==0){
+//       require('view/backend/commentNiveauZeroView.php');
+//    }
     ?>
-    </div>
+    
 
         <?php
-    }
+    //}
     ?>
     <?php $content = ob_get_clean(); ?>
 

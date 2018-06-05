@@ -64,24 +64,44 @@ function listPostsResume($ouvId) {
 //╚════════════════════════════════════════╝
 //
 function post() {
-    
+
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $commentManager = new OpenClassrooms\DWJP5\Backend\Model\CommentManager();
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
     $ouvrage = $bookManager->getBook($_GET['ouv_id']);
     $article = $postManager->getPost($_GET['id']);
     $statutPost = $postManager->libelleStatutPost($article['p5_statut_post_STATUT_POST_ID']);
-    $suites = $postManager -> getSuivants($_GET['id']);
+    $suites = $postManager->getSuivants($_GET['id']);
     $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
- //contrelo des vote e nfin de delai     
- $voteControle=$voteManager ->controleVote();
-  
+    //contrelo des vote e nfin de delai     
+    $voteControle = $voteManager->controleVote();
+
     if ($article) {
-        $comments = $commentManager->getComments($_GET['id']);
+        $comments = $commentManager->getCommentsPremierNiveau($_GET['id']);
+        $commentsChild = $commentManager->getCommentsChild($_GET['id']);
         require('view/backend/postView.php');
     } else {
         throw new Exception('Chapitre inconnu 74');
     }
+}
+// recherche enfant de commentaire
+function rechercheEnfant($tableau,$id,$statut){
+    echo'<ul>';
+    global $data;
+    
+    foreach($tableau as $cle => $element){
+       
+     if($tableau[$cle]['COMM_PARENT']== $id){
+       echo '<i class="fa fa-arrow-down fa-2x"></i><li class = "listComm"> ';
+       echo 'le stat : '.$statut;
+      require('view/backend/commentViewChild.php'); 
+     echo'</li><ul>';
+         rechercheEnfant($tableau,$tableau[$cle]['COMM_ID'],$statut);
+         echo'</ul>'; 
+     }else{
+  
+    } } 
+    echo'</ul>'; 
 }
 //function listeVotes(){
 //      $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();

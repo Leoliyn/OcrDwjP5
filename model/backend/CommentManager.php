@@ -26,12 +26,25 @@ class CommentManager extends Manager {
 
         return $comments;
     }
-    
-    public function getCommentChild($commId){
+     public function getCommentsChild($postId) {
+        $db = $this->dbConnect();
+        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? AND p5_comments.COMM_PARENT <> ? ORDER BY COMM_DATE DESC');
+        $comments->execute(array($postId,0));
+
+        return $comments;
+    }
+     public function getCommentsNiveau($postId,$niveau) {
+        $db = $this->dbConnect();
+        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? AND p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
+        $comments->execute(array($postId,$niveau));
+        
+        return $comments;
+    }
+    public function getCommentChild($commIdParent){
      $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
-        $comments->execute(array($commId));
-        return $comments;   
+        $commentChild = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
+         $commentChild->execute(array($commIdParent));
+        return  $commentChild;   
     }
 
     public function addComment($postId, $author, $comment) {

@@ -148,10 +148,16 @@ if ($desactive) {
 
 
 while ($suite = $suites->fetch()) {
+  $scoreYes=0;
+$scoreNo=0;  
 $scrutinYes= depouillementYes($suite['ART_ID']);
 $scrutinNo= depouillementNo($suite['ART_ID']);
+if($scrutinYes[0]){
 $scoreYes=$scrutinYes[0];
+}
+if($scrutinNo[0]){
 $scoreNo=$scrutinNo[0];
+}
 if(($suite['ART_AUTEUR']== $_SESSION['userId'])||($statut=='ADMINISTRATEUR')){
     $redaction='';$propose='';$accepte='';$refuse=''; $vote='';
 if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
@@ -249,7 +255,7 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 <p><?= nl2br(($suite['ART_CONTENT'])) ?></p>
 <div class='icone-admin'>
   
-    <a href='indexadmin.php?action=votation&amp;bulletin=YES&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaime'><i class="fa fa-thumbs-up  fa-2x <?= $vote ?>"></i><span class="badge"><?= $scoreYes ?></span></a>
+    <a href='indexadmin.php?action=votation&amp;bulletin=YES&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaime'><i class="fa fa-thumbs-up  fa-2x <?= $vote ?>"></i><span class="badge"><?= $scoreYes?></span></a>
      <a href='indexadmin.php?action=votation&amp;bulletin=NO&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaimepas'><i class="fa fa-thumbs-down  fa-2x <?= $vote ?>"></i><span class="badge"><?= $scoreNo ?></span></a>
 
 </div></div>

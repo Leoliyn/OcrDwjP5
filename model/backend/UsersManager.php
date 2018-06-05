@@ -22,6 +22,14 @@ class UsersManager extends Manager {
         return $row;
         } 
     }
+    public function getStatuts(){
+       $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM p5_statut_liste WHERE ? ');
+        $req->execute(array(1));
+       
+        return $req;
+        $req->closeCursor();  
+     }   
     
      public function getUsers(){
        $db = $this->dbConnect();

@@ -83,8 +83,13 @@ function post() {
         throw new Exception('Chapitre inconnu 74');
     }
 }
+//function listeVotes(){
+//      $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+//        $votesListe= $voteManager-> voteList(); 
+//        return $votesListe;
+//}
 
-// >Fonction depouillement scrutin 
+//Fonction depouillement scrutin 
 function depouillementYes($suite_id){
     $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
     $voteId= $voteManager-> quelVote($suite_id);
@@ -609,9 +614,36 @@ function listOuvrages() {
 
     require('view/backend/listBooksView.php');
 }
+//suppression acces a ouvrage 
+function supprimeAccesOuvrage($userId, $ouvId, $statutId) {
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    $delAcces = $bookManager->delBookAcces($userId, $ouvId, $statutId);
+    accesBook($ouvId);
+    
+}
+function formNewBookAcces($ouvId) {
+//liste des utilisateurs
+     $userManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+     $users= $userManager -> getUsers();
+     $statuts = $userManager ->getStatuts();
+//liste des statut 
+    //vérification user un seul par ouvrage.........f
+require('view/backend/newBookAccesView.php');
+}
+ 
 
 
-
+function addAccesOuvrage($ouvId, $userId, $statutId) {
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
+    $verif = $bookManager->verifAccesBook($ouvId,$userId);
+    if ($verif[0][0] == 0) {
+        $acces = $bookManager->addAccesBook($ouvId, $userId, $statutId);
+        accesBook($ouvId);
+    } else {
+       
+        throw new Exception('L\'utilisateur a déjà un accès pour cette ouvrage - Vous devez  supprimer l\'accès avant d\'en créer un nouveau ');
+    }
+}
 
 //╔════════════════════════════════════════╗  
 //   Ouvrage depuis un ID
@@ -847,11 +879,41 @@ function accesBook($ouvId){
 function cokpit() {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
     $usersManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
     $listUsers = $usersManager->getUsers(); // Liste utilisateurs
     $listBooks = $bookManager->getBooks(); //Liste des ouvrages 
-   
-
+    $lesScores = $voteManager -> lesScores();
+    $tableauScores = $lesScores->fetchAll();
+    
+    $votesListe= $voteManager-> voteList(); 
+    $votesListeClose= $voteManager-> voteListClose(); 
     require_once('view/backend/dashBoardView.php');
+}
+
+function modifDureeVote($vote_id,$dateFin,$duree){
+  $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();   
+ $voteprolong= $voteManager-> updateVoteDuree($vote_id,$dateFin,$duree);     
+  cokpit(); 
+}
+
+function closeVote($art_id){
+ $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();   
+ $voteClose= $voteManager-> fermetureVote($art_id);    
+ cokpit(); 
+}
+function openVote($art_id){
+ $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();   
+ $voteClose= $voteManager-> ouvertureVote($art_id);    
+ cokpit(); 
+// Supprime le vote les votes les scores et change le statut de la  suite en ACCEPTE
+}
+function supprimeVote($vote_id,$art_id){
+ $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager(); 
+ $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+ $voteDel= $voteManager-> delVote($vote_id);
+ $idStatut = $postManager->idStatut('ACCEPTE');// on recupere l id du libelle 
+ $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'],$art_id);
+ cokpit(); 
 }
 
 function supprimeUser($user_id){
@@ -864,6 +926,8 @@ cokpit();
         throw new Exception('Vous n\'avez pas les droits d\'accès pour effectuer cette opération ');
     }
 }
+
+
 
 function initUser($user_id){
  if(($_SESSION['superAdmin']==1)AND ($_SESSION['userId']<> $user_id)){

@@ -54,10 +54,40 @@ class VoteManager extends Manager {
  }
  return $dejaVote;
  }
-    
-    
-    
- // recuperation idvote   
+ 
+public function delVote($vote_id) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('DELETE FROM p5_votes WHERE VOTE_ID = ?');
+        $vote = $req -> execute (array($vote_id));        
+        return $req;
+    } 
+     public function voteList() {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT *,p5_posts.ART_PRECEDENT AS LE_PRECEDENT,p5_posts.ART_CONTENT AS CONTENU_SUITE,tposts.ART_TITLE AS TITRE_PRECEDENT,tposts.ART_CHAPTER AS NUM_CHAPITRE FROM p5_votes INNER JOIN p5_posts ON p5_votes.p5_posts_ART_ID=p5_posts.ART_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR INNER JOIN p5_posts as TP ON p5_posts.ART_PRECEDENT=TP.ART_ID  INNER JOIN p5_posts AS tposts ON p5_posts.ART_PRECEDENT=tposts.ART_ID WHERE p5_votes.VOTE_OUVERT=  ? GROUP BY VOTE_ID');
+        $vote = $req -> execute (array(1));        
+        return $req;
+    }
+ // Ancienne fonction avec score à condition que score existe
+// public function voteList2() {
+//        $db = $this->dbConnect();
+//        $req = $db->prepare('SELECT *,p5_posts.ART_PRECEDENT AS LE_PRECEDENT,tposts.ART_TITLE AS TITRE_PRECEDENT,tposts.ART_CHAPTER AS NUM_CHAPITRE,SUM(p5_vote_score.POSTS_SCORE_YES)AS JAIME,SUM(p5_vote_score.POSTS_SCORE_NO) AS JAIMEPAS  FROM p5_votes INNER JOIN p5_posts ON p5_votes.p5_posts_ART_ID=p5_posts.ART_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR INNER JOIN p5_posts as TP ON p5_posts.ART_PRECEDENT=TP.ART_ID  INNER JOIN p5_vote_score ON p5_vote_score.p5_votes_VOTE_ID = p5_votes.VOTE_ID INNER JOIN p5_posts AS tposts ON p5_posts.ART_PRECEDENT=tposts.ART_ID WHERE p5_votes.VOTE_OUVERT=  ? GROUP BY VOTE_ID');
+//        $vote = $req -> execute (array(1));        
+//        return $req;
+//    }
+  // sauvegarde procedure  
+// public function voteListClose() {
+//        $db = $this->dbConnect();
+//        $req = $db->prepare('SELECT *,tposts.ART_TITLE AS TITRE_PRECEDENT,tposts.ART_CHAPTER AS NUM_CHAPITRE,SUM(p5_vote_score.POSTS_SCORE_YES)AS JAIME,SUM(p5_vote_score.POSTS_SCORE_NO) AS JAIMEPAS  FROM p5_votes INNER JOIN p5_posts ON p5_votes.p5_posts_ART_ID=p5_posts.ART_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR INNER JOIN p5_posts as TP ON p5_posts.ART_PRECEDENT=TP.ART_ID  INNER JOIN p5_vote_score ON p5_vote_score.p5_votes_VOTE_ID = p5_votes.VOTE_ID INNER JOIN p5_posts AS tposts ON p5_posts.ART_PRECEDENT=tposts.ART_ID WHERE p5_votes.VOTE_OUVERT=  ? GROUP BY VOTE_ID');
+//        $vote = $req -> execute (array(0));        
+//        return $req;
+//    }
+public function voteListClose() {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT *,p5_posts.ART_PRECEDENT AS LE_PRECEDENT,p5_posts.ART_CONTENT AS CONTENU_SUITE,tposts.ART_TITLE AS TITRE_PRECEDENT,tposts.ART_CHAPTER AS NUM_CHAPITRE FROM p5_votes INNER JOIN p5_posts ON p5_votes.p5_posts_ART_ID=p5_posts.ART_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR INNER JOIN p5_posts as TP ON p5_posts.ART_PRECEDENT=TP.ART_ID  INNER JOIN p5_posts AS tposts ON p5_posts.ART_PRECEDENT=tposts.ART_ID WHERE p5_votes.VOTE_OUVERT=  ? GROUP BY VOTE_ID');
+        $vote = $req -> execute (array(0));        
+        return $req;
+    }
+// // recuperation idvote   
 public function quelVote($suite_id){
   $db = $this->dbConnect();
       $req = $db->prepare('SELECT p5_votes.VOTE_ID FROM p5_votes WHERE p5_votes.p5_posts_ART_ID = ? AND p5_votes.VOTE_OUVERT= ?'); 
@@ -89,8 +119,8 @@ public function countScoreYes($vote_id){
         }
         return $scoreYes;
     }
-
-    public function countScoreNo($vote_id) {
+//
+  public function countScoreNo($vote_id) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score WHERE p5_votes_VOTE_ID = ? ');
         $vote = $req->execute(array($vote_id));
@@ -101,7 +131,23 @@ public function countScoreYes($vote_id){
         }
         return $scoreNo;
     }
-
+    public function lesScores(){
+      $db = $this->dbConnect();
+      $req = $db->query('SELECT p5_votes_VOTE_ID,SUM(POSTS_SCORE_YES) AS JAIME,SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score GROUP BY p5_votes_VOTE_ID');  
+      return $req;  
+    }
+  public function updateVoteDuree($vote_id,$dateFin,$duree){
+      $db = $this->dbConnect();
+      $reqDateFin = $db->prepare('SELECT DATE_ADD((SELECT p5_votes.VOTE_DATEFIN FROM `p5_votes` WHERE p5_votes.VOTE_ID =?), INTERVAL ? DAY) '); 
+      $result = $reqDateFin -> execute (array($vote_id,$duree));
+      $date = $reqDateFin ->fetchAll();
+      // recuperation de la date mofifiée
+    echo $date[0][0];
+      $req = $db->prepare('UPDATE `p5_votes` SET `VOTE_DATEFIN`=? WHERE p5_votes.VOTE_ID=?'); 
+      $updateVote = $req -> execute (array($date[0][0],$vote_id));
+      return $date;  
+    }
+    
 // Utilite a voir 
     public function getCountVote($art_id){
         $db = $this->dbConnect();
@@ -110,16 +156,16 @@ public function countScoreYes($vote_id){
       $count = $req->rowCount();
       return $count;
     }
-   public function fermetureVote($art_id){
+   public function fermetureVote($vote_id){
         $db = $this->dbConnect();
-      $req = $db->prepare('UPDATE p5_votes SET p5_votes.VOTE_OUVERT= ? WHERE p5_posts_ART_ID = ?  '); 
-      $vote = $req -> execute (array(0,$art_id,));
+      $req = $db->prepare('UPDATE p5_votes SET p5_votes.VOTE_OUVERT= ? WHERE p5_votes.VOTE_ID = ?  '); 
+      $vote = $req -> execute (array(0,$vote_id,));
       return $vote;
     }
-    public function ouvertureVote($art_id){
+    public function ouvertureVote($vote_id){
         $db = $this->dbConnect();
-      $req = $db->prepare('UPDATE p5_votes SET p5_votes.VOTE_OUVERT= ? WHERE p5_posts_ART_ID = ?  '); 
-      $vote = $req -> execute (array(1,$art_id,));
+      $req = $db->prepare('UPDATE p5_votes SET p5_votes.VOTE_OUVERT= ? WHERE p5_votes.VOTE_ID = ?   '); 
+      $vote = $req -> execute (array(1,$vote_id,));
       return $vote;
     }
     

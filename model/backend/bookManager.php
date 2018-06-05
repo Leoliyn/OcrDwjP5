@@ -54,19 +54,52 @@ class BookManager extends Manager {
     
     
 
+//    public function getBooksRights($ouvId) { 
+//        $db = $this->dbConnect();
+//        $req = $db->prepare(' SELECT * FROM p5_ouvrage '
+//                . 'INNER JOIN p5_gere_ouvrage ON p5_ouvrage.OUV_ID=p5_gere_ouvrage.OUVRAGE_OUV_ID '
+//                . 'INNER JOIN p5_statut_liste ON p5_statut_liste.p5_STATUT_ID=p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID '
+//                . 'INNER JOIN p5_users ON p5_users.USER_ID = p5_gere_ouvrage.p5_USERS_USER_ID '
+//                . 'WHERE p5_ouvrage.OUV_ID= ? ');
+//         $req->execute(array($ouvId));
+//        return $req;
+//        $req->closeCursor();
+//    }
+    
     public function getBooksRights($ouvId) { 
         $db = $this->dbConnect();
-        $req = $db->prepare(' SELECT * FROM p5_ouvrage '
-                . 'INNER JOIN p5_gere_ouvrage ON p5_ouvrage.OUV_ID=p5_gere_ouvrage.OUVRAGE_OUV_ID '
-                . 'INNER JOIN p5_statut_liste ON p5_statut_liste.p5_STATUT_ID=p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID '
-                . 'INNER JOIN p5_users ON p5_users.USER_ID = p5_gere_ouvrage.p5_USERS_USER_ID '
-                . 'WHERE p5_ouvrage.OUV_ID= ? ');
+        $req = $db->prepare(' SELECT * FROM p5_ouvrage INNER JOIN p5_gere_ouvrage ON p5_ouvrage.OUV_ID=p5_gere_ouvrage.OUVRAGE_OUV_ID INNER JOIN p5_statut_liste ON p5_statut_liste.p5_STATUT_ID=p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_gere_ouvrage.p5_USERS_USER_ID WHERE p5_ouvrage.OUV_ID= ? ORDER BY p5_ouvrage.OUV_ID ASC  ');
          $req->execute(array($ouvId));
         return $req;
         $req->closeCursor();
     }
     
-    
+    public function delBookAcces($userId, $ouvId, $statutId) {
+        $db = $this->dbConnect();
+        $req = $db->prepare(' DELETE FROM p5_gere_ouvrage WHERE p5_USERS_USER_ID =? AND OUVRAGE_OUV_ID = ? AND p5_statut_liste_p5_STATUT_ID = ? ');
+        $req->execute(array($userId, $ouvId, $statutId));
+        return $req;
+        $req->closeCursor();
+    }
+
+    public function addAccesBook($ouvId, $userId, $statutId) {
+        $db = $this->dbConnect();
+        $req = $db->prepare(' INSERT INTO p5_gere_ouvrage SET p5_USERS_USER_ID =? , OUVRAGE_OUV_ID = ? , p5_statut_liste_p5_STATUT_ID = ? ');
+        $req->execute(array($userId, $ouvId, $statutId));
+        return $req;
+        $req->closeCursor();  
+        
+    }
+    // retourne le nombre d'enreg pour un user pour un ouvrage 
+    public function verifAccesBook($ouvId,$userId) {
+        $db = $this->dbConnect();
+        $acces = $db->prepare(' SELECT COUNT(*) FROM p5_gere_ouvrage WHERE p5_USERS_USER_ID =? AND OUVRAGE_OUV_ID = ?');
+        $acces->execute(array($userId, $ouvId));
+        $compte = $acces->fetchAll();
+        return $compte;
+        
+        
+    }
     public function getBooksEnable() {
 
         $db = $this->dbConnect();

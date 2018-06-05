@@ -226,6 +226,8 @@ try {
             $droits = unserialize($_SESSION['Rights']);
             if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR')) {
                 changementStatut($_GET['libelle']);
+                
+                
             } elseif (($droits[$_GET['ouv_id']] == 'REDACTEUR' AND ( ($_GET['libelle'] == 'PROPOSE') || ($_GET['libelle'] == 'REDACTION')))||($_GET['auteur']==$_SESSION['userId'])) 
                 {
                 changementStatut($_GET['libelle']);
@@ -249,10 +251,39 @@ try {
         }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'dashboard')AND ( ($_SESSION['superAdmin']==1))) 
             {
             cokpit();
-         }elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'rightsBook')AND ( ($_SESSION['superAdmin']==1))) 
+         }
+         elseif ((isset($_GET['action']))AND ( isset($_GET['vote_id']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'fermetureVote')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            closeVote($_GET['vote_id']);
+         }
+         elseif ((isset($_GET['action']))AND ( isset($_GET['vote_id']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'ouvertureVote')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            openVote($_GET['vote_id']);
+         }
+         elseif ((isset($_GET['action']))AND ( isset($_GET['duree']))AND ( isset($_GET['dateFin']))AND ( isset($_GET['vote_id']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'prolongeVote')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            modifDureeVote($_GET['vote_id'],$_GET['dateFin'],$_GET['duree']);
+         }
+         elseif ((isset($_GET['action']))AND ( isset($_GET['art_id']))AND ( isset($_GET['vote_id']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'delVote')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            supprimeVote($_GET['vote_id'],$_GET['art_id']);
+         }
+         
+         elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'rightsBook')AND ( ($_SESSION['superAdmin']==1))) 
             {
             accesBook($_GET['ouv_id']);
-         }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'delUser')AND ( ($_SESSION['superAdmin']==1))) 
+            }elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'delAcces')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            supprimeAccesOuvrage($_GET['user_id'],$_GET['ouv_id'],$_GET['statut_id']);
+            }elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'newBookAcces')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+            formNewBookAcces($_GET['ouv_id']);
+            
+            }elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'addAccesBook')AND ( ($_SESSION['superAdmin']==1))) 
+            {
+         addAccesOuvrage($_GET['ouv_id'],$_POST['user'],$_POST['statut']);
+            
+            }elseif ((isset($_GET['action']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'delUser')AND ( ($_SESSION['superAdmin']==1))) 
             {
                      supprimeUser($_GET['id']);
                       

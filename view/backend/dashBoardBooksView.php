@@ -6,7 +6,7 @@ echo"<div class='resume'>
 
 echo '<table class="table">';
 echo'<tr><td>OUVRAGE ID</td><td>TITRE</td><td>SOUS TITRE</td><td>PREFACE</td><td>ENABLE</td><td>Droits d\'accès</td></tr>';
-print_r($listBooks);
+
 while ($donneesBook = $listBooks->fetch())
  {      
   echo'<tr><td>'.$donneesBook['OUV_ID'].'</td>'

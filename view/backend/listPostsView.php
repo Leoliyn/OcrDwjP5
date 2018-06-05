@@ -29,7 +29,7 @@ if (isset($droits[$_GET['ouv_id']])) {
 $num_rows = count($lesSuites); 
 $postsSuite->closeCursor();
 
-echo ' nb ligne :'.$num_rows;
+//echo ' nb ligne :'.$num_rows;
 while ($data = $posts->fetch()) {
     $compteurSuite=0;
     for($i = 0;$i < $num_rows;$i++){

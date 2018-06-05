@@ -259,8 +259,18 @@ public function enablePostsBook($ouvid) {
     //OBTENTION DE LA LISTE DES SUITES PROPOSEES DONT LE CHAPITRE ACTUEL EST LE PRECEDENT
       public function getSuivants($id) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
-p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_POSTS.ART_PRECEDENT = ? ');
+//        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
+//p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_POSTS.ART_PRECEDENT = ? ');
+        $req = $db->prepare(' SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_POSTS.ART_PRECEDENT = 72 group by ART_ID  ');
+        $req->execute(array($id));
+        return $req;
+    }
+    
+    public function getSuivants2($id) {
+        $db = $this->dbConnect();
+//        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
+//p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_POSTS.ART_PRECEDENT = ? ');
+        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE,SUM(p5_vote_score.POSTS_SCORE_YES)AS JAIME,SUM(p5_vote_score.POSTS_SCORE_NO) AS JAIMEPAS FROM p5_POSTS INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN P5_votes ON p5_posts.ART_ID=p5_votes.p5_posts_ART_ID INNER JOIN p5_vote_score ON p5_vote_score.p5_votes_VOTE_ID = p5_votes.VOTE_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_POSTS.ART_PRECEDENT = ? group by ART_ID ');
         $req->execute(array($id));
         return $req;
     }

@@ -9,7 +9,7 @@ echo '<table class="table">';
 echo'<tr><td>UTILISATEUR ID</td><td>PSEUDO</td><td>NOM</td><td>PRENOM</td><td>E-MAIL</td><td>ROOT</td><td>SUPPR</td><td>UPDATE</td><td>REINIT</td></tr>';
 
 while ($donnees = $listUsers->fetch()) {
-    echo'<tr><td>' . $donnees['USER_ID'] . '</td>'
+    echo'<tr class =""><td><span class="badge">'. $donnees['USER_ID'] . '</span></td>'
     . '<td>' . $donnees['USER_PSEUDO'] . '</td>'
     . '<td>' . $donnees['USER_NAME'] . '</td>'
     . '<td>' . $donnees['USER_LASTNAME'] . '</td>'

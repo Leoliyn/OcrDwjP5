@@ -145,20 +145,33 @@ if ($desactive) {
 </div>
 <h2> Suite(s)</h2>
 <?php
- 
+///////////////////////////NOUVELLE FONCTION 
+// $jaime = 0;
+//$jaimepas=0;
+//foreach($tableauScores as $element)
+//{
+//   
+//    if($element['p5_votes_VOTE_ID']== $donneesVotes['VOTE_ID']){
+//        $jaime=$element['JAIME'];
+//        $jaimepas=$element['JAIMEPAS'];
+//    }
+//}
 
 
 while ($suite = $suites->fetch()) {
-  $scoreYes=0;
-$scoreNo=0;  
-$scrutinYes= depouillementYes($suite['ART_ID']);
-$scrutinNo= depouillementNo($suite['ART_ID']);
-if($scrutinYes[0]){
-$scoreYes=$scrutinYes[0];
+    
+    // score du vote de la suite 
+$jaime = 0;
+$jaimepas=0;
+foreach($tableauScores as $element)
+{
+   
+    if($element['SUITE_ID']== $suite['ART_ID']){
+        $jaime=$element['JAIME'];
+        $jaimepas=$element['JAIMEPAS'];
+    }
 }
-if($scrutinNo[0]){
-$scoreNo=$scrutinNo[0];
-}
+
 if(($suite['ART_AUTEUR']== $_SESSION['userId'])||($statut=='ADMINISTRATEUR')){
     $redaction='';$propose='';$accepte='';$refuse=''; $vote='';
 if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
@@ -207,7 +220,7 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
                  ?>
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=ACCEPTE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Validé'><i class="fa fa-thumbs-o-up  fa-2x <?= $accepte ?>"></i></a>
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=REFUSE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Refusé'><i class="fa fa-thumbs-o-down  fa-2x <?= $refuse ?>"></i></a>
-                <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=VOTE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Vote en cours'> <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i><span class="badge"><?= $scoreYes.' ' ?> J'aime</span><span class="badge"><?= $scoreNo.' ' ?>j'aime pas.</span></a>
+                <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=VOTE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Vote en cours'> <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i><span class="badge"><?= $jaime.' ' ?> J'aime</span><span class="badge"><?= $jaimepas.' ' ?>j'aime pas.</span></a>
 <?php
                }
                ?>
@@ -256,8 +269,8 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 <p><?= nl2br(($suite['ART_CONTENT'])) ?></p>
 <div class='icone-admin'>
   
-    <a href='indexadmin.php?action=votation&amp;bulletin=YES&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaime'><i class="fa fa-thumbs-up  fa-2x <?= $vote ?>"></i><span class="badge"><?= $scoreYes?></span></a>
-     <a href='indexadmin.php?action=votation&amp;bulletin=NO&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaimepas'><i class="fa fa-thumbs-down  fa-2x <?= $vote ?>"></i><span class="badge"><?= $scoreNo ?></span></a>
+    <a href='indexadmin.php?action=votation&amp;bulletin=YES&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaime'><i class="fa fa-thumbs-up  fa-2x <?= $vote ?>"></i><span class="badge"><?= $jaime?></span></a>
+     <a href='indexadmin.php?action=votation&amp;bulletin=NO&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaimepas'><i class="fa fa-thumbs-down  fa-2x <?= $vote ?>"></i><span class="badge"><?= $jaimepas ?></span></a>
 
 </div></div>
 <?php    

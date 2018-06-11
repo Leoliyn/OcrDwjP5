@@ -324,3 +324,17 @@ textarea {
     background-color:white;
     
 }
+.lu {
+   color: #c0c0c0 
+ 
+}
+
+.nonlu {
+    
+   color:black;
+}
+.btn-message{
+background-color:white !important  ;
+color : black;
+border : none;
+}

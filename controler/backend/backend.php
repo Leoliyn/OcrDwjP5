@@ -75,7 +75,9 @@ function post() {
     $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
     //contrelo des vote e nfin de delai     
     $voteControle = $voteManager->controleVote();
-
+    // RESULTAT VOTES 
+    $lesScores = $voteManager -> lesScores();
+    $tableauScores = $lesScores->fetchAll();
     if ($article) {
         $comments = $commentManager->getCommentsPremierNiveau($_GET['id']);
         $commentsChild = $commentManager->getCommentsChild($_GET['id']);
@@ -110,18 +112,18 @@ function rechercheEnfant($tableau,$id,$statut){
 //}
 
 //Fonction depouillement scrutin 
-function depouillementYes($suite_id){
-    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
-    $voteId= $voteManager-> quelVote($suite_id);
-    $scoreYes= $voteManager->countScoreYes($voteId);
-    return $scoreYes;
-    }
-function depouillementNo($suite_id){
-    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
-    $voteId= $voteManager-> quelVote($suite_id);
-    $scoreNo= $voteManager->countScoreNo($voteId);
-    return $scoreNo;
-    }
+//function depouillementYes($suite_id){
+//    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+//    $voteId= $voteManager-> quelVote($suite_id);
+//    $scoreYes= $voteManager->countScoreYes($voteId);
+//    return $scoreYes;
+//    }
+//function depouillementNo($suite_id){
+//    $voteManager= new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
+//    $voteId= $voteManager-> quelVote($suite_id);
+//    $scoreNo= $voteManager->countScoreNo($voteId);
+//    return $scoreNo;
+//    }
  
 //╔════════════════════════════════════════╗  
 //   1 chapitre depuis son ID - vue formulaire modification chapitre
@@ -323,14 +325,35 @@ function ajouterPost() {
     $statut_post = preg_replace($regex, '', $_POST['statut_post']);
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
-    $idStatutDuPost=$postManager->idStatut($statut_post);
-    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords,$ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
+    $idStatutDuPost = $postManager->idStatut($statut_post);
+    $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords, $ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     $image = uploadImage($dernierId);
-    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
+    $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image, $ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     $_GET['id'] = $dernierId;
-    $_GET['ouv_id']=$ouvId;
+    $_GET['ouv_id'] = $ouvId;
+    //Messagerie
+    $userManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
+    $book = $bookManager->getBooksRights($ouvId);
+    $article = $postManager->getPost($_GET['id']);
+    $root = $userManager -> listSuperadmin();
+    $objet = 'Création d\'un chapitre ';
+    $contenu = 'Un chapitre est ajouté à l\ouvrage  <b> ' . $ouvId . ' de titre :' . $titre . ' </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+    $auteurId = $auteur;
+    while ($adminBook = $book->fetch()) {
+    
+    messageSystem($adminBook['p5_USERS_USER_ID'],$auteurId, $objet, $contenu);
+    // envoyer mess aux administrateur de louvrage
+    }
+     while ($rootBook = $root->fetch()) {
+    
+    messageSystem($rootBook['USER_ID'],$auteurId , $objet, $contenu);
+    // envoyer mess aux Superadmin 
+    }
+    /// fin messagerie
     post();
 }
+
 function ajouterSuite() {
     $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
     //$keywords = preg_replace($regex, '', $_POST['art_keywords']);
@@ -353,6 +376,28 @@ function ajouterSuite() {
    // $article = $postManager->updatePost($chapter, $titre, $subtitle, $_POST['art_content'], 1, $dernierId, $description, $keywords, $image,$ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     $_GET['id'] = $dernierId;
     $_GET['ouv_id']=$ouvId;
+    
+    //Messagerie
+    $userManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
+    $book = $bookManager->getBooksRights($ouvId);
+    $article = $postManager->getPost($_GET['id']);
+    $root = $userManager -> listSuperadmin();
+    $objet = 'Création d\'une suite ';
+    $contenu = 'Une suite est ajoutée à l\ouvrage  <b> ' . $ouvId . '  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+    $auteurId = $auteur;
+    while ($adminBook = $book->fetch()) {
+    
+    messageSystem($adminBook['p5_USERS_USER_ID'],$auteurId, $objet, $contenu);
+    // envoyer mess aux administrateur de louvrage
+    }
+     while ($rootBook = $root->fetch()) {
+    
+    messageSystem($rootBook['USER_ID'],$auteurId , $objet, $contenu);
+    // envoyer mess aux Superadmin 
+    }
+    /// fin messagerie
+    
     listPosts($ouvId);
       
 }
@@ -364,25 +409,38 @@ function ajouterSuite() {
 function supprimePost() {
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+    $article = $postManager->getPost($_GET['id']);
     $post = $postManager->delPost($_GET['id']);
   if($post){
-  listPostsResume($_GET['ouv_id']);
+   $objet='Supression du post '.$article['ART_TITLE'];
+   $contenu ='Post Supprimé';
+   $auteurId =$article['ART_AUTEUR'];
+   messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu );
+  listPosts($_GET['ouv_id']);
   }else{
- throw new Exception ('Elément inconnu 239');   
+ throw new Exception ('Elément inconnu ');   
 }
 }
 
 function supprimeSuite() {
 
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
+     $article = $postManager->getPost($_GET['id']);
     $suite = $postManager->delPost($_GET['id']);
-  if($suite){
-      $_GET['id']=$_GET['precedent'];
-  post();
-  }else{
- throw new Exception ('Elément inconnu');   
+    
+    if ($suite) {
+        $objet = 'Supression '.$article['ART_ID'];
+        $contenu = 'Suppression du contenu suivant : ' . $article['ART_CONTENT'];
+        $auteurId =$article['ART_AUTEUR'];
+        messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);
+        $_GET['id'] = $_GET['precedent'];
+
+        post();
+    } else {
+        throw new Exception('Elément inconnu');
+    }
 }
-}
+
 //╔══════════════════════════════════════════╗  
 //    Désactive un chapitre ( non visible - en cours de rédaction)
 //╚══════════════════════════════════════════╝
@@ -393,7 +451,11 @@ function desactiverPost() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $post = $postManager->disablePost($_GET['id']);
     if($post){
-       
+     $article = $postManager->getPost($_GET['id']);
+   $objet = 'Désactivation Chapitre ';
+   $contenu = 'La Chapitre ( '.$article['ART_CHAPTER'].') <b> est désactivé </b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
+   $auteurId =$article['ART_AUTEUR'];
+   messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);     
     post();
 }else{
  throw new Exception ('Chapitre inconnu 256');   
@@ -405,6 +467,11 @@ function desactiverSuite() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $suite = $postManager->disablePost($_GET['id']);
     if($suite){
+        $article = $postManager->getPost($_GET['id']);
+   $objet = 'Désactivation Suite  ';
+   $contenu = 'La suite n° ( '.$article['ART_ID'].') <b> est désactivée </b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
+   $auteurId =$article['ART_AUTEUR'];
+   messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);   
      $_GET['id']= $_GET['precedent'];  
     post();
 }else{
@@ -421,12 +488,17 @@ function publierPost() {
     $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
     $post = $postManager->enablePost($_GET['id']);
     if($post){
+    $article = $postManager->getPost($_GET['id']);
+   $objet = 'Publication  ';
+   $contenu = 'La Chapitre ( '.$article['ART_ID'].') <b> est publié en ligne </b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
+   $auteurId =$article['ART_AUTEUR'];
+   messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);   
     post();
 }else{
  throw new Exception ('Chapitre inconnu 270');   
 }
 }
-// CHanger le statut du post redaction propose refuse accepter vote
+// CHanger le statut du post redaction propose refuse accepter vote + message aux auteurs
 function changementStatutSuite($libelleStatut){
   $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager();
   $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager();
@@ -436,8 +508,14 @@ function changementStatutSuite($libelleStatut){
    if($post){
        if($libelleStatut == 'VOTE'){
           $vote = $voteManager -> vote($_GET['id']);// vote début maintenant durée 15 jours statut vote ouvert 
+          
        }
-    desactiverSuite();
+   $article = $postManager->getPost($_GET['id']);
+   $objet = 'Changement de statut ';
+   $contenu = 'La suite proposée ( '.$article['ART_ID'].') <b>Change de statut pour '.$libelleStatut.'</b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
+   $auteurId =$article['ART_AUTEUR'];
+   messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);
+   desactiverSuite();
    // execution de post() dans desactiverPOst()
 }else{
  throw new Exception ('Changement impossible');   
@@ -451,6 +529,11 @@ function changementStatut($libelleStatut){
   $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'],$_GET['id']);
   
   if($post){
+    $article = $postManager->getPost($_GET['id']);
+   $objet = 'Changement de statut ';
+   $contenu = 'La Chapitre ( '.$article['ART_CHAPTER'].' titre:)'.$article['ART_TITLE'].'. <b>Change de statut pour '.$libelleStatut.'</b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
+   $auteurId =$article['ART_AUTEUR'];
+   messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);
     desactiverPost();
    // execution de post() dans desactiverPOst()
 }else{
@@ -491,7 +574,10 @@ function verifUser() {
         $_SESSION['user'] = $_POST['usrname'];
         $_SESSION['superAdmin']= $user[0]['ROOT'];
         $userValid = TRUE;
-   
+   $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
+   $message = $messageManager->nbMessagesNonLu($_SESSION['userId']);
+   $nbMess = $message->fetchAll();
+   $_SESSION['nbMess']= $nbMess[0]['NB'];
     } else {
        $userValid = FALSE;
    }
@@ -529,11 +615,35 @@ function desactiveComment() {
 //╔══════════════════════════════════════════╗  
 //    signal  un commentaire 
 //╚══════════════════════════════════════════╝
-//   
+// 
+function messageSignalementCommentaire(){
+//Messagerie
+    $userManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+    $bookManager = new OpenClassrooms\DWJP5\Backend\Model\bookManager();
+    $book = $bookManager->getBooksRights($_GET['ouv_id']);
+    //$article = $postManager->getPost($_GET['id']);
+    $root = $userManager -> listSuperadmin();
+    $objet = 'Signalement commentaire  ';
+    $contenu = 'Un signalement de commentaire est levé par '.$_SESSION['user'];
+    //$auteurId = $auteur;
+    while ($adminBook = $book->fetch()) {
+    
+    messageSystem($adminBook['p5_USERS_USER_ID'],$_SESSION['userId'], $objet, $contenu);
+    // envoyer mess aux administrateur de louvrage
+    }
+     while ($rootBook = $root->fetch()) {
+    
+    messageSystem($rootBook['USER_ID'],$_SESSION['userId'] , $objet, $contenu);
+    // envoyer mess aux Superadmin 
+    }
+    /// fin messagerie
+
+}
 function activeSignal() {
     $commentManager = new OpenClassrooms\DWJP5\Backend\Model\commentManager();
     $comment = $commentManager->enableSignal($_GET['commId']);
     if($comment){
+    messageSignalementCommentaire();    
     post();
 }else{
  throw new Exception ('Elément inconnu 351');   
@@ -639,6 +749,9 @@ function supprimeAccesOuvrage($userId, $ouvId, $statutId) {
     $bookManager = new OpenClassrooms\DWJP5\Backend\Model\BookManager();
     $delAcces = $bookManager->delBookAcces($userId, $ouvId, $statutId);
     accesBook($ouvId);
+    $objet='Modification accès';
+    $contenu ='Votre accès à ouvrage n°'.$ouvId.' est supprimé' ;
+     messageSystem($userId,$_SESSION['userId'], $objet, $contenu);
     
 }
 function formNewBookAcces($ouvId) {
@@ -659,6 +772,9 @@ function addAccesOuvrage($ouvId, $userId, $statutId) {
     if ($verif[0][0] == 0) {
         $acces = $bookManager->addAccesBook($ouvId, $userId, $statutId);
         accesBook($ouvId);
+        $objet='Modification accès';
+    $contenu ='Vous avez un  nouvel pour l\'ouvrage  n°'.$ouvId.' Veuillez vous connecter et vérifier ' ;
+     messageSystem($userId,$_SESSION['userId'], $objet, $contenu);
     } else {
        
         throw new Exception('L\'utilisateur a déjà un accès pour cette ouvrage - Vous devez  supprimer l\'accès avant d\'en créer un nouveau ');
@@ -994,4 +1110,66 @@ function ajouterUser($userName, $userLastname, $userPseudo, $userMail,$userPassw
 function formNewUser() {
 
     require('view/backend/newUserView.php');
+}
+//function messagerie(){
+//  $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();   
+//  $messages= $messageManager ->getMessages($_SESSION['userId']); 
+//    
+// require('view/backend/messagerieView.php');    
+//}
+
+function messagerie() {
+    $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
+    $messagesReçus = $messageManager->getMessagesReceived($_SESSION['userId']);
+    $messagesEnvoyes = $messageManager->getMessagesSend($_SESSION['userId']);
+    $message = $messageManager->nbMessagesNonLu($_SESSION['userId']);
+    $nbMess = $message->fetchAll();
+    $_SESSION['nbMess'] = $nbMess[0]['NB'];
+    //$messagesReçusCorbeille = $messageManager ->getMessagesReceivedBasket($_SESSION['userId']);  
+    //$messagesEnvoyesCorbeille = $messageManager ->getMessagesSendBasket($_SESSION['userId']); 
+    require('view/backend/messagerieView.php');
+}
+
+function ordreMessagerieRecus() {
+    $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
+    $tab = $_POST['listeId'];
+    if (isset($_POST['nonlu'])) {
+        $messages = $messageManager->setMessagesNotRead($tab);
+    } elseif (isset($_POST['lu'])) {
+        $messages = $messageManager->setMessagesRead($tab);
+    } elseif (isset($_POST['corbeille'])) {
+        $messages = $messageManager->desactiverMessagesDestinataire($tab);
+    }
+
+    messagerie();
+}
+function ordreMessagerieEnvoyes() {
+    $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
+    $tab = $_POST['listeId'];
+if (isset($_POST['corbeille'])) {
+        $messages = $messageManager->desactiverMessagesExpediteur($tab);
+    }
+
+    messagerie();
+}
+
+function formNewMessage(){
+   // /liste des utilisateurs
+     $userManager = new OpenClassrooms\DWJP5\Backend\Model\UsersManager();
+     $users= $userManager -> getUsers();
+  require('view/backend/newMessageView.php');      
+}
+
+
+function envoiMessage($destinataire,$expediteur, $objet, $contenu) {
+
+//    $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
+//    $envoi = $messageManager->addMessage($destinataire,$expediteur, $objet, $contenu);
+    messageSystem($destinataire, $expediteur, $objet, $contenu);
+    messagerie();
+}
+
+function messageSystem($destinataire, $expediteur, $objet, $contenu) {
+    $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
+    $envoi = $messageManager->addMessage($destinataire, $expediteur, $objet, $contenu);
 }

@@ -261,7 +261,7 @@ public function enablePostsBook($ouvid) {
         $db = $this->dbConnect();
 //        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
 //p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_POSTS.ART_PRECEDENT = ? ');
-        $req = $db->prepare(' SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_POSTS.ART_PRECEDENT = 72 group by ART_ID  ');
+        $req = $db->prepare(' SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_POSTS.ART_PRECEDENT = ? group by ART_ID  ');
         $req->execute(array($id));
         return $req;
     }

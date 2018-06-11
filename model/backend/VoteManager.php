@@ -133,7 +133,8 @@ public function countScoreYes($vote_id){
     }
     public function lesScores(){
       $db = $this->dbConnect();
-      $req = $db->query('SELECT p5_votes_VOTE_ID,SUM(POSTS_SCORE_YES) AS JAIME,SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score GROUP BY p5_votes_VOTE_ID');  
+     // $req = $db->query('SELECT p5_votes_VOTE_ID,SUM(POSTS_SCORE_YES) AS JAIME,SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score GROUP BY p5_votes_VOTE_ID');  
+      $req = $db->query('SELECT p5_votes_VOTE_ID,SUM(POSTS_SCORE_YES) AS JAIME,SUM(POSTS_SCORE_NO) AS JAIMEPAS,p5_votes.p5_posts_ART_ID AS SUITE_ID FROM p5_vote_score INNER JOIN p5_votes ON p5_vote_score.p5_votes_VOTE_ID= p5_votes.VOTE_ID GROUP BY p5_votes_VOTE_ID'); 
       return $req;  
     }
   public function updateVoteDuree($vote_id,$dateFin,$duree){

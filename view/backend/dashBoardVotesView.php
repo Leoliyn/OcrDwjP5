@@ -64,9 +64,7 @@ foreach($tableauScores as $element)
         $jaimepas=$element['JAIMEPAS'];
     }
 }
-if(array_search($donneesVotes['VOTE_ID'],array_column($tableauScores,"VOTE_ID"))){
-    
-}
+
       
 echo '<i class="fa fa-thumbs-up  fa-2x "></i><span class="badge">'.$jaime.'</span>
 <i class="fa fa-thumbs-down  fa-2x "></i><span class="badge">'.$jaimepas.'</span>  

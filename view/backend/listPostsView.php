@@ -25,7 +25,7 @@ if (isset($droits[$_GET['ouv_id']])) {
     
   
 
- $lesSuites = $postsSuite->fetchAll();
+$lesSuites = $postsSuite->fetchAll();
 $num_rows = count($lesSuites); 
 $postsSuite->closeCursor();
 

@@ -93,9 +93,41 @@ try {
                 if($droits[$_GET['ouv_id']]){
                    post();   
                 }else{
-                    throw new Exception("Vous n'avez pas les droits d'accès ligne 78 idxAdm");
-                }   
-        ////////////////////////////////////////////////////////////////////////////////////////////
+                    throw new Exception("Vous n'avez pas les droits d'accès");
+                }  
+             }
+            elseif((isset($_GET['action']))AND ($_GET['action']=='message')AND (isset($_SESSION['userId'])))
+            {
+         
+                   messagerie();   
+               
+             }elseif((isset($_GET['action']))AND ($_GET['action']=='newMessage')AND (isset($_SESSION['userId'])))
+            {
+         
+                   formNewMessage();   
+               
+             }elseif((isset($_POST['action']))AND ($_POST['action']=='addMessage')AND (isset($_SESSION['userId'])))
+            {
+         
+                   envoiMessage($_POST['destinataire'], $_POST['expediteur'], $_POST['objet'], $_POST['contenu']);   
+               
+             }
+            elseif((isset($_POST['action']))AND ($_POST['action']=='ordreMessagerieRecus')AND (isset($_SESSION['userId'])))
+            {
+         
+                   ordreMessagerieRecus();   
+               
+                  
+     
+
+            }elseif((isset($_POST['action']))AND ($_POST['action']=='ordreMessagerieEnvoyes')AND (isset($_SESSION['userId'])))
+            {
+         
+                   ordreMessagerieEnvoyes();   
+               
+                  
+     
+
             }elseif((isset($_GET['action']))AND ($_GET['action']=='votation')AND (isset($_GET['precedent']))AND (isset($_GET['bulletin']))AND (isset($_GET['id']))AND (isset($_GET['ouv_id']))AND (isset($_SESSION['Rights'])))
             {
               $droits= unserialize($_SESSION['Rights']);

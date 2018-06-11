@@ -3,7 +3,10 @@
 <?php ob_start(); ?>
 
 <div class='resume'>
-    <?php if($_SESSION['superAdmin']==1){
+    <?php 
+    
+    if($_SESSION['superAdmin']==1){
+        
       echo '<a href="indexadmin.php?action=newBook" title="Ajouter un ouvrage"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un ouvrage..</a>
 ';  
     }

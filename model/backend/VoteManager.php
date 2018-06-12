@@ -108,35 +108,43 @@ public function quelVote($suite_id){
 //      }
 //      return $score;
 //} 
-public function countScoreYes($vote_id){
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT SUM(POSTS_SCORE_YES) AS JAIME FROM p5_vote_score WHERE p5_votes_VOTE_ID = ? ');
-        $vote = $req->execute (array($vote_id));
-        if($req->rowCount()){
-        $scoreYes = $req->fetch();
-        } else {
-            $scoreYes = 0;
-        }
-        return $scoreYes;
-    }
-//
-  public function countScoreNo($vote_id) {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score WHERE p5_votes_VOTE_ID = ? ');
-        $vote = $req->execute(array($vote_id));
-        if ($req->rowCount()) {
-            $scoreNo = $req->fetch();
-        } else {
-            $scoreNo = 0;
-        }
-        return $scoreNo;
-    }
+//public function countScoreYes($vote_id){
+//        $db = $this->dbConnect();
+//        $req = $db->prepare('SELECT SUM(POSTS_SCORE_YES) AS JAIME FROM p5_vote_score WHERE p5_votes_VOTE_ID = ? ');
+//        $vote = $req->execute (array($vote_id));
+//        if($req->rowCount()){
+//        $scoreYes = $req->fetch();
+//        } else {
+//            $scoreYes = 0;
+//        }
+//        return $scoreYes;
+//    }
+////
+//  public function countScoreNo($vote_id) {
+//        $db = $this->dbConnect();
+//        $req = $db->prepare('SELECT SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score WHERE p5_votes_VOTE_ID = ? ');
+//        $vote = $req->execute(array($vote_id));
+//        if ($req->rowCount()) {
+//            $scoreNo = $req->fetch();
+//        } else {
+//            $scoreNo = 0;
+//        }
+//        return $scoreNo;
+//    }
     public function lesScores(){
       $db = $this->dbConnect();
      // $req = $db->query('SELECT p5_votes_VOTE_ID,SUM(POSTS_SCORE_YES) AS JAIME,SUM(POSTS_SCORE_NO) AS JAIMEPAS FROM p5_vote_score GROUP BY p5_votes_VOTE_ID');  
       $req = $db->query('SELECT p5_votes_VOTE_ID,SUM(POSTS_SCORE_YES) AS JAIME,SUM(POSTS_SCORE_NO) AS JAIMEPAS,p5_votes.p5_posts_ART_ID AS SUITE_ID FROM p5_vote_score INNER JOIN p5_votes ON p5_vote_score.p5_votes_VOTE_ID= p5_votes.VOTE_ID GROUP BY p5_votes_VOTE_ID'); 
       return $req;  
     }
+    
+    public function delScores($voteId){
+      $db = $this->dbConnect();
+      $req = $db->prepare('DELETE FROM `p5_vote_score` WHERE p5_votes_VOTE_ID = ?');
+      $delScore = $req -> execute (array($voteId));
+      return $req;  
+    }
+    
   public function updateVoteDuree($vote_id,$dateFin,$duree){
       $db = $this->dbConnect();
       $reqDateFin = $db->prepare('SELECT DATE_ADD((SELECT p5_votes.VOTE_DATEFIN FROM `p5_votes` WHERE p5_votes.VOTE_ID =?), INTERVAL ? DAY) '); 

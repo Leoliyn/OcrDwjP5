@@ -88,7 +88,7 @@ echo '<i class="fa fa-thumbs-up  fa-2x "></i><span class="badge">'.$jaime.'</spa
 
      </div>
      <div class="col-sm-1">
-     <i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i>
+     <a href="indexadmin.php?action=concatSuite&amp;suiteId='.$donneesVotes['p5_posts_ART_ID'].'&amp;auteur='.$donneesVotes['USER_PSEUDO'].'&amp;ouv_id='.$donneesVotes['OUVRAGE_OUV_ID'].'&amp;vote_id='.$donneesVotes['VOTE_ID'].'"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
 
 
 
@@ -198,7 +198,7 @@ echo '<i class="fa fa-thumbs-up  fa-2x "></i><span class="badge">'.$jaime.'</spa
 
      </div>
      <div class="col-sm-1">
-     <i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i>
+       <a href="indexadmin.php?action=concatSuite&amp;suiteId='.$donneesVotes['p5_posts_ART_ID'].'&amp;auteur='.$donneesVotes['USER_PSEUDO'].'&amp;ouv_id='.$donneesVotes['OUVRAGE_OUV_ID'].'&amp;vote_id='.$donneesVotes['VOTE_ID'].'"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
 
 
 

@@ -299,7 +299,18 @@ try {
          elseif ((isset($_GET['action']))AND ( isset($_GET['art_id']))AND ( isset($_GET['vote_id']))AND ( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'delVote')AND ( ($_SESSION['superAdmin']==1))) 
             {
             supprimeVote($_GET['vote_id'],$_GET['art_id']);
+            
+         }elseif ((isset($_GET['action']))AND ( isset($_GET['suiteId']))AND ( isset($_GET['ouv_id']))AND ( isset($_GET['auteur']))AND ( isset($_SESSION['Rights']))AND ( $_GET['action'] == 'concatSuite')AND ( isset($_GET['ouv_id']))AND ( isset($_GET['vote_id']))) 
+            {
+             $droits = unserialize($_SESSION['Rights']);
+            if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR')) {
+                
+            integrationSuite($_GET['suiteId'],$_GET['auteur'],$_GET['vote_id']);
+            }else{
+                throw new Exception("Vous n'avez pas les droits d'accès continuer ");
+            }
          }
+         
          
          elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id'])) AND( isset($_SESSION['superAdmin']))AND ( $_GET['action'] == 'rightsBook')AND ( ($_SESSION['superAdmin']==1))) 
             {

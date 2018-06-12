@@ -1173,3 +1173,24 @@ function messageSystem($destinataire, $expediteur, $objet, $contenu) {
     $messageManager = new OpenClassrooms\DWJP5\Backend\Model\MessageManager();
     $envoi = $messageManager->addMessage($destinataire, $expediteur, $objet, $contenu);
 }
+
+function integrationSuite($suiteId,$auteur,$voteId){
+   $postManager = new OpenClassrooms\DWJP5\Backend\Model\PostManager(); 
+   $voteManager = new OpenClassrooms\DWJP5\Backend\Model\VoteManager(); 
+   
+   $suite = $postManager -> getPost($suiteId);
+   $contenuSuite= $suite['ART_CONTENT'].'<br /><b> Fin suite de '.$auteur.'.</b><br />';
+   $precedent = $suite['ART_PRECEDENT'];
+   $insertionAuteur = '<b><br /><br />Suite de '.$auteur.'<br /><br /></b>' ;
+   $concatenation = $postManager ->concatSuite($insertionAuteur,$contenuSuite,$precedent);
+   if($concatenation){
+    $suiteId = $suite['ART_ID'];
+    $effaceScores = $voteManager ->delScores($voteId);
+    $effaceVote = $voteManager ->delVote($vote_id)  ;      
+    $delSuite = $postManager ->delPost($suiteId);
+    
+   }else {
+     throw new exception ('Echec de l\intégration ');
+}
+   cokpit();
+}

@@ -60,7 +60,7 @@ class PostManager extends Manager {
     }
     public function getPost($postId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT, ART_DESACTIVE,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE, ART_AUTEUR, p5_statut_post_STATUT_POST_ID,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE ART_ID = ?');
+        $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,ART_PRECEDENT, ART_DESACTIVE,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE, ART_AUTEUR, p5_statut_post_STATUT_POST_ID,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE ART_ID = ?');
         $req->execute(array($postId));
         $post = $req->fetch();
 
@@ -301,5 +301,10 @@ public function enablePostsBook($ouvid) {
 //     $precedent = $req->fetch();
 //     return $precedent;          
 //    }
-    
+    public function concatSuite($auteur,$contenuSuite,$chapitreId) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('UPDATE p5_posts SET p5_posts.ART_CONTENT = CONCAT(ART_CONTENT," ", ? ," ",?) WHERE p5_posts.ART_ID=?');
+        $req->execute(array($auteur,$contenuSuite,$chapitreId));
+        return $req;
+    } 
 }

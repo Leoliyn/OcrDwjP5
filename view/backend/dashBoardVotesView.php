@@ -87,40 +87,32 @@ echo '<i class="fa fa-thumbs-up  fa-2x "></i><span class="badge">'.$jaime.'</spa
 
 
      </div>
-     <div class="col-sm-1">
-     <a href="indexadmin.php?action=concatSuite&amp;suiteId='.$donneesVotes['p5_posts_ART_ID'].'&amp;auteur='.$donneesVotes['USER_PSEUDO'].'&amp;ouv_id='.$donneesVotes['OUVRAGE_OUV_ID'].'&amp;vote_id='.$donneesVotes['VOTE_ID'].'"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
+     <div class="col-sm-1">';
+    // <a href="indexadmin.php?action=concatSuite&amp;suiteId='.$donneesVotes['p5_posts_ART_ID'].'&amp;auteur='.$donneesVotes['USER_PSEUDO'].'&amp;ouv_id='.$donneesVotes['OUVRAGE_OUV_ID'].'&amp;vote_id='.$donneesVotes['VOTE_ID'].'"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
+  echo'<a  data-toggle="modal" data-target="#integrationModal'.$donneesVotes['VOTE_ID'].'" href="#"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
 
 
 
     
   </div>
-<div class="col-sm-1">
+<div class="col-sm-1">';
 
-<a href="indexadmin.php?action=delVote&amp;vote_id='.$donneesVotes['VOTE_ID'].'&amp;art_id='.$donneesVotes['p5_posts_ART_ID'].'"><i class="fa fa-close  fa-2x "title="Supprimer le vote"></i></a>
+//<a href="indexadmin.php?action=delVote&amp;vote_id='.$donneesVotes['VOTE_ID'].'&amp;art_id='.$donneesVotes['p5_posts_ART_ID'].'"><i class="fa fa-close  fa-2x "title="Supprimer le vote"></i></a>
+echo'<a  data-toggle="modal" data-target="#delVoteModal'.$donneesVotes['VOTE_ID'].'" href="#"><i class="fa fa-close  fa-2x "title="Supprimer le vote"></i></a>
 
 
      </div>
 <div class="col-sm-6">
 
       </div></div></div>
-';
-//  echo'<tr><td>'.$donneesVotes['VOTE_ID'].'</td>'
-//          // . '<td>'.$donneesVotes['VOTE_OUVERT'].'</td>'
-//           . '<td>'.$donneesVotes['VOTE_DATEDEBUT'].'</td>'
-//           . '<td>'.$donneesVotes['VOTE_DATEFIN'].'</td>'
-//           . '<td>'.$donneesVotes['p5_posts_ART_ID'].'</td>'
-//          
-//          . '<td>'.$donneesVotes['USER_PSEUDO'].'</td>'
-//        . '<td>'.$donneesVotes['TITRE_PRECEDENT'].'</td>'
-//            . '<td>'.$donneesVotes['NUM_CHAPITRE'].'</td>'
-//           . '<td>'.$donneesVotes['JAIME'].'</td>'
-//            . '<td>'.$donneesVotes['JAIMEPAS'].'</td>'
-//          . '<td><a href="indexadmin.php?action="><i class="
-//fa fa-gear  fa-2x"></i></td>'
-//                .' </tr>';
-  //echo'</div>';
+'; 
+  require'view/backend/modalIntegrationView.php';
+  require'view/backend/modalDelVoteView.php';
+  ?>
+
+<?php
 }
-//echo'</table>';
+
 /////////////////////////////////////////////////////////////////////////////////////////////VOTES FERMES
  echo'<h3 >   Vote(s) Fermé(s)  </h3>';
 //echo '<table class="table">';
@@ -197,39 +189,29 @@ echo '<i class="fa fa-thumbs-up  fa-2x "></i><span class="badge">'.$jaime.'</spa
 
 
      </div>
-     <div class="col-sm-1">
-       <a href="indexadmin.php?action=concatSuite&amp;suiteId='.$donneesVotes['p5_posts_ART_ID'].'&amp;auteur='.$donneesVotes['USER_PSEUDO'].'&amp;ouv_id='.$donneesVotes['OUVRAGE_OUV_ID'].'&amp;vote_id='.$donneesVotes['VOTE_ID'].'"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
+     <div class="col-sm-1">';
+       //<a href="indexadmin.php?action=concatSuite&amp;suiteId='.$donneesVotes['p5_posts_ART_ID'].'&amp;auteur='.$donneesVotes['USER_PSEUDO'].'&amp;ouv_id='.$donneesVotes['OUVRAGE_OUV_ID'].'&amp;vote_id='.$donneesVotes['VOTE_ID'].'"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
+ echo'<a  data-toggle="modal" data-target="#integrationModal'.$donneesVotes['VOTE_ID'].'" href="#"><i class="fa fa-copy  fa-2x "title="Intégrer la Suite au chapitre"> </i></a>
+
+
 
 
 
     
   </div>
-<div class="col-sm-1">
+<div class="col-sm-1">';
 
-<a href="indexadmin.php?action=delVote&amp;vote_id='.$donneesVotes['VOTE_ID'].'&amp;art_id='.$donneesVotes['p5_posts_ART_ID'].'"><i class="fa fa-close  fa-2x "title="Supprimer le vote"></i></a>
-
+//<a href="indexadmin.php?action=delVote&amp;vote_id='.$donneesVotes['VOTE_ID'].'&amp;art_id='.$donneesVotes['p5_posts_ART_ID'].'"><i class="fa fa-close  fa-2x "title="Supprimer le vote"></i></a>
+echo'<a  data-toggle="modal" data-target="#delVoteModal'.$donneesVotes['VOTE_ID'].'" href="#"><i class="fa fa-close  fa-2x "title="Supprimer le vote"></i></a>
 
      </div>
 <div class="col-sm-6">
 
       </div></div></div>
-';     
-//  echo'<tr><td>'.$donneesVotes['VOTE_ID'].'</td>'
-//          // . '<td>'.$donneesVotes['VOTE_OUVERT'].'</td>'
-//             . '<td>'.$donneesVotes['VOTE_DATEDEBUT'].'</td>'
-//           . '<td>'.$donneesVotes['VOTE_DATEFIN'].'</td>'
-//           . '<td>'.$donneesVotes['p5_posts_ART_ID'].'</td>'
-//          
-//          . '<td>'.$donneesVotes['USER_PSEUDO'].'</td>'
-//        . '<td>'.$donneesVotes['TITRE_PRECEDENT'].'</td>'
-//            . '<td>'.$donneesVotes['NUM_CHAPITRE'].'</td>'
-//           . '<td>'.$donneesVotes['JAIME'].'</td>'
-//            . '<td>'.$donneesVotes['JAIMEPAS'].'</td>'
-//          . '<td><a href="indexadmin.php?action="><i class="
-//fa fa-gear  fa-2x"></i></td>'
-//                .' </tr>';
+'; 
+require'view/backend/modalIntegrationView.php';
+require'view/backend/modalDelVoteView.php';
 }
-//echo'</table>';
 
 echo'</div>';
 

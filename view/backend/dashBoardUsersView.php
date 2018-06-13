@@ -15,12 +15,15 @@ while ($donnees = $listUsers->fetch()) {
     . '<td>' . $donnees['USER_LASTNAME'] . '</td>'
     . '<td>' . $donnees['USER_MAIL'] . '</td>'
     . '<td>' . $donnees['ROOT'] . '</td>'
-    . '<td><a href="indexadmin.php?action=delUser&amp;id=' . $donnees['USER_ID'] . '"><i class="fa fa-trash  fa-2x"></i></td>'
+    . '<td><a  data-toggle="modal" data-target="#delUserModal'.$donnees['USER_ID'].'" href="#"><i class="fa fa-trash  fa-2x"></i></td>'
     . '<td><a href="indexadmin.php?action=updateUser&amp;id=' . $donnees['USER_ID'] . '"><i class="fa  fa-edit  fa-2x "></i></a></td>'
-    . '<td><a href="indexadmin.php?action=initUser&amp;id=' . $donnees['USER_ID'] . '"><i class="fa fa-recycle  fa-2x"></i></a></td></tr>'; // Ton traitement
-}
-echo'</table></div>';
+    . '<td><a  data-toggle="modal" data-target="#initUserModal'.$donnees['USER_ID'].'" href="#"><i class="fa fa-recycle  fa-2x"></i></a></td></tr>'; // Ton traitement
 
+    require 'view/backend/modaldeluserView.php';
+    require 'view/backend/modalinitUserView.php';
+}
+
+echo'</table></div>';
 
     
 

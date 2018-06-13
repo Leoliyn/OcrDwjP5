@@ -1186,7 +1186,7 @@ function integrationSuite($suiteId,$auteur,$voteId){
    if($concatenation){
     $suiteId = $suite['ART_ID'];
     $effaceScores = $voteManager ->delScores($voteId);
-    $effaceVote = $voteManager ->delVote($vote_id)  ;      
+    $effaceVote = $voteManager ->delVote($voteId)  ;      
     $delSuite = $postManager ->delPost($suiteId);
     
    }else {

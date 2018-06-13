@@ -24,17 +24,18 @@ while ($donnees = $rightsBooks->fetch()) {
  . '<td>'.$donnees['USER_PSEUDO'].'</td>'
              . '<td>'.$donnees['USER_MAIL'].'</td>'
             . '<td>'.$donnees['STATUT'].'</td>'
-            . '<td><a href="indexadmin.php?action=delAcces&amp;user_id=' . $donnees['USER_ID'] . '&amp;ouv_id=' . $donnees['OUV_ID'].'&amp;statut_id=' . $donnees['p5_statut_liste_p5_STATUT_ID'].'"><i class="fa fa-trash  fa-2x"></i></td>'
+            . '<td><a  data-toggle="modal" data-target="#delAccesBookModal'.$donnees['USER_ID'].'" href="#"><i class="fa fa-trash  fa-2x"></i></td>'
     
            
             . '</tr>';
            
-
+require 'view/backend/modalDelAccesBookView.php';
 
 }
 echo'</table>';
  ?> 
     <a href="indexadmin.php?action=dashboard" title="Retour à la liste"><i class="fa fa-arrow-left  fa-2x "></i></a>
+    
 </div>
  
 

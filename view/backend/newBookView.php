@@ -19,7 +19,9 @@
             <label> Sous-Titre</label><input type="texte" class="form-control" id="ouv_soustitre" name = "ouv_soustitre" value="">
             <label> Préface</label><textarea style="width: 100%;" name="ouv_preface"><br /></textarea>
             <label> Description</label><input style="width: 100%;" name="ouv_description" id="ouv_description" /><br />
-            <label> Mots clés (séparés par une virgule)</label><input style="width: 100%;" name="ouv_keywords" id="ouv_keywords" value="blog,écrivain,"/><br />   
+            <label> Mots clés (séparés par une virgule)</label><input style="width: 100%;" name="ouv_keywords" id="ouv_keywords" value="blog,écrivain,"/><br /> 
+            <label> Pour charger l'image cliquez sur Parcourir (1600x550 ou de ratio 2.909) </label> <input type="file" name="uploaded_file" /> 
+        <br />
             <input class="btn btn-primary" type="submit" name="send" value="Envoyer" />
             <input class="btn btn-primary" type="reset" name="reset" value="Reset" />
             <a href="indexadmin.php"><input class="btn btn-primary" type="button" name="retour" value="Retour" /></a>

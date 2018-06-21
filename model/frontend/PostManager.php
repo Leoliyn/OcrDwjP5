@@ -4,9 +4,9 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES CHAPITRES LISTE 
-namespace OpenClassrooms\DWJP5\frontend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+namespace Frontend;
+//require_once("Model/Commun/Manager.php");
+//use Model\Commun;
 
 class PostManager extends Manager {
 
@@ -29,7 +29,7 @@ class PostManager extends Manager {
     }
     public function getSuivant($id) {
      $db = $this->dbConnect();
-     $req = $db->prepare('SELECT p5_POSTS_ART_ID_SUIVANT FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID = ? AND ART_DESACTIVE = ?');
+     $req = $db->prepare('SELECT p5_posts_ART_ID_SUIVANT FROM p5_ARBRE_POSTS WHERE p5_posts_ART_ID = ? AND ART_DESACTIVE = ?');
      $req->execute(array($id,0));
      $suivant = $req->fetch();
      return $suivant;      
@@ -37,7 +37,7 @@ class PostManager extends Manager {
     
      public function getPrecedent($id) {
      $db = $this->dbConnect();
-      $req = $db->prepare('SELECT p5_POSTS_ART_ID FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID_SUIVANT = ? AND ART_DESACTIVE = ?');
+      $req = $db->prepare('SELECT p5_posts_ART_ID FROM p5_ARBRE_POSTS WHERE p5_posts_ART_ID_SUIVANT = ? AND ART_DESACTIVE = ?');
      $req->execute(array($id,0));
      $precedent = $req->fetch();
      return $precedent;          

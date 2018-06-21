@@ -4,9 +4,12 @@
 //           CLAUDEY Lionel Avril 2018           
 //╚═════════════════════════════╝
 //GESTION DES OUVRAGES  
-namespace OpenClassrooms\DWJP5\backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+namespace Backend;//namespace OpenClassrooms\DWJP5\Backend\Model;
+//use Commun;//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+
+
+//require_once("Model/Commun/Manager.php");
+
 
 class BookManager extends Manager {
     
@@ -110,7 +113,7 @@ class BookManager extends Manager {
 
     public function getBook($bookId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE FROM p5_ouvrage WHERE OUV_ID = ?');
+        $req = $db->prepare('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_IMAGE,OUV_ENABLE FROM p5_ouvrage WHERE OUV_ID = ?');
         $req->execute(array($bookId));
         $book = $req->fetch();
         $req->closeCursor();
@@ -132,24 +135,45 @@ class BookManager extends Manager {
         return $book;
     }
 //A proteger seul root
-    public function addBook($title, $preface, $subtitle, $description, $keywords) {
+    public function addBook($title, $preface, $subtitle, $description, $keywords, $image) {
 
 
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT into p5_ouvrage (OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE) VALUES(?,?,?,?,?,?)');
-        $req->execute(array($title, $preface, $subtitle, $description, $keywords, 0));
+        $req = $db->prepare('INSERT into p5_ouvrage (OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE,OUV_IMAGE) VALUES(?,?,?,?,?,?,?)');
+        $req->execute(array($title, $preface, $subtitle, $description, $keywords, 0, $image));
+        $lastId = $db->lastInsertId();
+        return $lastId;
         $req->closeCursor ();
     
     }
+    //supressoin du  fichier jpg dan sle répertoire uploads
+    public function delBookImage($id) {
+        $db = $this->dbConnect();
+        $req0 = $db->prepare('SELECT OUV_IMAGE FROM p5_ouvrage WHERE OUV_ID = ?');
+        $req0->execute(array($id));
+        $image = $req0->fetch();
+        //////////Suppression de l'mage associée///////////
+        $dossier_traite = "uploads";
+        $fichier = $image['OUV_IMAGE'];
+        $chemin = $dossier_traite . "/" . $fichier; // On définit le chemin du fichier à effacer.
+        $repertoire = opendir($dossier_traite);
+        if (file_exists($chemin)) {
+            if (!is_dir($chemin)) {
 
+                unlink($chemin); // On efface.
+            }
+        }
+    }
+ 
 
     public function delBook($id) {
         $db = $this->dbConnect();
         $req = $db->prepare('DELETE FROM p5_ouvrage WHERE OUV_ID = ?');
         $req->execute(array($id));
         return $req;
-        $req->closeCursor ();
+        $req->closeCursor();
     }
+
 //Suppression de l'ouvrage si l'utilisateur en est administrateur . 
     public function delBookUser($id) {
         $db = $this->dbConnect();
@@ -160,20 +184,20 @@ class BookManager extends Manager {
         $req->closeCursor ();
     }
 // Modification de l'ouvrage si l'utilisateur en est asministrateur    
-     public function updateBookUser($title, $preface, $subtitle, $description, $keywords, $enable, $id) {
+     public function updateBookUser($title, $preface, $subtitle, $description, $keywords, $enable, $id, $image) {
 
         $db = $this->dbConnect();
         //$req = $db->prepare('UPDATE p5_ouvrage SET  OUV_TITRE=?,OUV_PREFACE=?,OUV_SOUSTITRE=?,OUV_DESCRIPTION=?,OUV_KEYWORDS=?,OUV_ENABLE=? WHERE OUV_ID = IN (SELECT p5_gere_ouvrage.OUVRAGE_OUV_ID FROM `p5_gere_ouvrage` WHERE p5_gere_ouvrage.OUVRAGE_OUV_ID = ? AND p5_gere_ouvrage.p5_USERS_USER_ID = ? AND p5_gere_ouvrage.p5_STATUT_LISTE_STATUT= ? )');
-       $req = $db->prepare(' UPDATE p5_ouvrage SET  OUV_TITRE=?,OUV_PREFACE=?,OUV_SOUSTITRE=?,OUV_DESCRIPTION=?,OUV_KEYWORDS=?,OUV_ENABLE=? WHERE OUV_ID  IN (SELECT p5_gere_ouvrage.OUVRAGE_OUV_ID FROM `p5_gere_ouvrage` WHERE p5_gere_ouvrage.OUVRAGE_OUV_ID = ? AND p5_gere_ouvrage.p5_USERS_USER_ID = ? AND p5_gere_ouvrage.p5_STATUT_LISTE_p5_STATUT_ID IN(SELECT p5_statut_liste.p5_STATUT_ID from p5_statut_liste WHERE p5_statut_liste.STATUT=?))');
-        $req->execute(array($title, $preface, $subtitle, $description, $keywords, $enable, $id, $_SESSION['userId'], 'ADMINISTRATEUR'));
+       $req = $db->prepare(' UPDATE p5_ouvrage SET  OUV_TITRE=?,OUV_PREFACE=?,OUV_SOUSTITRE=?,OUV_DESCRIPTION=?,OUV_KEYWORDS=?,OUV_IMAGE=?,OUV_ENABLE=? WHERE OUV_ID  IN (SELECT p5_gere_ouvrage.OUVRAGE_OUV_ID FROM `p5_gere_ouvrage` WHERE p5_gere_ouvrage.OUVRAGE_OUV_ID = ? AND p5_gere_ouvrage.p5_USERS_USER_ID = ? AND p5_gere_ouvrage.p5_STATUT_LISTE_p5_STATUT_ID IN(SELECT p5_statut_liste.p5_STATUT_ID from p5_statut_liste WHERE p5_statut_liste.STATUT=?))');
+        $req->execute(array($title, $preface, $subtitle, $description, $keywords,$image,  $enable, $id, $_SESSION['userId'], 'ADMINISTRATEUR'));
         $req->closeCursor ();
     }
 // Modification de l'ouvrage sans condition 
-    public function updateBook($title, $preface, $subtitle, $description, $keywords, $enable, $id) {
+    public function updateBook($title, $preface, $subtitle, $description, $keywords, $enable, $id,$image) {
 
         $db = $this->dbConnect();
-        $req = $db->prepare('UPDATE p5_ouvrage SET  OUV_TITRE=?,OUV_PREFACE=?,OUV_SOUSTITRE=?,OUV_DESCRIPTION=?,OUV_KEYWORDS=?,OUV_ENABLE=? WHERE OUV_ID= ?');
-        $req->execute(array($title, $preface, $subtitle, $description, $keywords, $enable, $id));
+        $req = $db->prepare('UPDATE p5_ouvrage SET  OUV_TITRE=?,OUV_PREFACE=?,OUV_SOUSTITRE=?,OUV_DESCRIPTION=?,OUV_KEYWORDS=?,OUV_IMAGE=?,OUV_ENABLE=? WHERE OUV_ID= ?');
+        $req->execute(array($title, $preface, $subtitle, $description, $keywords,$image, $enable, $id));
         $req->closeCursor ();
     }
 

@@ -4,9 +4,12 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES CHAPITRES  LISTE - AJOUTER- MODIFIER- SUPPRIMER -SUPPRIMER -ACTIVER- DESACTIVER
-namespace OpenClassrooms\DWJP5\Backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+namespace Backend;//namespace OpenClassrooms\DWJP5\Backend\Model;
+//require_once("Model/Commun/Manager.php");
+//use Commun;//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//namespace OpenClassrooms\DWJP5\Backend\Model;
+//require_once("model/commun/Manager.php");
+//use OpenClassrooms\DWJP5\Commun\Model\Manager;
 
 class PostManager extends Manager {
 
@@ -35,8 +38,8 @@ class PostManager extends Manager {
 
       $req = $db->prepare('SELECT ART_ID, LEFT(`ART_CONTENT`,300) AS ART_CONTENT,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,
     DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESACTIVE,ART_IMAGE,ART_AUTEUR,p5_statut_post_STATUT_POST_ID,
-    COUNT(p5_comments.p5_POSTS_ART_ID) AS NBCOMMENT,p5_ouvrage.OUV_TITRE,USER_PSEUDO,STATUT_POST_LIBELLE,ART_PRECEDENT FROM p5_posts 
-    LEFT JOIN p5_comments ON p5_posts.ART_ID = p5_comments.p5_POSTS_ART_ID INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_ouvrage ON p5_posts.OUVRAGE_OUV_ID = p5_ouvrage.OUV_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE p5_posts.OUVRAGE_OUV_ID = ?  AND p5_posts.ART_PRECEDENT = ? group by p5_posts.ART_TITLE ORDER BY ART_CHAPTER DESC ');
+    COUNT(p5_comments.p5_posts_ART_ID) AS NBCOMMENT,p5_ouvrage.OUV_TITRE,USER_PSEUDO,STATUT_POST_LIBELLE,ART_PRECEDENT FROM p5_posts 
+    LEFT JOIN p5_comments ON p5_posts.ART_ID = p5_comments.p5_posts_ART_ID INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_ouvrage ON p5_posts.OUVRAGE_OUV_ID = p5_ouvrage.OUV_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE p5_posts.OUVRAGE_OUV_ID = ?  AND p5_posts.ART_PRECEDENT = ? group by p5_posts.ART_TITLE ORDER BY ART_CHAPTER DESC ');
           
         $req->execute(array($ouvId,0));
         return $req;
@@ -175,7 +178,7 @@ class PostManager extends Manager {
         }
         closedir($repertoire);
         $req = $db->prepare('DELETE FROM p5_posts WHERE ART_ID = ?');
-        $req2 = $db->prepare('DELETE FROM p5_comments WHERE p5_POSTS_ART_ID = ?');
+        $req2 = $db->prepare('DELETE FROM p5_comments WHERE p5_posts_ART_ID = ?');
         $req->execute(array($id));
         $req2->execute(array($id));
 
@@ -259,18 +262,18 @@ public function enablePostsBook($ouvid) {
     //OBTENTION DE LA LISTE DES SUITES PROPOSEES DONT LE CHAPITRE ACTUEL EST LE PRECEDENT
       public function getSuivants($id) {
         $db = $this->dbConnect();
-//        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
-//p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_POSTS.ART_PRECEDENT = ? ');
-        $req = $db->prepare(' SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_POSTS.ART_PRECEDENT = ? group by ART_ID  ');
+//        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
+//p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_posts.ART_PRECEDENT = ? ');
+        $req = $db->prepare(' SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_posts.ART_PRECEDENT = ? group by ART_ID  ');
         $req->execute(array($id));
         return $req;
     }
     
     public function getSuivants2($id) {
         $db = $this->dbConnect();
-//        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_POSTS INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
-//p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_POSTS.ART_PRECEDENT = ? ');
-        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE,SUM(p5_vote_score.POSTS_SCORE_YES)AS JAIME,SUM(p5_vote_score.POSTS_SCORE_NO) AS JAIMEPAS FROM p5_POSTS INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN P5_votes ON p5_posts.ART_ID=p5_votes.p5_posts_ART_ID INNER JOIN p5_vote_score ON p5_vote_score.p5_votes_VOTE_ID = p5_votes.VOTE_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_POSTS.ART_PRECEDENT = ? group by ART_ID ');
+//        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
+//p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_posts.ART_PRECEDENT = ? ');
+        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE,SUM(p5_vote_score.POSTS_SCORE_YES)AS JAIME,SUM(p5_vote_score.POSTS_SCORE_NO) AS JAIMEPAS FROM p5_posts INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN P5_votes ON p5_posts.ART_ID=p5_votes.p5_posts_ART_ID INNER JOIN p5_vote_score ON p5_vote_score.p5_votes_VOTE_ID = p5_votes.VOTE_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_posts.ART_PRECEDENT = ? group by ART_ID ');
         $req->execute(array($id));
         return $req;
     }
@@ -278,7 +281,7 @@ public function enablePostsBook($ouvid) {
     //OBTENTION DE LA LISTE DES SUITES PROPOSEES DONT LE CHAPITRE ACTUEL EST LE PRECEDENT
      public function getPrecedent($id) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT p5_POSTS.ART_PRECEDENT FROM p5_POSTS WHERE p5_POSTS.ART_ID = ? ');
+        $req = $db->prepare('SELECT p5_posts.ART_PRECEDENT FROM p5_posts WHERE p5_posts.ART_ID = ? ');
         $req->execute(array($id));
         $precedent = $req->fetch();
         return $precedent;
@@ -287,7 +290,7 @@ public function enablePostsBook($ouvid) {
     // OBTENION DE LA LISTE DES CHAPITRES SUIVANTS AU CHAPITRE EN REFERENCE 
 // public function getSuivants($id) {
 //     $db = $this->dbConnect();
-//     $req = $db->prepare('SELECT p5_POSTS_ART_ID_SUIVANT FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID = ? AND ART_DESACTIVE = ?');
+//     $req = $db->prepare('SELECT p5_posts_ART_ID_SUIVANT FROM p5_ARBRE_POSTS WHERE p5_posts_ART_ID = ? AND ART_DESACTIVE = ?');
 //     $req->execute(array($id,0));
 //     $suivant = $req->fetch();
 //     return $suivant;      
@@ -296,7 +299,7 @@ public function enablePostsBook($ouvid) {
 //    // OBTENTION DU CHAPITRE PRECEDENT de CHAPITRE ACTUEL 
 //     public function getPrecedent($id) {
 //     $db = $this->dbConnect();
-//      $req = $db->prepare('SELECT p5_POSTS_ART_ID FROM p5_ARBRE_POSTS WHERE p5_POSTS_ART_ID_SUIVANT = ? AND ART_DESACTIVE = ?');
+//      $req = $db->prepare('SELECT p5_posts_ART_ID FROM p5_ARBRE_POSTS WHERE p5_posts_ART_ID_SUIVANT = ? AND ART_DESACTIVE = ?');
 //     $req->execute(array($id,0));
 //     $precedent = $req->fetch();
 //     return $precedent;          

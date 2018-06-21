@@ -4,9 +4,14 @@
 //           CLAUDEY Lionel Avril 2018           
 //╚═════════════════════════════╝
 //GESTION DES OUVRAGES  
-namespace OpenClassrooms\DWJP5\backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//namespace OpenClassrooms\DWJP5\Backend\Model;
+//require_once("model/commun/Manager.php");
+//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+
+namespace Backend;
+
+//require_once("Model/Commun/Manager.php");
+//use Commun;
 
 class AccesBookManager extends Manager {
 

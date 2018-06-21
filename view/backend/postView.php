@@ -279,40 +279,41 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 ?>
 <h2>Commentaire(s)</h2>
 <?php
+//Fonction affichage recursif dans la vue . Ordonne les dépendances des commentaires 
+//dans les tableaux $comments et $commensChild founis par le controleur
+function rechercheEnfant($tableau,$id,$statut){
+    echo'<ul>';
+    //global $data;
+    
+    foreach($tableau as $cle => $element){
+       
+     if($tableau[$cle]['COMM_PARENT']== $id){
+       echo '<i class="fa fa-arrow-down fa-2x"></i><li class = "listComm"> ';
+       echo 'le stat : '.$statut;
+      require('view/backend/commentViewChild.php'); 
+     echo'</li><ul>';
+         rechercheEnfant($tableau,$tableau[$cle]['COMM_ID'],$statut);
+         echo'</ul>'; 
+     }else{
+  
+    } } 
+    echo'</ul>'; 
+}
+///////////Fin fonction Affichage
 $commentParent = $comments->fetchAll();
 $commentChild =$commentsChild -> fetchAll();
-
-//echo'<ul>';
 foreach($commentParent as $cle => $element)//parcours de chaque element du tab parent
-
     {
-   // echo 'test pour '.$cle.': '.$commentParent[$cle]['COMM_CONTENU'].'<br/>';
-   // echo'<li>';
-   
     require('view/backend/commentView.php');
-  //  echo'</li>';
-    $position =rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut);
-   // echo '';
-  
-//foreach($commentParent[$cle] as $cle2 => $element2)//affichage de chaque comm parent
-//{
-//  // 
-//    
-//    echo 'tab:'.$cle.'->'.$cle2.':'.$element2 . '<br />'; // affichera $prenoms[0], $prenoms[1] etc.
-//}
- //echo'</ul>'; 
+   //$controler= new BackendControler();
+   //$position= $controler->rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut);
+   rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut); 
  echo '</div>';//fermeture container commentView.php
 }
 
-//    if ($comment['COMM_PARENT']==0){
-//       require('view/backend/commentNiveauZeroView.php');
-//    }
     ?>
-    
 
-        <?php
-    //}
-    ?>
     <?php $content = ob_get_clean(); ?>
 
     <?php require('view/backend/template.php'); ?>
+

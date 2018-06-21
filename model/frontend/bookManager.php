@@ -4,17 +4,17 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES OUVRAGES  LISTES
-namespace OpenClassrooms\DWJP5\frontend\Model;
+namespace Frontend;
 
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//require_once("Model/Commun/Manager.php");
+//use Model\Commun;
 class bookManager extends Manager {
 
     //renvoi ouvrage enable = 1
     public function getBooks() {
 
         $db = $this->dbConnect();
-        $req = $db->query('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_AUTEUR,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE FROM ouvrage WHERE OUV_ENABLE=1');
+        $req = $db->query('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_IMAGE, OUV_ENABLE FROM p5_ouvrage WHERE OUV_ENABLE=1');
 
         return $req;
     }
@@ -23,11 +23,13 @@ class bookManager extends Manager {
 
     public function getBook($bookId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_AUTEUR,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE FROM p5_posts WHERE OUV_ID = ?');
+        $req = $db->prepare('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE FROM p5_ouvrage WHERE OUV_ID = ?');
         $req->execute(array($bookId));
-        $post = $req->fetch();
+        $book = $req->fetchAll();
 
-        return $post;
+        return $book;
     }
+    
+    
 
 }

@@ -22,8 +22,13 @@
                 
                 <?php
                }
-               ?>
-                <li><a href='indexadmin.php?action=message'title="Messagerie interne"><i class="fa fa-envelope   fa-3x "></i><span class="badge"><?= $_SESSION['nbMess'] ?></span></a></li>
+               if(isset($_SESSION['userId'])){
+                   
+               
+               
+               echo' <li><a href="indexadmin.php?action=message"title="Messagerie interne"><i class="fa fa-envelope   fa-3x "></i><span class="badge">'.$_SESSION['nbMess'].'</span></a></li>';
+            }   
+            ?>
                 <li><a href='indexadmin.php?action=changePsswd'title="Changement Password"><i class="fa fa-user   fa-3x "></i><span class="badge"><?php if(isset($_SESSION['user'])){ echo $_SESSION['user'];} ?></span></a></li>
     <?php 
         if(isset($_GET['ouv_id'])){

@@ -4,9 +4,9 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DE L'UTILISATEUR   CHANGER PSSQWD -CONNEXION -hash
-namespace OpenClassrooms\DWJP5\Backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+namespace Frontend;
+//require_once("model/commun/Manager.php");
+//use OpenClassrooms\DWJP5\Commun\Model\Manager;
 
 class usersManager extends Manager {
     

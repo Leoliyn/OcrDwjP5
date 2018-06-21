@@ -13,6 +13,7 @@
 </div>
 <?php require ('view/backend/dashBoardUsersView.php'); ?>
 <?php require ('view/backend/dashBoardBooksView.php'); ?>
+
 <?php require ('view/backend/dashBoardVotesView.php'); ?>
 <?php require ('view/backend/dashBoardVisitesView.php'); ?>
 

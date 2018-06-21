@@ -4,10 +4,13 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DE L'UTILISATEUR   CHANGER PSSQWD -CONNEXION -hash
-namespace OpenClassrooms\DWJP5\backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//namespace OpenClassrooms\DWJP5\Backend\Model;
+//require_once("model/commun/Manager.php");
+//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+namespace Backend;
 
+//require_once("Model/Commun/Manager.php");
+//use Commun;
 class UsersManager extends Manager {
     
     // Vérification que le mail existe dans la table users

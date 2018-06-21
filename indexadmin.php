@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 //║           PROJET 4 DWJ OPENCLASSROOMS         ║
 //║         CLAUDEY Lionel février 2018           ║
 //╚═════════════════════════════╝
-require_once('controler/backend/backend.php'); 
+require_once'controler/backend/backend.php'; 
 //require_once('controler/backend/backendBook.php'); 
 
 try {
@@ -230,7 +230,7 @@ try {
              $droits= unserialize($_SESSION['Rights']);
                 if(($droits[$_POST['ouv_id']]=='ADMINISTRATEUR')||(($droits[$_POST['ouv_id']]=='REDACTEUR'))){
                        $post= new BackendControler();
-            $maj = $post->majPost($_GET['ouv_id']);
+            $maj = $post->majPost($_POST['ouv_id']);
            
             }else{
                     throw new Exception("Vous n'avez pas les droits d'accès pour modifier un chapitre");
@@ -251,7 +251,7 @@ try {
                 }   
             
             }
-            elseif(isset($_GET['action'])AND ($_GET['action']=='majBook'))
+            elseif(isset($_GET['action'])AND ($_GET['action']=='majBook')AND (isset($_POST['ouv_id']) ))
             {
              $book= new BackendControler();
                     $maj = $book-> majBook();
@@ -459,7 +459,10 @@ try {
                    $controler= new BackendControler(); 
             $user = $controler->userGet();
                
-                        
+        
+              
+              
+              
             }  elseif ((isset($_GET['action']))AND ( isset($_GET['ouv_id']))AND ( $_GET['action'] == 'listPosts')AND ( isset($_SESSION['Rights']))) 
             {
             $droits = unserialize($_SESSION['Rights']);

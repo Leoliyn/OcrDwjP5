@@ -4,7 +4,7 @@
 
 <div class='resume'>
     <?php 
-    
+    echo __NAMESPACE__;
     if($_SESSION['superAdmin']==1){
         
       echo '<a href="indexadmin.php?action=newBook" title="Ajouter un ouvrage"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un ouvrage..</a>
@@ -13,7 +13,7 @@
 ?>   
 </div>
 <?php
-// tableau construcyion des droits utilisateurs
+// tableau construction des droits utilisateurs
 $droits=array();
 
 while ($data = $books->fetch()) {
@@ -100,6 +100,7 @@ while ($data = $books->fetch()) {
     
              echo' <a href="indexadmin.php?action=listPosts&amp;ouv_id='.$data['OUV_ID'].'" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>';
           
+             
              ?>
         </div> 
        

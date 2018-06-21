@@ -4,15 +4,20 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES COMMENTAIRES  LISTE - AJOUTER- MODIFIER- SUPPRIMER -SUPPRIMER -ACTIVER- DESACTIVER -SIGNALER -'DESIGNALER'
-namespace OpenClassrooms\DWJP5\Backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//namespace OpenClassrooms\DWJP5\Backend\Model;
+//require_once("model/commun/Manager.php");
+//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+
+namespace Backend;
+
+//require_once("Model/Commun/Manager.php");
+//use Commun;
 
 class CommentManager extends Manager {
 
     public function getComments($postId) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? ORDER BY COMM_DATE DESC');
+        $comments = $db->prepare('SELECT COMM_ID,p5_posts_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_posts_ART_ID = ? ORDER BY COMM_DATE DESC');
         $comments->execute(array($postId));
 
         return $comments;
@@ -21,28 +26,28 @@ class CommentManager extends Manager {
     ///////////////FONCTIONS AFFICHAGE  COMMENTAIRE ET ENFANTS
     public function getCommentsPremierNiveau($postId) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? AND p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
+        $comments = $db->prepare('SELECT COMM_ID,p5_posts_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_posts_ART_ID = ? AND p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
         $comments->execute(array($postId,0));
 
         return $comments;
     }
      public function getCommentsChild($postId) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? AND p5_comments.COMM_PARENT <> ? ORDER BY COMM_DATE DESC');
+        $comments = $db->prepare('SELECT COMM_ID,p5_posts_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_posts_ART_ID = ? AND p5_comments.COMM_PARENT <> ? ORDER BY COMM_DATE DESC');
         $comments->execute(array($postId,0));
 
         return $comments;
     }
      public function getCommentsNiveau($postId,$niveau) {
         $db = $this->dbConnect();
-        $comments = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_POSTS_ART_ID = ? AND p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
+        $comments = $db->prepare('SELECT COMM_ID,p5_posts_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_posts_ART_ID = ? AND p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
         $comments->execute(array($postId,$niveau));
         
         return $comments;
     }
     public function getCommentChild($commIdParent){
      $db = $this->dbConnect();
-        $commentChild = $db->prepare('SELECT COMM_ID,p5_POSTS_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
+        $commentChild = $db->prepare('SELECT COMM_ID,p5_posts_ART_ID,p5_USERS_USER_ID,COMM_TITRE,COMM_CONTENU,SIGNALE,DISABLE, DATE_FORMAT(COMM_DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS COMM_date_fr,p5_users.USER_PSEUDO,COMM_PARENT FROM p5_comments INNER JOIN p5_users ON p5_comments.p5_USERS_USER_ID = p5_users.USER_ID WHERE p5_comments.COMM_PARENT= ? ORDER BY COMM_DATE DESC');
          $commentChild->execute(array($commIdParent));
         return  $commentChild;   
     }

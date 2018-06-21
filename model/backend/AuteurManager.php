@@ -4,9 +4,14 @@
 //           CLAUDEY Lionel Avril 2018           
 //╚═════════════════════════════╝
 //GESTION DES CHAPITRES  LISTE - AJOUTER- MODIFIER- SUPPRIMER -SUPPRIMER -ACTIVER- DESACTIVER
-namespace OpenClassrooms\DWJP5\Backend\Model;
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//namespace OpenClassrooms\DWJP5\Backend\Model;
+//require_once("model/commun/Manager.php");
+//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+
+namespace Backend;
+
+//require_once("Model/Commun/Manager.php");
+//use Commun;
 
 class AuteurManager extends Manager {
 
@@ -14,7 +19,7 @@ class AuteurManager extends Manager {
     // OBTENTION DE LA LISTRE DES AUTEURS D'UN ARTICLE
     public function getAuteursPost($artId){
      $db = $this->dbConnect();
-     $req = $db->prepare('SELECT * FROM p5_USERS INNER JOIN p5_AUTEUR ON p5_POSTS_ART_ID = ? ');
+     $req = $db->prepare('SELECT * FROM p5_USERS INNER JOIN p5_AUTEUR ON p5_posts_ART_ID = ? ');
      $req->execute(array($artId));
      $listeIdAuteur = $req->fetch();
      return $listeIdAuteur; 
@@ -23,7 +28,7 @@ class AuteurManager extends Manager {
     // OBTENTION DE LA LISTE DES POSTS D'UN AUTEUR
     public function getPostsAuteur($userId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT * FROM p5_POSTS INNER JOIN p5_AUTEUR ON p5_USERS_USER_ID = ? ');
+        $req = $db->prepare('SELECT * FROM p5_posts INNER JOIN p5_AUTEUR ON p5_USERS_USER_ID = ? ');
         $req->execute(array($userId));
         $listeIdAuteur = $req->fetch();
         $req->closeCursor();
@@ -33,7 +38,7 @@ class AuteurManager extends Manager {
     // AJOUT D 1 ENTREGISTREMENT DANS LA TABLE p5_AUTEUR
     public function addIdAuteurIdArticle($userId, $artId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT into p5_auteur (p5_USERS_USER_ID,p5_POSTS_ART_ID) VALUES(?,?)');
+        $req = $db->prepare('INSERT into p5_auteur (p5_USERS_USER_ID,p5_posts_ART_ID) VALUES(?,?)');
         $req->execute(array($userId, $artId));
         return $req;
         $req->closeCursor();
@@ -42,7 +47,7 @@ class AuteurManager extends Manager {
     // SUPPRESSION D 1 ENREGISTREMENT DE LA TABLE p5_AUTEUR
     public function delIdAuteurIdArticle($userId, $artId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('DELETE FROM p5_auteur WHERE p5_USERS_USER_ID = ? AND p5_POSTS_ART_ID =?');
+        $req = $db->prepare('DELETE FROM p5_auteur WHERE p5_USERS_USER_ID = ? AND p5_posts_ART_ID =?');
         $req->execute(array($userId, $artId));
         return $req;
         $req->closeCursor();

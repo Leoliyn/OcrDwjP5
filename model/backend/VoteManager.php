@@ -4,10 +4,10 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES MESSAGES
-namespace OpenClassrooms\DWJP5\Backend\Model;
+namespace Backend;
 
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//require_once("Model/Commun/Manager.php");
+//use Commun;
 class VoteManager extends Manager {
     
   // idem quelVote

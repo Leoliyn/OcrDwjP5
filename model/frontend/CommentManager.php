@@ -4,10 +4,10 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES COMMENTAIRES  LISTE - AJOUTER- SIGNALEMENT - DESIGNALEMENT
-namespace OpenClassrooms\DWJP5\frontend\Model;
+namespace Frontend;
 
-require_once("model/commun/Manager.php");
-use OpenClassrooms\DWJP5\Commun\Model\Manager;
+//require_once("model/commun/Manager.php");
+//use Model\Commun;
 class CommentManager extends Manager {
 
     public function getComments($postId) {

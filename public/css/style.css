@@ -26,6 +26,11 @@ tr,td ,table {
 
     width:auto;
 }
+.imgOuvrage {
+
+    width:80%;
+}
+
 .miniature {
     height:auto;
     width:40%;
@@ -83,8 +88,8 @@ h7 {
     border-color: #f1f1f1;
 }
 .carousel-inner img {
-    -webkit-filter: grayscale(80%);
-    filter: grayscale(80%); /* make all photos black and white */ 
+    -webkit-filter: grayscale(0%);
+    filter: grayscale(0%); /* make all photos black and white */ 
     width: 100%; /* Set width to 100% */
     margin: auto;
 }

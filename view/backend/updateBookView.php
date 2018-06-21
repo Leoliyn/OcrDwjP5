@@ -23,6 +23,26 @@ $data = $book;
         <label> Préface</label><textarea style="width: 100%;" name="ouv_preface"><?= htmlspecialchars($data['OUV_PREFACE']) ?> </textarea>
         <label> Description</label><input style="width: 100%;" name="ouv_description" id="ouv_description" value="<?= htmlspecialchars($data['OUV_DESCRIPTION']) ?>" /><br />
         <label> Mots clés (séparés par une virgule)</label><input style="width: 100%;" name="ouv_keywords" id="ouv_keywords"  value="<?= htmlspecialchars($data['OUV_KEYWORDS']) ?>"/><br />   
+           <br />
+         <?php
+    $file="./uploads/".htmlspecialchars($data['OUV_IMAGE']);
+    if(is_file($file))
+  {
+    ?>
+        <img src='./uploads/<?= htmlspecialchars($data['OUV_IMAGE']) ?>' class="miniature" />
+        <br />
+        <label> Image du chapitre :<?= htmlspecialchars($data['OUV_IMAGE']) ?>
+            <?php
+  }
+            ?>
+            <br />
+            Pour changer ou charger une image cliquez sur Parcourir (1600x550 ou de ratio 2.909)</label> <input type="file" name="uploaded_file" /> 
+        <br />
+
+        
+        
+        
+        
         <input class="btn btn-primary" type="submit" name="send" value="Envoyer" />
         <input class="btn btn-primary" type="reset" name="reset" value="Reset" />
         <a href="indexadmin.php?action=book&amp;id=<?= $data['OUV_ID'] ?>"><input class="btn btn-primary" type="button" name="retour" value="Retour" /></a>

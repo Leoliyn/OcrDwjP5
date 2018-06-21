@@ -3,6 +3,9 @@ model/commun/Config.php
 Model/Backend/Config.php
 Model/Backend/Configdistant.php
 Model/Backend/Configlocal.php
+Model/Frontend/Config.php
+Model/Frontend/Configdistant.php
+Model/Frontend/Configlocal.php
 
 model/commun/Configdistant.php
 

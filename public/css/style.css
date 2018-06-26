@@ -28,7 +28,7 @@ tr,td ,table {
 }
 .imgOuvrage {
 
-    width:80%;
+    width:100%;
 }
 
 .miniature {
@@ -62,14 +62,14 @@ h6 {
     margin: 10px 0 30px 0;
     letter-spacing: 10px;      
     font-size: 20px;
-    color: #ccc;
-    background-color : rgba(0,0,0,0.40);  
+    color: #000;
+    background-color : rgba(0,0,0,0);  
 }
 
 h7 {
 
-    letter-spacing: 10px;      
-    font-size: 12px;
+    letter-spacing: 0px;      
+    font-size: 18px;
     color: #fff;
     background-color : rgba(0,0,0,0.40);  
 }
@@ -88,8 +88,8 @@ h7 {
     border-color: #f1f1f1;
 }
 .carousel-inner img {
-    -webkit-filter: grayscale(0%);
-    filter: grayscale(0%); /* make all photos black and white */ 
+    -webkit-filter: grayscale(90%);
+    filter: grayscale(90%); /* make all photos black and white */ 
     width: 100%; /* Set width to 100% */
     margin: auto;
 }
@@ -267,7 +267,14 @@ textarea {
     box-shadow: 10px 10px 50px #656565;
 
 }
-
+.resumeFrontend {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #c0c0c0;
+    border-radius: 10px;
+   color:#c0c0c0;
+   
+}
 
 .listComm {
         list-style: none;
@@ -295,8 +302,8 @@ textarea {
     border-radius: 10px;
 }
 .nbcomm {
-    border-radius: 50%;  
-    color:black;
+    border-radius: 10%;  
+    color:grey;
     font-weight:bold;
     background-color:white;
     height:20px;
@@ -304,7 +311,7 @@ textarea {
     text-align:center;
     vertical-align:top;
     position:relative;
-    top:9px;
+    top:0px;
 }
 .updown
 {
@@ -343,3 +350,40 @@ background-color:white !important  ;
 color : black;
 border : none;
 }
+
+#listChapitre li {
+   list-style-type: none;
+    
+    
+    
+}
+
+.icochap::before {
+     
+     font-family: FontAwesome;
+     content: "\f15c";
+     font-size: 1.5em;
+ }
+ 
+ .bulleComm {
+     
+     top:-18px;
+     
+ }
+
+.iconeSuite {
+     
+     top:-18px;
+     
+ }
+/* .numeroChapitre {
+     
+     width: 60px;
+     height: 60px;
+     border: 2px solid grey;
+     border-radius: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+
+ }*/

@@ -1,6 +1,6 @@
 <?php
-namespace Backend;//namespace OpenClassrooms\DWJP5\Commun\Model;
-//require_once("Model/Backend/Config.php");
+namespace Commun;
+require_once('Model/Commun/Config.php');
 
 class Manager extends Config {
            

@@ -5,6 +5,7 @@
          <img  class= 'couverture' src='public/images/couverture2.jpg' title='couverture ouvrage' />
 -->
 <?php
+
 $page='listPostsView.php';
 $dataBook = $book[0];
 
@@ -17,7 +18,7 @@ $bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']);
 //$title= $auteur." ".$bookTitre;
 $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
 $image ='public/images/couverture2.jpg';
-
+$titleOuv=$bookTitre;
 //$book->closeCursor();
 
 ?>   
@@ -50,20 +51,24 @@ $image ='public/images/couverture2.jpg';
             $titre = strtr($titre, " ", "_");
             ?>
 
-<!--            <li><a href="chapitre-<?= htmlspecialchars($data['ART_CHAPTER']) ?>-<?= $titre ?>-<?= htmlspecialchars($data['ART_ID']) ?>.html">chapitre<?= htmlspecialchars($data['ART_CHAPTER']) ?>-<?= htmlspecialchars($data['ART_TITLE']) ?></a>
-            </li>-->
     <?php
+    $contenuChapitre= htmlspecialchars($data['ART_CONTENT_RESUME']);
     $contentMenu .= "<li><a href='";
 
     $contentMenu .= "chapitre-";
     $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
-    $contentMenu .= "-" . $titre . "-";
+    $contentMenu .= "-".$titre ."-";
     $contentMenu .= htmlspecialchars($data['ART_ID']);
+    $contentMenu .= "-".$ouvId;
     $contentMenu .= ".html'>";
+   
+    $contentMenu .= "<span class='icochap  fa-1x'>            
+                        </span><span class='numeroChapitre'>N°: "; 
     $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
-    $contentMenu .= ":";
+    $contentMenu .= "</span><span>"; 
     $contentMenu .= htmlspecialchars($data['ART_TITLE']);
-    $contentMenu .= "</a></li>";
+    $contentMenu .= "</a></span> <div class='item resumeFrontend'>".$contenuChapitre."(...)</div></li>";
+   
 ////////////////////////////////////creation liste ol slider///////////////////////
     $listeCarousel .= '<li data-target="#myCarousel" data-slide-to="';
     $listeCarousel .= $iteration;

@@ -5,10 +5,9 @@
 //╚═════════════════════════════╝
 //GESTION DE L'UTILISATEUR   CHANGER PSSQWD -CONNEXION -hash
 namespace Frontend;
-//require_once("model/commun/Manager.php");
-//use OpenClassrooms\DWJP5\Commun\Model\Manager;
-
-class usersManager extends Manager {
+require_once('Model/Commun/newManager.php');
+use Commun\Manager;
+class UsersManager extends Manager {
     
     // Vérification que le mail existe dans la table users
     public function emailExist($mail) {
@@ -64,16 +63,32 @@ class usersManager extends Manager {
       
 
 }
-
-/////////////////////////////////
- // methode de création d un utilisateur 
-    public function createUser($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut) {
+// methode de création d un utilisateur 
+public function addUser($userName, $userLastname, $userPseudo, $userMail,$userPasswd,  $userStatut) {
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT INTO users (USER_NAME,USER_LASTNAME,USER_PSEUDO,USER_MAIL,USER_PSSWD,USER_STATUT)VALUES
-(:userName,:userLastname,:userPseudo,:userMail,:userPsswd,:userstatut');
-        $req->execute(array($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut));
-        return $req;
+        $psswd = $this->passwordUser($userPasswd);
+        $req = $db->prepare('INSERT INTO p5_users (USER_NAME,USER_LASTNAME,USER_PSEUDO,USER_MAIL,USER_PASSWD,ROOT)VALUES(?,?,?,?,?,?)');
+        $req->execute(array($userName, $userLastname, $userPseudo, $userMail,$psswd, $userStatut));
+        $req->closeCursor ();
     }
+    
+    
+    public function listSuperadmin() {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM p5_users WHERE p5_users.ROOT = ? ');
+        $req->execute(array(1));
+        return $req;
+        $req->closeCursor();
+    }
+/////////////////////////////////
+ 
+//    public function createUser($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut) {
+//        $db = $this->dbConnect();
+//        $req = $db->prepare('INSERT INTO users (USER_NAME,USER_LASTNAME,USER_PSEUDO,USER_MAIL,USER_PSSWD,USER_STATUT)VALUES
+//(:userName,:userLastname,:userPseudo,:userMail,:userPsswd,:userstatut');
+//        $req->execute(array($userName, $userLastname, $userPseudo, $userMail, $userPsswd, $userstatut));
+//        return $req;
+//    }
 
     public function getUser($id) {
         $db = $this->dbConnect();

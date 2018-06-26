@@ -4,12 +4,10 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES CHAPITRES  LISTE - AJOUTER- MODIFIER- SUPPRIMER -SUPPRIMER -ACTIVER- DESACTIVER
-namespace Backend;//namespace OpenClassrooms\DWJP5\Backend\Model;
-//require_once("Model/Commun/Manager.php");
-//use Commun;//use OpenClassrooms\DWJP5\Commun\Model\Manager;
-//namespace OpenClassrooms\DWJP5\Backend\Model;
-//require_once("model/commun/Manager.php");
-//use OpenClassrooms\DWJP5\Commun\Model\Manager;
+namespace Backend;
+use Commun\Manager;
+require_once('Model/Commun/newManager.php');
+
 
 class PostManager extends Manager {
 
@@ -22,6 +20,8 @@ class PostManager extends Manager {
 
         return $chapter;
     }
+  
+    
 
     //recuperation des posts enable d'un ouvrage $ouvId
     public function getPosts($ouvId) {

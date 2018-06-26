@@ -4,11 +4,9 @@
 //           CLAUDEY Lionel Avril 2018           
 //╚═════════════════════════════╝
 //GESTION DES OUVRAGES  
-namespace Backend;//namespace OpenClassrooms\DWJP5\Backend\Model;
-//use Commun;//use OpenClassrooms\DWJP5\Commun\Model\Manager;
-
-
-//require_once("Model/Commun/Manager.php");
+namespace Backend;
+use Commun\Manager;
+require_once('Model/Commun/newManager.php');
 
 
 class BookManager extends Manager {

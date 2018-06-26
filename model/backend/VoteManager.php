@@ -5,9 +5,8 @@
 //╚═════════════════════════════╝
 //GESTION DES MESSAGES
 namespace Backend;
-
-//require_once("Model/Commun/Manager.php");
-//use Commun;
+use Commun\Manager;
+require_once('Model/Commun/newManager.php');
 class VoteManager extends Manager {
     
   // idem quelVote

@@ -3,6 +3,12 @@
 
 
 <?php
+//echo $_SESSION['id'];
+$date=new DateTime();
+echo $date->format('Y-m-d H-i-s');
+$date->modify('+5 minute');
+echo'<br />'.$date->format('Y-m-d H-i-s');
+$title ="??????????????????????????????????";
 $page= 'listBookView.php';
 $contentMenu = "";
 $listeCarousel = '<div id="myCarousel" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">';
@@ -12,18 +18,27 @@ $iteration=0;
 while ($dataBook = $books->fetch())
 {
 //$auteur = 'Jean FORTEROCHE';
+    $ouvId=htmlspecialchars($dataBook['OUV_ID']);
 $description =htmlspecialchars($dataBook['OUV_DESCRIPTION']);
 $bookPreface =htmlspecialchars($dataBook['OUV_PREFACE']);
 $bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
+
+setlocale(LC_CTYPE, 'fr_FR.UTF-8');
+            $titre = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $bookTitre);
+            $titre = strtr($titre, "'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ", "-aAAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy");
+            $titre = strtr($titre, " ", "_");
+
+
 $bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']); 
-$title= $bookTitre;
+
 $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
 //$image ='public/images/couverture2.jpg';
     $contentMenu .= "<li><a href='";
     $contentMenu .= "ouvrage-";
-    $contentMenu .= htmlspecialchars($bookTitre);
+    $contentMenu .= htmlspecialchars($titre);
+   $contentMenu .= "-";
+   $contentMenu .= htmlspecialchars($ouvId);
    
-    $contentMenu .= htmlspecialchars($bookTitre);
     $contentMenu .= ".html'>";
     $contentMenu .= htmlspecialchars($bookTitre);
     $contentMenu .= "</a></li>";
@@ -51,7 +66,7 @@ $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
     $carousel .= '<div class="carousel-caption">';
     $carousel .= '<a class="lienSlider" href="ouvrage-'. htmlspecialchars($bookTitre) . '-' . htmlspecialchars($dataBook['OUV_ID']) . '.html" >';
     $carousel .= '<h3>' . htmlspecialchars($bookTitre);
-    $carousel .= '<br />' . htmlspecialchars($dataBook['OUV_SOUSTITRE']) . '</h3></a>';
+    $carousel .= '</h3></a>';
     $carousel .= '</div></div>';
 
 
@@ -59,23 +74,26 @@ $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
     $iteration = $iteration + 1;
 
 
-?>   
-<div class='resume col-sm-5'>
+?>  
+<div class='resumeFrontend'>
+<div class='text-center'>
 <!--</div>-->
-<div class="  text-center ">
-    <h1>  <?= $bookTitre ?> </h1>
+<!--<div class="  text-center ">-->
+    <h6>  <?= $bookTitre ?> </h6>
 <img class="imgOuvrage" src="uploads/<?= htmlspecialchars($dataBook['OUV_IMAGE'])?>" alt="illustration Ouvrage" >
+<h6>PREFACE</h6>
 </div>
 
-<div class="  text-center ">
-    <h3>PREFACE</h3>
+<div class="  text-justify ">
+    
 
     <?= $bookPreface ?>
 
-</div>
 
-<a style="float:right" href="index.php?action=listPosts&amp;ouv_id=<?= $dataBook['OUV_ID']?>" title="Liste des chapitres"><i class="fa fa-arrow-right  fa-2x "></i></a>  
-</div>
+
+<a style="float:right" href="ouvrage-<?= htmlspecialchars($titre)?>-<?= htmlspecialchars($dataBook['OUV_ID']) ?>.html"><i class="fa fa-arrow-right  fa-2x "></i></a>  
+</div></div>
+
 <?php
 
 }

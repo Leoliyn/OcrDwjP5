@@ -1,49 +1,101 @@
-<?php $title = 'Jean FORTEROCHE Billet simple pour l\'ALASKA '; ?>
+
 <?php ob_start(); ?>
+
 <?php
-while ($dataBook = $books->fetch())
-{
-$auteur = htmlspecialchars($dataBook['OUV_AUTEUR']);
+
+echo $_SESSION['id'];
+//____________________________________________________________________________________________________   
+    //Fonction affichage recursif dans la vue . Ordonne les dépendances des commentaires 
+//dans les tableaux $comments et $commensChild founis par le controleur
+function rechercheEnfant($tableau,$id,$statut){
+    echo'<ul>';
+    global $data,$ouvId;
+   
+    foreach($tableau as $cle => $element){
+       
+     if($tableau[$cle]['COMM_PARENT']== $id){
+       echo '<i class="fa fa-arrow-down fa-2x"></i><li class = "listComm"> ';
+       
+     require('view/frontend/commentViewChild.php'); 
+     
+    echo'</li><ul>';
+         rechercheEnfant($tableau,$tableau[$cle]['COMM_ID'],$statut);
+         echo'</ul>'; 
+     }else{
+  
+    } } 
+    echo'</ul>'; 
+}
+///////////Fin fonction Affichage
+//_______________________________________________________________________________
+
+
+$page='postView.php';
+$dataBook = $book[0];
+
+//$auteur = htmlspecialchars($dataBook['OUV_AUTEUR']);
 $description =htmlspecialchars($dataBook['OUV_DESCRIPTION']);
 $bookPreface =htmlspecialchars($dataBook['OUV_PREFACE']);
 $bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
-$bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']); 
-$title= $auteur." ".$bookTitre;
+$bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']);
+$ouvId =htmlspecialchars($dataBook['OUV_ID']);
+//$title= $auteur." ".$bookTitre;
+$contentMenu = "";
+$titleOuv=$bookTitre;
+ 
+// Statut de l'utilisateur 
+$statut= null;
+if(isset($_SESSION['Rights'])){
+    $droits = unserialize($_SESSION['Rights']);
+
+
+    if (isset($droits[$ouvId])) {
+        $statut = $droits[$ouvId];
 
 }
-$books->closeCursor();
-// EN RAISON DUN PB DE NB CONNEXION ONLINE
-//$auteur = "Jean FORTEROCHE";
-//$description = "En modifiant lgrement ses documents.David avait d sasseoir lorsquil avait entendu le prnom Florence. ";
-//$bookPreface = "<p>Un long silence se fit dans la voiture. Le chauffeur regardait droit devant. David jeta un &oelig;il sur le compteur qui affichait 210km/h. L&rsquo;autoroute &eacute;tait d&eacute;serte. Depuis la construction de la Ligne Grande Vitesse, les gens pr&eacute;f&eacute;raient prendre les transports en communs, plus rapides et moins chers. La LGV traversait la France d'un bout &agrave; l'autre avec un arr&ecirc;t &agrave; Paris. C&rsquo;est lui aussi qui &eacute;tait &agrave; la base du dernier processeur, le sph&eacute;ro. Un processeur ayant une architecture en forme de sph&egrave;re et capable de traiter les informations &agrave; une vitesse jamais atteinte. Tous les ordinateurs en &eacute;taient &eacute;quip&eacute;s. Le cr&eacute;ateur officiel, le Dr.</p>";
-//$bookTitre = "Billet simple pour l'ALASKA";
-//$bookSoustitre = "Inuits inouïs";
-////$title= $auteur." ".$bookTitre;
-//$keywords = "écrivain, livre, Alaska, chiens, Jefferson, Galimède,Joe CASH";
-//$image = 'public/images/couverture2.jpg';
 
-while ($data = $posts->fetch()) {
+    }
 
-    setlocale(LC_CTYPE, 'fr_FR.UTF-8');
-    $titre0 = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', htmlspecialchars($data['ART_TITLE']));
-    $titre = strtr($titre0, " '@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ", "--aAAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy");
-    ?>
-    <li><a href="chapitre-<?= htmlspecialchars($data['ART_CHAPTER']) ?>-<?= htmlspecialchars($titre) ?>-<?= htmlspecialchars($data['ART_ID']) ?>.html">chapitre<?= htmlspecialchars($data['ART_CHAPTER']) ?>-<?= htmlspecialchars($data['ART_TITLE']) ?> </a>
-    </li>
+
+ 
+   while ($data = $posts->fetch()) {
+
+            setlocale(LC_CTYPE, 'fr_FR.UTF-8');
+            $titre = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $data['ART_TITLE']);
+            $titre = strtr($titre, "'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ", "-aAAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy");
+            $titre = strtr($titre, " ", "_");
+            ?>
+
+    <?php
+    
+    $contentMenu .= "<li><a href='";
+
+    $contentMenu .= "chapitre-";
+    $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
+    $contentMenu .= "-".$titre ."-";
+    $contentMenu .= htmlspecialchars($data['ART_ID']);
+    $contentMenu .= "-".$ouvId;
+    $contentMenu .= ".html'>";
    
-    <?php 
-$tabPagination[]=$data['ART_CHAPTER'];
+    $contentMenu .= "<span class='icochap  fa-1x'>            
+                        </span><span class='numeroChapitre'>N°: "; 
+    $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
+    $contentMenu .= "</span><span>"; 
+    $contentMenu .= htmlspecialchars($data['ART_TITLE']);
+    $contentMenu .= "</a></span> </li>";
+   
+//$tabPagination[]=$dataList['ART_CHAPTER'];
 }
 
 $posts->closeCursor();
+
 ?>
 
 
+<?php //$content = ob_get_clean(); ?>
 
-<?php $contentMenu = ob_get_clean(); ?>
 
-
-<?php ob_start(); ?>
+<?php //ob_start(); ?>
 
 
 <?php
@@ -67,36 +119,45 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
 
   
 </div>
-    
-<div class='text-center'>
+
+ <?php 
+ if(isset($_SESSION['user'])){
+ ?>
+
+     
     <h2>Votre commentaire</h2>
 
-    <form action="commentaire<?= htmlspecialchars($data['ART_ID']) ?>" method="post">
-        <div>
-            <input type="hidden" id="postId" name="postId" value="<?= htmlspecialchars($data['ART_ID']) ?>" />
-            <label for="author">Auteur</label><br />
-            <input type="text" id="author" name="author" />
-        </div>
-        <div>
-            <label for="comment">Commentaire</label><br />
-            <textarea id="comment" name="comment"></textarea>
-        </div>
-        <div>
-            <input class="btn btn-primary" type="submit" name="envoyerComm" value="Envoyer" />
-        </div>
-    </form>
-    <div class='text-center'>
-        <a class="updown up-arrow " href="#article" data-toggle="tooltip" title="section précédente">
-            <span class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-        
-          <a class="updown down-arrow " href="#band" data-toggle="tooltip" title="section suivante">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-        </a>
-    </div>
-</div> 
+<?php require 'view/frontend/formulaireComment.php'; ?>
+
 <?php
-while ($comment = $comments->fetch()) {
+ }else{
+     ?>
+
+    <h3>Inscrivez vous pour voter et laisser vos impressions </h3>
+ 
+  <?php require 'view/frontend/formulaireInscription.php'; ?>   
+
+
+  <?php   
+     
+ }
+ 
+
+
+$commentParent = $comments->fetchAll();
+$commentChild =$commentsChild -> fetchAll();
+foreach($commentParent as $cle => $element)//parcours de chaque element du tab parent
+    {
+   
+    require('view/frontend/commentView.php');
+   //$controler= new BackendControler();
+   //$position= $controler->rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut);
+   rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut); 
+ //echo '</div>';//fermeture container commentView.php
+}
+
+ 
+ while ($comment = $comments->fetch()) {
     ?>
     <div>
     <?php

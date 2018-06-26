@@ -145,18 +145,6 @@ if ($desactive) {
 </div>
 <h2> Suite(s)</h2>
 <?php
-///////////////////////////NOUVELLE FONCTION 
-// $jaime = 0;
-//$jaimepas=0;
-//foreach($tableauScores as $element)
-//{
-//   
-//    if($element['p5_votes_VOTE_ID']== $donneesVotes['VOTE_ID']){
-//        $jaime=$element['JAIME'];
-//        $jaimepas=$element['JAIMEPAS'];
-//    }
-//}
-
 
 while ($suite = $suites->fetch()) {
     
@@ -289,8 +277,7 @@ function rechercheEnfant($tableau,$id,$statut){
        
      if($tableau[$cle]['COMM_PARENT']== $id){
        echo '<i class="fa fa-arrow-down fa-2x"></i><li class = "listComm"> ';
-       echo 'le stat : '.$statut;
-      require('view/backend/commentViewChild.php'); 
+       require('view/backend/commentViewChild.php'); 
      echo'</li><ul>';
          rechercheEnfant($tableau,$tableau[$cle]['COMM_ID'],$statut);
          echo'</ul>'; 

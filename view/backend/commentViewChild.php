@@ -1,8 +1,7 @@
 <div class ='resume'>
        
         <p><strong><?= htmlspecialchars($tableau[$cle]['USER_PSEUDO']) ?></strong> le <?= htmlspecialchars($tableau[$cle]['COMM_date_fr']) ?></p>
-      
-            <p><?= nl2br(htmlspecialchars($tableau[$cle]['COMM_TITRE'])) ?></p>
+
             <p><?= nl2br(htmlspecialchars($tableau[$cle]['COMM_CONTENU'])) ?></p>
 
     
@@ -32,12 +31,10 @@
     if ($commentSignale) {
         echo '<i class="fa fa-thumbs-down  fa-2x red"> </i></a>';
     } else {
-        echo '<a href="102indexadmin.php?action=enableSignal&amp;commId=' . htmlspecialchars($tableau[$cle]['COMM_ID']) . '&amp;id=' . htmlspecialchars($tableau[$cle]['p5_posts_ART_ID']) . '&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) .'" title="Cliquez pour signaler le commentaire"><i class="fa fa-thumbs-o-up  fa-2x vert">ouiiiiiiiii</i></a>';
+        echo '<a href="102indexadmin.php?action=enableSignal&amp;commId=' . htmlspecialchars($tableau[$cle]['COMM_ID']) . '&amp;id=' . htmlspecialchars($tableau[$cle]['p5_posts_ART_ID']) . '&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) .'" title="Cliquez pour signaler le commentaire"><i class="fa fa-thumbs-o-up  fa-2x vert"></i></a>';
     }   
     }
-     if($statut){
-    echo '<button type="button" class="">Répondre</button>';
-    }
+ 
     ?>
     </div>
    

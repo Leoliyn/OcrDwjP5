@@ -5,9 +5,8 @@
 //╚═════════════════════════════╝
 //GESTION DES OUVRAGES  LISTES
 namespace Frontend;
-
-//require_once("Model/Commun/Manager.php");
-//use Model\Commun;
+require_once('Model/Commun/newManager.php');
+use Commun\Manager;
 class bookManager extends Manager {
 
     //renvoi ouvrage enable = 1
@@ -30,6 +29,12 @@ class bookManager extends Manager {
         return $book;
     }
     
-    
+   function getBooksRights($ouvId) { 
+        $db = $this->dbConnect();
+        $req = $db->prepare(' SELECT * FROM p5_ouvrage INNER JOIN p5_gere_ouvrage ON p5_ouvrage.OUV_ID=p5_gere_ouvrage.OUVRAGE_OUV_ID INNER JOIN p5_statut_liste ON p5_statut_liste.p5_STATUT_ID=p5_gere_ouvrage.p5_statut_liste_p5_STATUT_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_gere_ouvrage.p5_USERS_USER_ID WHERE p5_ouvrage.OUV_ID= ? ');
+        $req->execute(array($ouvId));
+        return $req;
+        $req->closeCursor();
+    }
 
 }

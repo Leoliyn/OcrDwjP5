@@ -7,8 +7,8 @@
                 <span class="icon-bar"></span>                        
             </button>
             <a class="navbar-brand" href="index.php">
-             Entreprise truc
-<!--                <i style ="font-size:12px"><?= $bookTitre ?></i>-->
+             
+               <i style ="font-size:12px"><?php if(isset($titleOuv)) echo $titleOuv; ?></i>
             </a>
 
         </div>
@@ -27,7 +27,7 @@
                 echo '<li><a href="#contact">CONTACT</a></li>';
 }
                 ?>  
-<?php if($page=='listPostsView.php'){?>
+<?php if(($page=='listPostsView.php')||($page=='postView.php')){?>
                 <li class="dropdown">
                     <a class="dropdown-toggle  animate slideInUp" data-toggle="dropdown" href="#">LES CHAPITRES
                         <span class="caret"></span></a>

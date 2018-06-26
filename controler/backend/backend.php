@@ -4,17 +4,16 @@
 //           CLAUDEY Lionel Avril 2018           
 //╚═════════════════════════════╝
 
-require'Model/Commun/SplClassLoader.php';
-$OCFramLoader = new SplClassLoader('Backend', '/Model');
-$OCFramLoader->register();
-//require_once('model/backend/PostManager.php');
-//require_once('model/backend/CommentManager.php');
-//require_once('model/backend/UsersManager.php');
-//require_once('model/backend/BookManager.php');
-//require_once('model/backend/MessageManager.php');
-//require_once('model/backend/VoteManager.php');
-$OCFramLoaderCommun = new SplClassLoader('Commun', '/Model');
-$OCFramLoaderCommun->register();
+//require'Model/Commun/SplClassLoader.php';
+//$OCFramLoader = new SplClassLoader('Backend', '/Model');
+//$OCFramLoader->register();
+require_once('Model/Backend/PostManager.php');
+require_once('Model/Backend/CommentManager.php');
+require_once('Model/Backend/UsersManager.php');
+require_once('Model/Backend/BookManager.php');
+require_once('Model/Backend/MessageManager.php');
+require_once('Model/Backend/VoteManager.php');
+
 
 class BackendControler {
     
@@ -385,7 +384,20 @@ public function messageSignalementCommentaire(){
     /// fin messagerie
 
 }
+//   ═════════════════════════════════════════════
+    //    MESS- Envoi message demande d'inscription
+    //   ═════════════════════════════════════════════
+    public function messageInscription() {
+        $userManager = new Backend\UsersManager();
+        $root = $userManager->listSuperadmin();
+        $objet = 'Demande inscription   ';
+        $contenu = 'demande inscription pour :  ' . $_POST['nom'].' '.$_POST['prenom'].' pseudo :'.$_POST['pseudo'].' email : '.$_POST['email'];
+        while ($rootBook = $root->fetch()) {
 
+            $this->messageSystem($rootBook['USER_ID'], $rootBook['USER_ID'], $objet, $contenu);
+            // envoyer mess aux Superadmin 
+        }
+    }
 
     //   ═════════════════════════════════════════════
     //    MESS- recuperation messages de la "boîte" BDD
@@ -411,11 +423,6 @@ public function listMessage($userId) {
     $messages = $messageManager->getMessages($userId);
     require('view/backend/messagesView.php');
 }
-
-
-//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════
-//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════
-//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════//══ METHODES LIEES AUX SUITES ═════
 //═════════════════════════════════════════════
 //                   METHODES LIEES AUX SUITES 
 //═════════════════════════════════════════════
@@ -1331,11 +1338,12 @@ public function cokpit() {
     $bookManager = new Backend\BookManager();
     $usersManager = new Backend\UsersManager();
     $voteManager= new Backend\VoteManager();
+    $postManager = new Backend\PostManager();
     $listUsers = $usersManager->getUsers(); // Liste utilisateurs
     $listBooks = $bookManager->getBooks(); //Liste des ouvrages 
     $lesScores = $voteManager -> lesScores();
     $tableauScores = $lesScores->fetchAll();
-    
+    $listPosts = $postManager ->
     $votesListe= $voteManager-> voteList(); 
     $votesListeClose= $voteManager-> voteListClose(); 
     require_once('view/backend/dashBoardView.php');

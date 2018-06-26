@@ -1,8 +1,7 @@
    <div class='resume'>
        
         <p><strong><?= htmlspecialchars($commentParent[$cle]['USER_PSEUDO']) ?></strong> le <?= htmlspecialchars($commentParent[$cle]['COMM_date_fr']) ?></p>
-        <div >  
-            <p><?= nl2br(htmlspecialchars($commentParent[$cle]['COMM_TITRE'])) ?></p>
+        <div >
             <p><?= nl2br(htmlspecialchars($commentParent[$cle]['COMM_CONTENU'])) ?></p>
 
         </div>
@@ -39,10 +38,7 @@
         
       
     }
-    if($statut){
-    echo '<button type="button" class="">Répondre</button>';
-    }
-    ?>
+ 
 
     
 

@@ -4,15 +4,10 @@
 //           CLAUDEY Lionel Février 2018           
 //╚═════════════════════════════╝
 //GESTION DES MESSAGES
-//namespace OpenClassrooms\DWJP5\Backend\Model;
-//
-//require_once("model/commun/Manager.php");
-//use OpenClassrooms\DWJP5\Commun\Model\Manager;
-namespace Backend;
-//
-//require_once("Model/Commun/Manager.php");
-//use Commun;
 
+namespace Backend;
+use Commun\Manager;
+require_once('Model/Commun/newManager.php');
 class MessageManager extends Manager {
     
 // RECUPERE LES MESSAGES DE USER EN TANT QUE DESTINATAIRE ET EXPEDITEUR AVEC SUPPRESSION à 0

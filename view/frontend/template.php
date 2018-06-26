@@ -10,11 +10,12 @@
         <?php require_once 'view/frontend/template/slider.php'; ?>
 
         <?php require_once 'view/frontend/template/sectionArticle.php'; ?>
-        <?php if($page=='listBooksView.php'){}else{ ?>
-      
-<?php }
-?>       
- <?php require_once 'view/frontend/template/sectionContact.php'; ?>
+        <?php
+        if ($page == 'listPostsView.php') {
+            require_once 'view/frontend/template/sectionChapitreListe.php';
+        }
+        ?>
+        <?php require_once 'view/frontend/template/sectionContact.php'; ?>
         <?php require_once 'view/frontend/template/sectionFooter.php'; ?>
     </body>
 

@@ -4,7 +4,7 @@
 
 <div class='resume'>
     <?php 
-    echo __NAMESPACE__;
+  
     if($_SESSION['superAdmin']==1){
         
       echo '<a href="indexadmin.php?action=newBook" title="Ajouter un ouvrage"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un ouvrage..</a>
@@ -71,39 +71,56 @@ while ($data = $books->fetch()) {
             <br />
             <br />
         </div>
-        <div class='icone-admin'>
+        <div class='icone-admin row'>
             <?php
              $enable = htmlspecialchars($data['OUV_ENABLE']);
+             echo' <div class ="col-sm-1">'
+    . '<a href="indexadmin.php?action=listPosts&amp;ouv_id='.$data['OUV_ID'].'" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>'
+                     . '</div>
+                         ';
+          
+             
             if($niveau===1){
                 ?>
+            <div class ="col-sm-1">
             <a href="indexadmin.php?action=updateBook&amp;ouv_id=<?= $data['OUV_ID'] ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
+            </div><div class ="col-sm-1">
             <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['OUV_ID']) ?>" title="Supprimez l'ouvrage"><i class="fa fa-remove  fa-2x"></i></a>
-            <?php
+            </div>
+            
+                <?php
             
             
           
            
             if (!$enable) {
-           echo '<a href="indexadmin.php?action=enableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour activer  l\'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>';
+           echo ' <div class ="col-sm-1">'
+                . '<a href="indexadmin.php?action=enableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour activer  l\'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>'
+                    .'</div>';
             } else {
-           echo '<a href="indexadmin.php?action=disableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour désactiver  l\'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>';
+           echo '<div class ="col-sm-1">'
+                . '<a href="indexadmin.php?action=disableBook&amp;ouv_id=' . htmlspecialchars($data['OUV_ID']) . '" title="Cliquez pour désactiver  l\'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>'
+                   . '</div>';
             }
          
               }else {
+                  
                    if (!$enable) {
-           echo '<i class="fa fa-eye-slash  fa-2x "></i>';
+           echo '<div class ="col-sm-1">'
+                       . '<i class="fa fa-eye-slash  fa-2x "></i>'
+                   . '</div>';
             } else {
-           echo '<i class="fa fa-eye  fa-2x "></i>';
+           echo '<div class ="col-sm-1">'
+                . '<i class="fa fa-eye  fa-2x "></i>'
+                   . '</div>';
             }
                   
               }  
-    
-             echo' <a href="indexadmin.php?action=listPosts&amp;ouv_id='.$data['OUV_ID'].'" title="Accès aux chapitres"><i class="fa fa-file-o   fa-2x"></i></a>';
-          
+              
+    echo '</div>';
              
              ?>
-        </div> 
-       
+      
     </div> 
         <?php 
         

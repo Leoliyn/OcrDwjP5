@@ -90,10 +90,10 @@ class BackendControler {
         $post = $postManager->disablePost($_GET['id']);
         if ($post) {
             $article = $postManager->getPost($_GET['id']);
-            $objet = 'Désactivation Chapitre ';
-            $contenu = 'La Chapitre ( ' . $article['ART_CHAPTER'] . ') <b> est désactivé </b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
-            $auteurId = $article['ART_AUTEUR'];
-            $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+//            $objet = 'Désactivation Chapitre ';
+//            $contenu = 'La Chapitre ( ' . $article['ART_CHAPTER'] . ') <b> est désactivé </b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
+//            $auteurId = $article['ART_AUTEUR'];
+//            $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
             $this->post();
         } else {
             throw new Exception('Chapitre inconnu 256');
@@ -172,7 +172,7 @@ class BackendControler {
 //2. strtolower met l'extension en minuscules.
             $extension_upload = strtolower(strrchr($_FILES['uploaded_file']['name'], '.'));
             $path = "uploads/";
-            $_FILES['uploaded_file']['name'] = 'ouvrage-'.$article['OUVRAGE_OUV_ID'].'chapitre-' . $article['ART_CHAPTER'] . $extension_upload;
+            $_FILES['uploaded_file']['name'] = 'ouvrage'.$article['OUVRAGE_OUV_ID'].'_chapitre' . $article['ART_CHAPTER'] . $extension_upload;
 
 // On récupère les dimensions de l'image
 
@@ -267,11 +267,11 @@ public function publierPost() {
     $postManager = new Backend\PostManager();
     $post = $postManager->enablePost($_GET['id']);
     if($post){
-    $article = $postManager->getPost($_GET['id']);
-   $objet = 'Publication  ';
-   $contenu = 'La Chapitre ( '.$article['ART_ID'].') <b> est publié en ligne </b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
-   $auteurId =$article['ART_AUTEUR'];
-   $this ->messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);   
+//    $article = $postManager->getPost($_GET['id']);
+//   $objet = 'Publication  ';
+//   $contenu = 'La Chapitre ( '.$article['ART_ID'].') <b> est publié en ligne </b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
+//   $auteurId =$article['ART_AUTEUR'];
+//   $this ->messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);   
     $this->post();
 }else{
  throw new Exception ('Chapitre inconnu ');   
@@ -293,7 +293,7 @@ public function publierPost() {
         if ($post) {
             $article = $postManager->getPost($_GET['id']);
             $objet = 'Changement de statut ';
-            $contenu = 'La Chapitre ( ' . $article['ART_CHAPTER'] . ' titre:)' . $article['ART_TITLE'] . '. <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
+            $contenu = 'Le Chapitre ( ' . $article['ART_CHAPTER'] . ' titre: ' . $article['ART_TITLE'] . '. <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
             $auteurId = $article['ART_AUTEUR'];
             if ($_SESSION['userId'] == $auteurId) {
                 $bookManager = new Backend\BookManager();
@@ -473,8 +473,12 @@ public function integrationSuite($suiteId,$auteur,$voteId){
    }else {
      throw new exception ('Echec de l\intégration ');
 }
-   $this ->cokpit();
-}
+ $objet = 'Integration de votre texte  ';
+        $contenu = "Bravo '.$auteur.' , votre texte est intégré à l\'ouvrage";
+        $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+        $this->cokpit();
+    }
+
 ////═════════════════════════════════════════════
  //       SUI-          Suppression  suite a la bdd   
 //═════════════════════════════════════════════
@@ -531,7 +535,7 @@ public function supprimeSuite() {
     $article = $postManager->getPost($_GET['id']);
     $root = $userManager -> listSuperadmin();
     $objet = 'Création d\'une suite ';
-    $contenu = 'Une suite est ajoutée à l\'ouvrage  <b> ' . $ouvId . '  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+    $contenu = 'Une suite est en cours de rédaction  pour l\'ouvrage  <b> ' . $ouvId . '  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
     $auteurId = $auteur;
     while ($adminBook = $book->fetch()) {
     
@@ -564,7 +568,6 @@ public function majSuite() {
     $statut_post = preg_replace($regex, '', $_POST['statut_post']);
     $postManager = new Backend\PostManager();
     $idStatutDuPost=$postManager->idStatut('REDACTION');
-    //$idStatutDuPost=$postManager->idStatut($statut_post);
     $suite = $postManager->updateSuite($_POST['art_content'], 1, $id, $ouvId,$precedent, $auteur, $idStatutDuPost['STATUT_POST_ID']);
     if($suite){
     $_GET['id'] = $precedent;
@@ -594,22 +597,22 @@ public function majSuite() {
 //        SUI -          Désactiver une suite 
 //═════════════════════════════════════════════
 //
-    public function desactiverSuite() {
-
-        $postManager = new Backend\PostManager();
-        $suite = $postManager->disablePost($_GET['id']);
-        if ($suite) {
-            $article = $postManager->getPost($_GET['id']);
-            $objet = 'Désactivation Suite  ';
-            $contenu = 'La suite n° ( ' . $article['ART_ID'] . ') <b> est désactivée </b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
-            $auteurId = $article['ART_AUTEUR'];
-            $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
-            $_GET['id'] = $_GET['precedent'];
-            $this->post();
-        } else {
-            throw new Exception('Chapitre inconnu 256');
-        }
-    }
+//    public function desactiverSuite() {
+//
+//        $postManager = new Backend\PostManager();
+//        $suite = $postManager->disablePost($_GET['id']);
+//        if ($suite) {
+//            $article = $postManager->getPost($_GET['id']);
+//            $objet = 'Désactivation Suite  ';
+//            $contenu = 'La suite n° ( ' . $article['ART_ID'] . ') <b> est désactivée </b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
+//            $auteurId = $article['ART_AUTEUR'];
+//            $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+//            $_GET['id'] = $_GET['precedent'];
+//            $this->post();
+//        } else {
+//            throw new Exception('Chapitre inconnu 256');
+//        }
+//    }
 
 //═════════════════════════════════════════════
 //  SUI -  Changer le statut de la suite (redaction, propose, refuse,
@@ -632,7 +635,9 @@ public function majSuite() {
             $contenu = 'La suite proposée ( ' . $article['ART_ID'] . ') <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
             $auteurId = $article['ART_AUTEUR'];
             $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
-            $this->desactiverSuite();
+           // $this->desactiverSuite();
+            $_GET['id']=$_GET['precedent'];
+           $this->post();
             // execution de post() dans desactiverPOst()
         } else {
             throw new Exception('Changement impossible');
@@ -989,33 +994,32 @@ function supprimeVote($vote_id,$art_id){
         $book = $bookManager->getBook($bookId);
         $image = $book['OUV_IMAGE']; /// récupération
 
-
-        if (!empty($_FILES['uploaded_file']['name'])) {
+        if (!empty($_FILES['uploaded_imageBook']['name'])) {
             $extensions_valides = array('.jpg');
 //1. strrchr renvoie l'extension avec le point (« . »).
 //2. strtolower met l'extension en minuscules.
-            $extension_upload = strtolower(strrchr($_FILES['uploaded_file']['name'], '.'));
+            $extension_upload = strtolower(strrchr($_FILES['uploaded_imageBook']['name'], '.'));
             $path = "uploads/";
-            $_FILES['uploaded_file']['name'] = 'ouvrage-' . $book['OUV_ID'] . $extension_upload;
+            $_FILES['uploaded_imageBook']['name'] = 'ouvrage' . $book['OUV_ID'] . $extension_upload;
 
 // On récupère les dimensions de l'image
 
-            $dimensions = getimagesize($_FILES['uploaded_file']['tmp_name']);
+            $dimensions = getimagesize($_FILES['uploaded_imageBook']['tmp_name']);
             $width_orig = $dimensions[0];
             $height_orig = $dimensions[1];
             //$ratio_orig = $width_orig / $height_orig;
 
 
-            $path = $path . basename($_FILES['uploaded_file']['name']);
+            $path = $path . basename($_FILES['uploaded_imageBook']['name']);
              if (in_array($extension_upload, $extensions_valides)) {
                 // Si le fichier existe on l'efface
                 if (is_file($path)) {
-                    unlink($path);
-                }
-                move_uploaded_file($_FILES['uploaded_file']['tmp_name'], $path);
-                $message = "Le fichier " . basename($_FILES['uploaded_file']['name']) .
+                    $eff=unlink($path);
+                                    }
+                move_uploaded_file($_FILES['uploaded_imageBook']['tmp_name'], $path);
+                $message = "Le fichier " . basename($_FILES['uploaded_imageBook']['name']) .
                         " à été uploadé";
-                $image = $_FILES['uploaded_file']['name'];
+                $image = $_FILES['uploaded_imageBook']['name'];
                 // On redimensionne le fichier puis on l'enregistre
                 // Définition de la largeur et de la hauteur maximale
                 $width = 1600;

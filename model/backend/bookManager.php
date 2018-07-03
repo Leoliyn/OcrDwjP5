@@ -114,8 +114,8 @@ class BookManager extends Manager {
         $req = $db->prepare('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_IMAGE,OUV_ENABLE FROM p5_ouvrage WHERE OUV_ID = ?');
         $req->execute(array($bookId));
         $book = $req->fetch();
+        return $book; 
         $req->closeCursor();
-        return $book;
     }
 
     public function getBookUser($bookId) {

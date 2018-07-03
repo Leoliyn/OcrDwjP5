@@ -53,7 +53,7 @@ while ($data = $books->fetch()) {
 
 ?>
         
-<h2><i class="fa fa-folder-open fa-1x"></i>:  <?= htmlspecialchars($data['OUV_TITRE']) ?></h2> 
+<h2><i class="fa fa-book fa-1x"></i>:  <?= htmlspecialchars($data['OUV_TITRE']) ?></h2> 
 
         <h3> <?= htmlspecialchars($data['OUV_SOUSTITRE']) ?> </h3>          
 

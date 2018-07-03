@@ -78,7 +78,7 @@ if($data['STATUT_POST_LIBELLE']=='REDACTION'){
         <h3>
        
             
-           <p><i class="fa fa-folder-open fa-1x"></i> <?= htmlspecialchars($data['OUV_TITRE']) ?></p>
+           <p><i class="fa fa-book fa-1x"></i> <?= htmlspecialchars($data['OUV_TITRE']) ?></p>
             <p><i class="fa fa-file-o   fa-1x"></i>  n°<?= htmlspecialchars($data['ART_CHAPTER']) ?>
             <?= htmlspecialchars($data['ART_TITLE']) ?></p>
 

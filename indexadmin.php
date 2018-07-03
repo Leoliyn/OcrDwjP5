@@ -3,31 +3,31 @@ session_start();
 $_SESSION['title']='Les Romans Collaboratifs';
 ini_set('display_errors', 1);
 //////////////////////////////////////////////////////
-if(!empty($_POST) OR !empty($_FILES))
-{
-    $_SESSION['sauvegarde'] = $_POST ;
-    $_SESSION['sauvegardeFILES'] = $_FILES ;
-    
-    $fichierActuel = $_SERVER['PHP_SELF'] ;
-    if(!empty($_SERVER['QUERY_STRING']))
-    {
-        $fichierActuel .= '?' . $_SERVER['QUERY_STRING'] ;
-    }
-    
-    header('Location: ' . $fichierActuel);
-    exit;
-}
-
-if(isset($_SESSION['sauvegarde']))
-{
-    $_POST = $_SESSION['sauvegarde'] ;
-    $_FILES = $_SESSION['sauvegardeFILES'] ;
-    
-    unset($_SESSION['sauvegarde'], $_SESSION['sauvegardeFILES']);
-}
+//if(!empty($_POST) OR !empty($_FILES))
+//{
+//    $_SESSION['sauvegarde'] = $_POST ;
+//    $_SESSION['sauvegardeFILES'] = $_FILES ;
+//    
+//    $fichierActuel = $_SERVER['PHP_SELF'] ;
+//    if(!empty($_SERVER['QUERY_STRING']))
+//    {
+//        $fichierActuel .= '?' . $_SERVER['QUERY_STRING'] ;
+//    }
+//    
+//    header('Location: ' . $fichierActuel);
+//    exit;
+//}
+//
+//if(isset($_SESSION['sauvegarde']))
+//{
+//    $_POST = $_SESSION['sauvegarde'] ;
+//    $_FILES = $_SESSION['sauvegardeFILES'] ;
+//    
+//    unset($_SESSION['sauvegarde'], $_SESSION['sauvegardeFILES']);
+//}
 /////////////////////////////////////////////////////////////////
 //╔═════════════════════════════╗  
-//║           PROJET 45DWJ OPENCLASSROOMS         ║
+//║           PROJET 5DWJ OPENCLASSROOMS         ║
 //║         CLAUDEY Lionel Avril 2018           ║
 //╚═════════════════════════════╝
 require_once'controler/backend/backend.php'; 
@@ -215,13 +215,13 @@ try {
             elseif(isset($_GET['action'])AND ($_GET['action']=='enableSignal')AND (isset($_GET['id'])))
             {
                 $signal= new BackendControler();
-        $activ= $user->activeSignal();
+        $activ= $signal->activeSignal();
             
             }
             elseif(isset($_GET['action'])AND ($_GET['action']=='disableSignal')AND (isset($_GET['id'])))
             {
                 $signal= new BackendControler();
-        $activ= $user->desactiveSignal();
+        $activ= $signal->desactiveSignal();
             
           
             }

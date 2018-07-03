@@ -40,6 +40,10 @@
               
                 echo '<li><a href="#contact">CONTACT</a></li>';
 }
+if(isset($_SESSION['user'])){
+   echo '<li><a href="indexadmin.php"><i class="fa fa-industry fa-2x"></i></a></li>'; 
+    
+}
                 ?>                     
             </ul>
         </div>

@@ -4,8 +4,8 @@
 
     <h6>
         <?php 
-        
-        echo $_POST['message'].$_SERVER['QUERY_STRING'];
+      
+        echo $_POST['message'];
         ?>
     </h6> 
 </div>

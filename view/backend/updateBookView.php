@@ -11,7 +11,7 @@ $data = $book;
 
     </h3>
 
-    <form action='indexadmin.php?action=majBook' method="post">
+    <form <form enctype="multipart/form-data"   action='indexadmin.php?action=majBook' method="post">
 
         <p><label></label></p><p><input type="hidden" id="ouv_id" name="ouv_id" value="<?= htmlspecialchars($data['OUV_ID']) ?>"  ></p>
        <!-- <label> Auteur</label><input type="texte" class="form-control" id="ouv_auteur" name = "ouv_auteur" value="<?= htmlspecialchars($data['OUV_AUTEUR']) ?>">
@@ -28,14 +28,15 @@ $data = $book;
     ?>
         <img src='./uploads/<?= htmlspecialchars($data['OUV_IMAGE']) ?>' class="miniature" />
         <br />
-        <label> Image du chapitre :<?= htmlspecialchars($data['OUV_IMAGE']) ?>
+       Image du chapitre :<?= htmlspecialchars($data['OUV_IMAGE']) ?>
             <?php
   }else{
       echo'<label>';
   }
             ?>
             <br />
-            Pour changer ou charger une image cliquez sur Parcourir (1600x550 ou de ratio 2.909)</label> <input type="file" name="uploaded_file" /> 
+             <label> Pour changer ou charger une image cliquez sur Parcourir (1600x550 ou de ratio 2.909)</label>
+             <input type="file" name="uploaded_imageBook" /> 
         <br />
 
         

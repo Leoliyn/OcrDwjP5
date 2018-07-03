@@ -31,7 +31,7 @@
     if ($commentSignale) {
         echo '<i class="fa fa-thumbs-down  fa-2x red"> </i></a>';
     } else {
-        echo '<a href="102indexadmin.php?action=enableSignal&amp;commId=' . htmlspecialchars($tableau[$cle]['COMM_ID']) . '&amp;id=' . htmlspecialchars($tableau[$cle]['p5_posts_ART_ID']) . '&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) .'" title="Cliquez pour signaler le commentaire"><i class="fa fa-thumbs-o-up  fa-2x vert"></i></a>';
+        echo '<a href="indexadmin.php?action=enableSignal&amp;commId=' . htmlspecialchars($tableau[$cle]['COMM_ID']) . '&amp;id=' . htmlspecialchars($tableau[$cle]['p5_posts_ART_ID']) . '&amp;ouv_id=' . htmlspecialchars($_GET['ouv_id']) .'" title="Cliquez pour signaler le commentaire"><i class="fa fa-thumbs-o-up  fa-2x vert"></i></a>';
     }   
     }
  

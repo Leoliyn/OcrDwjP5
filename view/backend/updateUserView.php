@@ -1,12 +1,8 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
-
 <?php ob_start(); ?>
 
 
 <?php
 $data = $user;
-print_r($data);
 ?>
 <div class='resume'>
 

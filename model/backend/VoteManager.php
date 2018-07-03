@@ -19,40 +19,45 @@ class VoteManager extends Manager {
     
  public function voteUnique($voteId) {
   $db = $this->dbConnect();
-  $req = $db->prepare('SELECT * FROM p5_vote_score WHERE p5_vote_score.p5_USERS_USER_ID = ? AND p5_vote_score.p5_votes_VOTE_ID= ?'); 
+  $req = $db->prepare('SELECT * FROM p5_vote_score WHERE p5_vote_score.p5_USERS_USER_ID = ? AND p5_vote_score.p5_votes_VOTE_ID= ? '); 
   $vote = $req -> execute (array($_SESSION['userId'],$voteId)); 
   $nbEnreg = $req->rowCount();
   return $nbEnreg;
       
   }
     
-  public function aVote ($suite_id){
-    $db = $this->dbConnect(); 
-    $voteId = $this-> quelVote($suite_id);
-    $aVote = $this-> voteUnique($voteId);
-    return $aVote;
-  }
-      
   
-      
  
- public function jeVote($voix,$suiteId) {
-  $db = $this->dbConnect();
-  $voteId = $this-> quelVote($suiteId);
-  $dejaVote= $this-> voteUnique ($voteId);
+// public function jeVote($voix,$suiteId) {
+//  $db = $this->dbConnect();
+//  $voteId = $this-> quelVote($suiteId);
+//  $dejaVote= $this-> voteUnique ($voteId);
+//  $date=(new \DateTime())->format('Y-m-d H:i:s');
+//  if($dejaVote == 0){
+//  if($voix=='YES'){
+//      $req = $db->prepare('INSERT INTO `p5_vote_score`(`POSTS_SCORE_YES`, `POSTS_SCORE_NO`, `POSTS_SCORE_DATE`, `p5_USERS_USER_ID`, `p5_votes_VOTE_ID`) VALUES (?,?,?,?,?)'); 
+//      $vote = $req -> execute (array(1,0,$date,$_SESSION['userId'],$voteId));      
+//  }elseif($voix=='NO'){
+//   $req = $db->prepare('INSERT INTO `p5_vote_score`(`POSTS_SCORE_YES`, `POSTS_SCORE_NO`, `POSTS_SCORE_DATE`, `p5_USERS_USER_ID`, `p5_votes_VOTE_ID`) VALUES (?,?,?,?,?)'); 
+//   $vote = $req -> execute (array(0,1,$date,$_SESSION['userId'],$voteId));        
+//  }
+// 
+// }
+// return $dejaVote;
+// }
+ 
+ public function addVote($voix,$voteId){
+ $db = $this->dbConnect();
   $date=(new \DateTime())->format('Y-m-d H:i:s');
-  if($dejaVote == 0){
-  if($voix=='YES'){
+ if($voix=='YES'){
       $req = $db->prepare('INSERT INTO `p5_vote_score`(`POSTS_SCORE_YES`, `POSTS_SCORE_NO`, `POSTS_SCORE_DATE`, `p5_USERS_USER_ID`, `p5_votes_VOTE_ID`) VALUES (?,?,?,?,?)'); 
       $vote = $req -> execute (array(1,0,$date,$_SESSION['userId'],$voteId));      
   }elseif($voix=='NO'){
    $req = $db->prepare('INSERT INTO `p5_vote_score`(`POSTS_SCORE_YES`, `POSTS_SCORE_NO`, `POSTS_SCORE_DATE`, `p5_USERS_USER_ID`, `p5_votes_VOTE_ID`) VALUES (?,?,?,?,?)'); 
    $vote = $req -> execute (array(0,1,$date,$_SESSION['userId'],$voteId));        
   }
+ }
  
- }
- return $dejaVote;
- }
  
 public function delVote($vote_id) {
         $db = $this->dbConnect();
@@ -60,6 +65,14 @@ public function delVote($vote_id) {
         $vote = $req -> execute (array($vote_id));        
         return $req;
     } 
+    
+public function listStatutVote (){
+   $db = $this->dbConnect();
+        $req = $db->prepare('SELECT VOTE_ID,VOTE_OUVERT,p5_posts_ART_ID FROM p5_votes ');
+        $listStatutVote = $req -> execute();         
+        return $req ;
+}    
+    
      public function voteList() {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT *,p5_posts.ART_PRECEDENT AS LE_PRECEDENT,p5_posts.ART_CONTENT AS CONTENU_SUITE,tposts.ART_TITLE AS TITRE_PRECEDENT,tposts.ART_CHAPTER AS NUM_CHAPITRE FROM p5_votes INNER JOIN p5_posts ON p5_votes.p5_posts_ART_ID=p5_posts.ART_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR INNER JOIN p5_posts as TP ON p5_posts.ART_PRECEDENT=TP.ART_ID  INNER JOIN p5_posts AS tposts ON p5_posts.ART_PRECEDENT=tposts.ART_ID WHERE p5_votes.VOTE_OUVERT=  ? GROUP BY VOTE_ID');

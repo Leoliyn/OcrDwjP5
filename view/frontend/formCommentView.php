@@ -1,7 +1,5 @@
-<?php $title = 'Jean FORTEROCHE Billet simple pour l\'ALASKA '; ?>
-
 <?php ob_start(); ?>
-<h1>Jean FORTEROCHE Billet simple pour l\'ALASKA</h1>
+<h1><?= $_SESSION['title']?></h1>
 
 <h2>Modification du Commentaire</h2>
 <?php

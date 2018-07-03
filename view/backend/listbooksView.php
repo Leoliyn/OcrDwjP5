@@ -1,17 +1,17 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
-<?php ob_start(); ?>
-
+<?php ob_start(); 
+if($_SESSION['superAdmin']==1){
+?>
+ 
 <div class='resume'>
     <?php 
   
-    if($_SESSION['superAdmin']==1){
+   
         
-      echo '<a href="indexadmin.php?action=newBook" title="Ajouter un ouvrage"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un ouvrage..</a>
+      echo '<a href="indexadmin.php?action=newBook" title="Ajouter un ouvrage"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un ouvrage..</a></div>
 ';  
     }
 ?>   
-</div>
+
 <?php
 // tableau construction des droits utilisateurs
 $droits=array();
@@ -52,8 +52,8 @@ while ($data = $books->fetch()) {
         }
 
 ?>
-        <h2>
-            <p>Titre:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p> </h2>
+        
+<h2><i class="fa fa-folder-open fa-1x"></i>:  <?= htmlspecialchars($data['OUV_TITRE']) ?></h2> 
 
         <h3> <?= htmlspecialchars($data['OUV_SOUSTITRE']) ?> </h3>          
 
@@ -84,7 +84,8 @@ while ($data = $books->fetch()) {
                 ?>
             <div class ="col-sm-1">
             <a href="indexadmin.php?action=updateBook&amp;ouv_id=<?= $data['OUV_ID'] ?>" title="Modifiez l'ouvrage"><i class="fa  fa-edit  fa-2x "></i></a>
-            </div><div class ="col-sm-1">
+            </div>
+            <div class ="col-sm-1">
             <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['OUV_ID']) ?>" title="Supprimez l'ouvrage"><i class="fa fa-remove  fa-2x"></i></a>
             </div>
             

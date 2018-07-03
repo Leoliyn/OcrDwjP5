@@ -3,7 +3,6 @@
 
 <?php
 
-echo $_SESSION['id'];
 //____________________________________________________________________________________________________   
     //Fonction affichage recursif dans la vue . Ordonne les dépendances des commentaires 
 //dans les tableaux $comments et $commensChild founis par le controleur
@@ -39,7 +38,6 @@ $bookPreface =htmlspecialchars($dataBook['OUV_PREFACE']);
 $bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
 $bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']);
 $ouvId =htmlspecialchars($dataBook['OUV_ID']);
-//$title= $auteur." ".$bookTitre;
 $contentMenu = "";
 $titleOuv=$bookTitre;
  
@@ -80,7 +78,7 @@ if(isset($_SESSION['Rights'])){
     $contentMenu .= "<span class='icochap  fa-1x'>            
                         </span><span class='numeroChapitre'>N°: "; 
     $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
-    $contentMenu .= "</span><span>"; 
+    $contentMenu .= " </span><span>"; 
     $contentMenu .= htmlspecialchars($data['ART_TITLE']);
     $contentMenu .= "</a></span> </li>";
    
@@ -100,7 +98,7 @@ $posts->closeCursor();
 
 <?php
 $data = $article;
-$title = "Chapitre " . htmlspecialchars($data['ART_CHAPTER']) . ',' . htmlspecialchars($data['ART_TITLE']) . "- Blog de Jean FORTEROCHE";
+$title = "Chapitre " . htmlspecialchars($data['ART_CHAPTER']) . ',' . htmlspecialchars($data['ART_TITLE'])."-".$_SESSION['title'];
 $description = htmlspecialchars($data['ART_DESCRIPTION']);
 $keywords = htmlspecialchars($data['ART_KEYWORDS']);
 $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
@@ -109,7 +107,7 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
 <div class=''>
 
     <h3>
-<?= htmlspecialchars($data['ART_TITLE']) ?>
+ <i class="fa fa-file-o   fa-1x"></i> <?= htmlspecialchars($data['ART_TITLE']) ?>
 
     </h3>
 
@@ -121,7 +119,8 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
 </div>
 
  <?php 
- if(isset($_SESSION['user'])){
+ // if(isset($_SESSION['user'])){
+ if($statut){
  ?>
 
      
@@ -133,7 +132,7 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
  }else{
      ?>
 
-    <h3>Inscrivez vous pour voter et laisser vos impressions </h3>
+    <h3>Inscrivez vous pour voter et laisser vos impressions ou <a href="indexadmin.php" data-toggle="tooltip" title="Administration ">connectez-vous!</a></h3>
  
   <?php require 'view/frontend/formulaireInscription.php'; ?>   
 

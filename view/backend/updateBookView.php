@@ -1,6 +1,3 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
-
 <?php ob_start(); ?>
 
 
@@ -33,6 +30,8 @@ $data = $book;
         <br />
         <label> Image du chapitre :<?= htmlspecialchars($data['OUV_IMAGE']) ?>
             <?php
+  }else{
+      echo'<label>';
   }
             ?>
             <br />

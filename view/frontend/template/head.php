@@ -1,7 +1,7 @@
 <head>
 
     <meta charset="utf-8">
-    <title><?= htmlspecialchars($title) ?></title>
+    <title><?= $_SESSION['title'] ?></title>
     <meta name="description" content="<?= htmlspecialchars($description) ?>">
     <meta name="keywords" content="<?= htmlspecialchars($keywords) ?>">
     <!-- taille et ratio pour Mobile -->
@@ -11,8 +11,8 @@
 
     <meta property="og:title" content="<?= htmlspecialchars($title) ?>" />
     <meta property="og:type" content="" />
-    <meta property="og:url" content="http://projet4.lionelclaudey.com" />
-    <meta property="og:image" content="http://projet4.lionelclaudey.com/<?= htmlspecialchars($image) ?>" />
+    <meta property="og:url" content="http://projet5.lionelclaudey.com" />
+    <meta property="og:image" content="http://projet5.lionelclaudey.com/<?= htmlspecialchars($image) ?>" />
     <meta property="og:description" content="<?= htmlspecialchars($description) ?>" />
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="">

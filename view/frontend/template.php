@@ -9,7 +9,7 @@
         <?php require_once 'view/frontend/template/navbar.php'; ?>
         <?php require_once 'view/frontend/template/slider.php'; ?>
 
-        <?php require_once 'view/frontend/template/sectionArticle.php'; ?>
+      <?php require_once 'view/frontend/template/sectionArticle.php'; ?>
         <?php
         if ($page == 'listPostsView.php') {
             require_once 'view/frontend/template/sectionChapitreListe.php';

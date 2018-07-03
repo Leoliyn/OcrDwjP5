@@ -12,10 +12,9 @@ $dataBook = $book[0];
 $ouvId =$_GET['ouv_id'];
 //$auteur = htmlspecialchars($dataBook['OUV_AUTEUR']);
 $description =htmlspecialchars($dataBook['OUV_DESCRIPTION']);
-$bookPreface =htmlspecialchars($dataBook['OUV_PREFACE']);
+$bookPreface =$dataBook['OUV_PREFACE'];
 $bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
 $bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']); 
-//$title= $auteur." ".$bookTitre;
 $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
 $image ='public/images/couverture2.jpg';
 $titleOuv=$bookTitre;
@@ -39,6 +38,7 @@ $titleOuv=$bookTitre;
 <!--    <ul>-->
         <?php
         $contentMenu = "";
+        $contentMenuResume="";
         $iteration = 0;
         $listeCarousel = '<div id="myCarousel" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">';
         $carousel = '<div class="carousel-inner" role="listbox">';
@@ -52,22 +52,36 @@ $titleOuv=$bookTitre;
             ?>
 
     <?php
-    $contenuChapitre= htmlspecialchars($data['ART_CONTENT_RESUME']);
+    $contenuChapitre= $data['ART_CONTENT_RESUME'];
     $contentMenu .= "<li><a href='";
-
     $contentMenu .= "chapitre-";
     $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
     $contentMenu .= "-".$titre ."-";
     $contentMenu .= htmlspecialchars($data['ART_ID']);
     $contentMenu .= "-".$ouvId;
     $contentMenu .= ".html'>";
-   
     $contentMenu .= "<span class='icochap  fa-1x'>            
-                        </span><span class='numeroChapitre'>N°: "; 
+          </span><span class='numeroChapitre'>N°: "; 
     $contentMenu .= htmlspecialchars($data['ART_CHAPTER']);
     $contentMenu .= "</span><span>"; 
     $contentMenu .= htmlspecialchars($data['ART_TITLE']);
-    $contentMenu .= "</a></span> <div class='item resumeFrontend'>".$contenuChapitre."(...)</div></li>";
+    $contentMenu.="</a></span></li>";
+    //
+    $contentMenuResume .= "<li><a href='";
+    $contentMenuResume .= "chapitre-";
+    $contentMenuResume .= htmlspecialchars($data['ART_CHAPTER']);
+    $contentMenuResume .= "-".$titre ."-";
+    $contentMenuResume .= htmlspecialchars($data['ART_ID']);
+    $contentMenuResume .= "-".$ouvId;
+    $contentMenuResume .= ".html'>";
+    $contentMenuResume .= "<span class='icochap  fa-1x'>            
+          </span><span class='numeroChapitre'>N°: "; 
+    $contentMenuResume .= htmlspecialchars($data['ART_CHAPTER']);
+    $contentMenuResume .= "</span><span>"; 
+    $contentMenuResume .= htmlspecialchars($data['ART_TITLE']);
+    $contentMenuResume.="</a></span></li>";
+//
+    $contentMenuResume .= "</a></span> <div class='item resumeFrontend'>".$contenuChapitre."(...)</div></li>";
    
 ////////////////////////////////////creation liste ol slider///////////////////////
     $listeCarousel .= '<li data-target="#myCarousel" data-slide-to="';

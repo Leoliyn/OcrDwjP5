@@ -63,7 +63,7 @@ class PostManager extends Manager {
     }
     public function getPost($postId) {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,ART_PRECEDENT, ART_DESACTIVE,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE, ART_AUTEUR, p5_statut_post_STATUT_POST_ID,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE ART_ID = ?');
+        $req = $db->prepare('SELECT ART_ID,ART_CHAPTER,ART_TITLE,ART_SUBTITLE,ART_CONTENT,ART_PRECEDENT, ART_DESACTIVE,OUVRAGE_OUV_ID,DATE_FORMAT(DATE, \'%d/%m/%Y à %Hh%imin%ss\') AS DATE_fr,ART_DESCRIPTION,ART_KEYWORDS,ART_IMAGE, ART_AUTEUR, p5_statut_post_STATUT_POST_ID,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_posts.p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID = p5_posts.ART_AUTEUR  WHERE ART_ID = ?');
         $req->execute(array($postId));
         $post = $req->fetch();
 
@@ -264,7 +264,8 @@ public function enablePostsBook($ouvid) {
         $db = $this->dbConnect();
 //        $req = $db->prepare('SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_users ON p5_posts.ART_AUTEUR = p5_users.USER_ID INNER JOIN p5_statut_post ON 
 //p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID WHERE p5_posts.ART_PRECEDENT = ? ');
-        $req = $db->prepare(' SELECT *,USER_PSEUDO,STATUT_POST_LIBELLE FROM p5_posts INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_posts.ART_PRECEDENT = ? group by ART_ID  ');
+      //si vote existe pas alors null ->  $req = $db->prepare('SELECT * FROM p5_posts INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR INNER JOIN p5_votes ON p5_votes.p5_posts_ART_ID=p5_posts.ART_ID WHERE p5_posts.ART_PRECEDENT = ? group by ART_ID  ');
+                $req = $db->prepare('SELECT * FROM p5_posts INNER JOIN p5_statut_post ON p5_statut_post_STATUT_POST_ID = p5_statut_post.STATUT_POST_ID INNER JOIN p5_users ON p5_users.USER_ID=p5_posts.ART_AUTEUR WHERE p5_posts.ART_PRECEDENT = ? group by ART_ID  ');
         $req->execute(array($id));
         return $req;
     }
@@ -310,4 +311,33 @@ public function enablePostsBook($ouvid) {
         $req->execute(array($auteur,$contenuSuite,$chapitreId));
         return $req;
     } 
+    public function countVisitPost() {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT *, COUNT(p5_visites_posts.p5_POSTS_ART_ID)AS COMPTEUR FROM `p5_visites_posts` INNER JOIN p5_posts ON p5_posts.ART_ID=p5_visites_posts.p5_POSTS_ART_ID INNER JOIN p5_ouvrage ON p5_ouvrage.OUV_ID=p5_posts.OUVRAGE_OUV_ID WHERE 1 group by p5_visites_posts.p5_POSTS_ART_ID');
+        $req->execute(array());
+        return $req;
+    }
+    public function countVisitPostSinceDay($delayDay) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT *, COUNT(p5_visites_posts.p5_POSTS_ART_ID)AS COMPTEUR FROM `p5_visites_posts` INNER JOIN p5_posts ON p5_posts.ART_ID=p5_visites_posts.p5_POSTS_ART_ID INNER JOIN p5_ouvrage ON p5_ouvrage.OUV_ID=p5_posts.OUVRAGE_OUV_ID WHERE (p5_visites_posts.VISITES_DATE > DATE_SUB(NOW(), INTERVAL ? DAY)) group by p5_visites_posts.p5_POSTS_ART_ID');
+        $req->execute(array($delayDay));
+        return $req;
+    }
+    public function countVisitPostSinceHour($delayHour) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT *, COUNT(p5_visites_posts.p5_POSTS_ART_ID) AS COMPTEUR FROM `p5_visites_posts` INNER JOIN p5_posts ON p5_posts.ART_ID=p5_visites_posts.p5_POSTS_ART_ID INNER JOIN p5_ouvrage ON p5_ouvrage.OUV_ID=p5_posts.OUVRAGE_OUV_ID WHERE (p5_visites_posts.VISITES_DATE > DATE_SUB(NOW(), INTERVAL ? HOUR)) group by p5_visites_posts.p5_POSTS_ART_ID');
+        $req->execute(array($delayHour));
+        return $req;
+    }
+    
+  public function countVisitPostSinceMonth($delayMonth) {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT *, COUNT(p5_visites_posts.p5_POSTS_ART_ID)AS COMPTEUR FROM `p5_visites_posts` INNER JOIN p5_posts ON p5_posts.ART_ID=p5_visites_posts.p5_POSTS_ART_ID INNER JOIN p5_ouvrage ON p5_ouvrage.OUV_ID=p5_posts.OUVRAGE_OUV_ID WHERE (p5_visites_posts.VISITES_DATE > DATE_SUB(NOW(), INTERVAL ? MONTH)) group by p5_visites_posts.p5_POSTS_ART_ID');
+        $req->execute(array($delayMonth));
+        return $req;
+    }  
+    
+    
+    
+    
 }

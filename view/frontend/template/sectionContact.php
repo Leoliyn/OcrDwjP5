@@ -1,7 +1,7 @@
 
 <div id="contact" class="resume text-center">
   
-    <h3 class="text-center">Contacter jean FORTEROCHE</h3>
+    <h3 class="text-center">Contacter <?= $_SESSION['title'] ?></h3>
 
 
     <div class="row">

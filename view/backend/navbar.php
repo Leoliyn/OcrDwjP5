@@ -8,7 +8,7 @@
             </button>
             <a class="navbar-brand" href="indexadmin.php">
                 ADMINISTRATION  
-                <i style ="font-size:8px">(Blog de Jean FORTEROCHE)</i>
+                <i style ="font-size:8px"><?= $_SESSION['title']?></i>
 
             </a>
 

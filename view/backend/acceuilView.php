@@ -1,6 +1,6 @@
 
 
-<?php $title = 'Jean FORTEROCHE'; ?>
+<?php $title = $_SESSION['title']; ?>
 
 <?php ob_start(); ?>
 

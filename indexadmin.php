@@ -1,10 +1,34 @@
 <?php
 session_start();
+$_SESSION['title']='Les Romans Collaboratifs';
 ini_set('display_errors', 1);
+//////////////////////////////////////////////////////
+if(!empty($_POST) OR !empty($_FILES))
+{
+    $_SESSION['sauvegarde'] = $_POST ;
+    $_SESSION['sauvegardeFILES'] = $_FILES ;
+    
+    $fichierActuel = $_SERVER['PHP_SELF'] ;
+    if(!empty($_SERVER['QUERY_STRING']))
+    {
+        $fichierActuel .= '?' . $_SERVER['QUERY_STRING'] ;
+    }
+    
+    header('Location: ' . $fichierActuel);
+    exit;
+}
 
+if(isset($_SESSION['sauvegarde']))
+{
+    $_POST = $_SESSION['sauvegarde'] ;
+    $_FILES = $_SESSION['sauvegardeFILES'] ;
+    
+    unset($_SESSION['sauvegarde'], $_SESSION['sauvegardeFILES']);
+}
+/////////////////////////////////////////////////////////////////
 //╔═════════════════════════════╗  
-//║           PROJET 4 DWJ OPENCLASSROOMS         ║
-//║         CLAUDEY Lionel février 2018           ║
+//║           PROJET 45DWJ OPENCLASSROOMS         ║
+//║         CLAUDEY Lionel Avril 2018           ║
 //╚═════════════════════════════╝
 require_once'controler/backend/backend.php'; 
 //require_once('controler/backend/backendBook.php'); 
@@ -157,7 +181,7 @@ try {
               $droits= unserialize($_SESSION['Rights']);
                 if($droits[$_GET['ouv_id']]){
                     $controler= new BackendControler(); 
-            $vote = $controler->   vote();   
+            $vote = $controler->vote();   
           
                 }else{
                     throw new Exception("Pb Vote . Alertez vore administrateur");
@@ -523,5 +547,9 @@ try {
  
 }
 catch(Exception $e) {
-    echo 'Erreur : ' . $e->getMessage();
+$message = $e->getMessage();
+
+$error= new BackendControler();
+$affError= $error->erreur($message);
+   
 }

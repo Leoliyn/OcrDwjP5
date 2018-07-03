@@ -3,7 +3,7 @@
     <div class="row">
        
         <h7>
-                        <?= $contentMenu ?>
+                        <?= $contentMenuResume ?>
                   
         </h7>
         <p id="commentaires"></p>

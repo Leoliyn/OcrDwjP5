@@ -5,7 +5,7 @@
     <h6>
         <?php 
         
-        echo $_POST['message'].$_SERVER['QUERY_STRING'];
+        echo $_POST['message'];
         ?>
     </h6> 
 </div>
@@ -18,5 +18,5 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php
-require('view/backend/template.php');
+require('view/frontend/template.php');
 ?>

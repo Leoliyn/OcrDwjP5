@@ -50,7 +50,8 @@ class BackendControler {
     $voteManager = new Backend\VoteManager();
     //contrelo des vote e nfin de delai     
     $voteControle = $voteManager->controleVote();
-    // RESULTAT VOTES 
+    $listStatutVote=$voteManager->listStatutVote();
+        // RESULTAT VOTES 
     $lesScores = $voteManager -> lesScores();
     $tableauScores = $lesScores->fetchAll();
     if ($article) {
@@ -163,7 +164,7 @@ class BackendControler {
         $postManager = new Backend\PostManager();
         $article = $postManager->getPost($postId);
         $image = $article['ART_IMAGE']; /// récupération
-
+        
 
         if (!empty($_FILES['uploaded_file']['name'])) {
             $extensions_valides = array('.jpg');
@@ -171,7 +172,7 @@ class BackendControler {
 //2. strtolower met l'extension en minuscules.
             $extension_upload = strtolower(strrchr($_FILES['uploaded_file']['name'], '.'));
             $path = "uploads/";
-            $_FILES['uploaded_file']['name'] = 'chapitre-' . $article['ART_CHAPTER'] . $extension_upload;
+            $_FILES['uploaded_file']['name'] = 'ouvrage-'.$article['OUVRAGE_OUV_ID'].'chapitre-' . $article['ART_CHAPTER'] . $extension_upload;
 
 // On récupère les dimensions de l'image
 
@@ -242,7 +243,7 @@ class BackendControler {
         $article = $postManager->getPost($_GET['id']);
         $root = $userManager->listSuperadmin();
         $objet = 'Création d\'un chapitre ';
-        $contenu = 'Un chapitre est ajouté à l\ouvrage  <b> ' . $ouvId . ' de titre :' . $titre . ' </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+        $contenu = 'Un chapitre est ajouté à l\'ouvrage  <b> ' . $ouvId . ' de titre :' . $titre . ' </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
         $auteurId = $auteur;
         while ($adminBook = $book->fetch()) {
 
@@ -276,26 +277,48 @@ public function publierPost() {
  throw new Exception ('Chapitre inconnu ');   
 }
 }
+
+//
+
+
+
 //   ═════════════════════════════════════════════      
 //   CHAP  -    changement du statut du chapitre - desactive le post car  modif
 //   ═════════════════════════════════════════════   
-public function changementStatut($libelleStatut){
-  $postManager = new Backend\PostManager();
-  $idStatut = $postManager->idStatut($libelleStatut);// on recupere l id du libelle 
-  $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'],$_GET['id']);
-  
-  if($post){
-    $article = $postManager->getPost($_GET['id']);
-   $objet = 'Changement de statut ';
-   $contenu = 'La Chapitre ( '.$article['ART_CHAPTER'].' titre:)'.$article['ART_TITLE'].'. <b>Change de statut pour '.$libelleStatut.'</b> de contenu : <i>'.substr($article['ART_CONTENT'], 0, 150).'(...)</i>';
-   $auteurId =$article['ART_AUTEUR'];
-   $this->messageSystem($auteurId,  $_SESSION['userId'], $objet, $contenu);
-    $this->desactiverPost();
-   // execution de post() dans desactiverPOst()
-}else{
- throw new Exception ('Changement impossible');   
-} 
-}
+    public function changementStatut($libelleStatut) {
+        $postManager = new Backend\PostManager();
+        $idStatut = $postManager->idStatut($libelleStatut); // on recupere l id du libelle 
+        $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'], $_GET['id']);
+
+        if ($post) {
+            $article = $postManager->getPost($_GET['id']);
+            $objet = 'Changement de statut ';
+            $contenu = 'La Chapitre ( ' . $article['ART_CHAPTER'] . ' titre:)' . $article['ART_TITLE'] . '. <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
+            $auteurId = $article['ART_AUTEUR'];
+            if ($_SESSION['userId'] == $auteurId) {
+                $bookManager = new Backend\BookManager();
+                $userManager = new Backend\UsersManager();
+                $book = $bookManager->getBooksRights($article['OUVRAGE_OUV_ID']);
+                $root = $userManager->listSuperadmin();
+                while ($adminBook = $book->fetch()) {
+                    $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'], $objet, $contenu);
+                    // envoyer mess aux administrateur de louvrage
+                }
+                while ($rootBook = $root->fetch()) {
+                    $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'], $objet, $contenu);
+                    // envoyer mess aux Superadmin 
+                }
+            } else {
+                // auteur prevenu si chgt de statut des chapitre dont il est l'auteur
+                $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+            }
+
+            $this->desactiverPost();
+            // execution de post() dans desactiverPOst()
+        } else {
+            throw new Exception('Changement impossible');
+        }
+    }
 
 //   ═════════════════════════════════════════════
 //  METHODES LIEES AUX MESSAGES INTERNES ══ METHODES LIEES AUX MESSAGES INTERNES
@@ -405,6 +428,7 @@ public function messageSignalementCommentaire(){
 
 public function messagerie() {
     $messageManager = new Backend\MessageManager();
+    $nettoyageMessagerie =$messageManager->cleanMessagerie();
     $messagesReçus = $messageManager->getMessagesReceived($_SESSION['userId']);
     $messagesEnvoyes = $messageManager->getMessagesSend($_SESSION['userId']);
     $message = $messageManager->nbMessagesNonLu($_SESSION['userId']);
@@ -507,7 +531,7 @@ public function supprimeSuite() {
     $article = $postManager->getPost($_GET['id']);
     $root = $userManager -> listSuperadmin();
     $objet = 'Création d\'une suite ';
-    $contenu = 'Une suite est ajoutée à l\ouvrage  <b> ' . $ouvId . '  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+    $contenu = 'Une suite est ajoutée à l\'ouvrage  <b> ' . $ouvId . '  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
     $auteurId = $auteur;
     while ($adminBook = $book->fetch()) {
     
@@ -598,7 +622,7 @@ public function majSuite() {
         $voteManager = new Backend\VoteManager();
         $idStatut = $postManager->idStatut($libelleStatut); // on recupere l id du libelle 
         $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'], $_GET['id']);
-        // pour test throw new Exception ($libelleStatut.' '.$idStatut['STATUT_POST_ID'].' et '.$_GET['id']);
+   
         if ($post) {
             if ($libelleStatut == 'VOTE') {
                 $vote = $voteManager->vote($_GET['id']); // vote début maintenant durée 15 jours statut vote ouvert 
@@ -632,10 +656,7 @@ public function formModifySuite() {
 //═════════════════════════════════════════════
 //                  METHODES LIEES AUX UTILISATEURS 
 ////═════════════════════════════════════════════
-//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════
-//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════
-//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════//══ METHODES LIEES AUX UTILISATEURS ═════
- 
+
 //═════════════════════════════════════════════
 //   USER-         Renvoi false si uner inconnu ou pb d'identifiant 
 //        FONCTION verifuser() instancie UsersManager méthode connexion() 
@@ -725,12 +746,12 @@ public function messagePasswdOublie($destinataire, $texte) {
     $to = $destinataire;
 
 // Sujet du message 
-    $subject = "Votre demande depuis le blog de  Jean FORTEROCHE";
+    $subject = "Votre demande depuis le site Les romans collaboratifs";
 
 // Corps du message, écrit en texte et encodage iso-8859-1
     $message = "Suite à votre demande, veuillez prendre note du code suivant :".$texte."\n";
     $message .= "Vous voudrez bien vous connecter et changer votre mot de passe dès la première connexion \n";
-    $message .= "Bonne réception \n Webmaster blog de jean FORTEROCHE";
+    $message .= "Bonne réception \n Webmaster LES ROMANS COLLABORATIFS";
 // En-têtes du message
     $headers = ""; // on vide la variable
     $headers = "From: Webmaster Site <claudey@lionelclaudey.com>\n"; // ajout du champ From
@@ -787,7 +808,8 @@ $this->cokpit();
 public function initUser($user_id){
  if(($_SESSION['superAdmin']==1)AND ($_SESSION['userId']<> $user_id)){
   $usersManager = new Backend\UsersManager();
-  $passwd = $usersManager -> passwordUser(codeValidation());
+  $codeValidation = $this->codeValidation();
+  $passwd = $usersManager -> passwordUser($codeValidation);
   $initUser= $usersManager ->initUser($user_id,$passwd); 
      
 $this->cokpit();  
@@ -826,9 +848,8 @@ public function ajouterUser($userName, $userLastname, $userPseudo, $userMail,$us
  if($_SESSION['superAdmin']==1){
   $usersManager = new Backend\UsersManager();
   $newUser= $usersManager ->addUser($userName, $userLastname, $userPseudo, $userMail,$userPasswd, $userStatut); 
-   $this->cokpit();  
-    
-}   
+  $this->cokpit(); 
+ }
 }
 //═════════════════════════════════════════════
 //   USER-          acces formulaire nouvel utilisateur
@@ -862,25 +883,56 @@ public function voteControle() {
  //═════════════════════════════════════════════
 //       VOTE          fonction vote mise du bulletin dans l'urne  
 //═════════════════════════════════════════════   
-   public  function vote() {
-    
-   
-    $voteManager = new Backend\VoteManager();
-    $vote= $voteManager ->jeVote($_GET['bulletin'],$_GET['id']);
-    $_GET['id'] =$_GET['precedent'];
-    
-    $this->post();
-    
+//   public  function vote() {
+//    
+//   
+//    $voteManager = new Backend\VoteManager();
+//    $vote= $voteManager ->jeVote($_GET['bulletin'],$_GET['id']);
+//    $_GET['id'] =$_GET['precedent'];
+//    if($vote != 0){
+//      
+//        throw new Exception ('Vous avez déjà voté pour ce scrutin');
+//    }
+//    $this->post();
+//    
+//}
+
+public  function vote() {
+
+$voteManager = new Backend\VoteManager();
+$voteId = $voteManager-> quelVote($_GET['id']);
+$dejaVote= $voteManager-> voteUnique ($voteId);
+if ($dejaVote==0){
+$vote=$voteManager->addVote($_GET['bulletin'],$voteId);
+}else{
+ throw new Exception ('Vous avez déjà voté pour ce scrutin');
+}
+ $_GET['id'] =$_GET['precedent'];
+ $this->post();
 }
 //═════════════════════════════════════════════
 //       VOTE          verifie que l'user na pas deja vote dans le scrutin 
 //═════════════════════════════════════════════
-public function dejaVote (){
-   $voteManager = new Backend\VoteManager();
-   $aVote= $voteManager ->aVote($_GET['id']);
-   
-    
-} 
+//public function dejaVote (){
+//   $voteManager = new Backend\VoteManager();
+//   $aVote= $voteManager ->aVote($_GET['id']);
+//   
+//    
+//} 
+
+//public function aVote ($suite_id){
+//    $voteManager = new Backend\VoteManager();
+//    $voteId = $voteManager-> quelVote($suite_id);
+//    $aVote = $voteManager-> voteUnique($voteId);
+//    if($aVote==0){
+//        return TRUE;
+//    }else{
+//        return FALSE;
+//    }
+//
+//  }
+      
+ 
 //═════════════════════════════════════════════
 //       VOTE          modification de la date butoir d'un scrutin  
 //═════════════════════════════════════════════
@@ -955,8 +1007,7 @@ function supprimeVote($vote_id,$art_id){
 
 
             $path = $path . basename($_FILES['uploaded_file']['name']);
-
-            if (in_array($extension_upload, $extensions_valides)) {
+             if (in_array($extension_upload, $extensions_valides)) {
                 // Si le fichier existe on l'efface
                 if (is_file($path)) {
                     unlink($path);
@@ -1085,7 +1136,7 @@ public function majBook() {
     if($_SESSION['superAdmin']==1){
     $bookManager = new Backend\BookManager();
     $book = $bookManager->updateBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords, 0, $id,$image);
-    $_GET['ouv_id'] = $id;
+     $_GET['ouv_id'] = $id;
     $this->book();
     }else {
     $bookManager = new Backend\BookManager();
@@ -1107,7 +1158,7 @@ public function addAccesOuvrage($ouvId, $userId, $statutId) {
         $acces = $bookManager->addAccesBook($ouvId, $userId, $statutId);
         $this->accesBook($ouvId);
         $objet='Modification accès';
-    $contenu ='Vous avez un  nouvel pour l\'ouvrage  n°'.$ouvId.' Veuillez vous connecter et vérifier ' ;
+    $contenu ='Vous avez un  nouvel accès pour l\'ouvrage  n°'.$ouvId.' Veuillez vous connecter et vérifier ' ;
      $this->messageSystem($userId,$_SESSION['userId'], $objet, $contenu);
     } else {
        
@@ -1163,8 +1214,10 @@ if($_SESSION['superAdmin']==1){
     
       
     $bookManager = new Backend\BookManager();
-    $dernierId = $bookManager->addBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords,$image);
+    $dernierId = $bookManager->addBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords);
+   
     $image = $this->uploadImageBook($dernierId);
+  
     $book = $bookManager->updateBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords, 0, $id,$image);
     $this ->listOuvrages();
 }else{
@@ -1343,13 +1396,21 @@ public function cokpit() {
     $listBooks = $bookManager->getBooks(); //Liste des ouvrages 
     $lesScores = $voteManager -> lesScores();
     $tableauScores = $lesScores->fetchAll();
-    $listPosts = $postManager ->
     $votesListe= $voteManager-> voteList(); 
-    $votesListeClose= $voteManager-> voteListClose(); 
+    $votesListeClose= $voteManager-> voteListClose();
+    $totalVisit=$postManager ->countVisitPost();
+   $visit24H =$postManager ->countVisitPostSinceHour('24');
+    $visit7J =$postManager ->countVisitPostSinceDay('7');
+    $visit1M =$postManager ->countVisitPostSinceMonth('1');
+   $visit6M =$postManager ->countVisitPostSinceMonth('6');
     require_once('view/backend/dashBoardView.php');
 }
 
-
+public function erreur($message){
+    $_POST['message']=$message;
+  require_once('view/backend/erreurView.php'); 
+    
+}
 //═════════════════════════════════════════════
 //     FIN                      FIN CLASS 
 //═════════════════════════════════════════════

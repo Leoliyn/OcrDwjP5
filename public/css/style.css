@@ -45,12 +45,15 @@ tr,td ,table {
 
 }
 h2, h1 {
-
+    padding-left: 3px;
+    padding-bottom : 3px;
     background-color : rgba(0,0,0,0.40);  
     color:white;  
 }
 
 h3 {
+    padding-left: 3px;
+    padding-bottom : 3px;
     margin: 10px 0 30px 0;
     letter-spacing: 10px;      
     font-size: 24px;
@@ -59,6 +62,7 @@ h3 {
 }
 
 h6 {
+    padding-left: 3px;
     margin: 10px 0 30px 0;
     letter-spacing: 10px;      
     font-size: 20px;
@@ -67,7 +71,7 @@ h6 {
 }
 
 h7 {
-
+padding-left: 3px;
     letter-spacing: 0px;      
     font-size: 18px;
     color: #fff;
@@ -272,7 +276,7 @@ textarea {
     padding: 10px;
     border: 1px solid #c0c0c0;
     border-radius: 10px;
-   color:#c0c0c0;
+   color:#505050;
    
 }
 

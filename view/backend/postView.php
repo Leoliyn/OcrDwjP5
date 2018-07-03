@@ -1,7 +1,5 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
 <?php ob_start(); 
-// Statut de l'utilisateur 
+// Statut de l'utilisateur sur l'ouvrage
 $statut= null;
 $droits = unserialize($_SESSION['Rights']);
 if (isset($_POST['ouv_id'])){
@@ -15,7 +13,7 @@ if (isset($droits[$ouvId])) {
     $statut = $droits[$ouvId];
 
 }else {
-    throw new Exception("Vous n'avez pas de droit d'accès 9 pview");
+    throw new Exception("Vous n'avez pas de droit d'accès ");
 }
 ?>
 <?php
@@ -65,47 +63,79 @@ if($statutPost['STATUT_POST_LIBELLE']=='REDACTION'){
   }
   
     ?>
-    <h3>
-    <?= htmlspecialchars($data['ART_TITLE']) ?>
+    
+            
+ <h3>   <i class="fa fa-file-o   fa-1x"></i> <?= htmlspecialchars($data['ART_TITLE']) ?>
 
     </h3>
 
     <p><em>le <?= $data['DATE_fr'] ?></em>par :<?= htmlspecialchars($data['USER_PSEUDO']) ?></p>
     <p><?= ($data['ART_CONTENT']) ?></p>
-    <div class='icone-admin'>
+    <div class='icone-admin row'>
         
 <?php
 
 if(($statut == 'ADMINISTRATEUR')){
 if ($desactive) {
+     echo'<div class ="col-sm-1">';
     echo '<a href="indexadmin.php?action=enablePost&amp;id=' . htmlspecialchars($data['ART_ID']) . '&amp;ouv_id='.$_GET['ouv_id'].'" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>';
+echo'</div>';
+    
 } else {
+    echo'<div class ="col-sm-1">';
     echo '<a href="indexadmin.php?action=disablePost&amp;id=' . htmlspecialchars($data['ART_ID']) . '&amp;ouv_id='.$_GET['ouv_id'].'" title="Mettre l\'article en cours de rédaction"><i class="fa fa-eye  fa-2x "></i></a>';
+echo'</div>';
+    
 }
  
 ?>
 
-
+<div class ="col-sm-1">
         <a href="indexadmin.php?action=updatePost&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Modifiez l'article"><i class="fa  fa-edit  fa-2x "></i></a>
+</div><div class ="col-sm-1">
         <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($data['ART_ID']) ?>" title="Supprimez l'article"><i class="fa fa-remove  fa-2x"></i></a>
- <?php } ?>
+</div>
+            <?php } ?>
+        <div class ="col-sm-1">
         <a href="indexadmin.php?action=listPosts&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Retour à la liste"><i class="fa fa-arrow-left  fa-2x "></i></a>
-        
+        </div>
       
  <?php
- if(($statut == 'REDACTEUR')||($statut == 'ADMINISTRATEUR')){
-     ?>
- 
-    
-            <i class="fa fa-wrench  fa-2x <?= $redaction ?>"></i>  
+if (
+             (
+             ($statut == 'REDACTEUR')
+             AND ( $data['ART_AUTEUR'] == $_SESSION['userId'])
+             AND (
+             ($statutPost['STATUT_POST_LIBELLE'] == 'REDACTION') || ($statutPost['STATUT_POST_LIBELLE'] == 'PROPOSE'))
+             ) || ($statut == 'ADMINISTRATEUR')) {
+         ?>
+    <div class ="col-sm-1">
+            <a href='indexadmin.php?action=chgtStatut&amp;libelle=REDACTION&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='en cours de rédaction'><i class="fa fa-wrench  fa-2x <?= $redaction ?>"></i> </a> 
+    </div>
+            <div class ="col-sm-1">
+            <a href='indexadmin.php?action=chgtStatut&amp;libelle=PROPOSE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='proposer le post à la validation'><i class="fa fa-lock  fa-2x <?= $propose ?>"></i></a> 
+            </div>
+<!--     <div class ="col-sm-1">
+            <i class="fa fa-wrench  fa-2x <?= $redaction ?>"></i> 
+            </div>
+         <div class ="col-sm-1">
             <i class="fa fa-lock  fa-2x <?= $propose ?>"></i>
+            </div>-->
  <?php
  }
  if($statut == 'ADMINISTRATEUR'){
  ?>
+<!--         <div class ="col-sm-1">
             <i class="fa fa-thumbs-o-up  fa-2x <?= $accepte ?>"></i>
+           </div><div class ="col-sm-1">  
             <i class="fa fa-thumbs-o-down  fa-2x <?= $refuse ?>"></i>
-<!--            <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i>-->
+            </div>-->
+<div class ="col-sm-1">                             
+                         <a href='indexadmin.php?action=chgtStatut&amp;libelle=ACCEPTE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='Validé'><i class="fa fa-thumbs-o-up  fa-2x <?= $accepte ?>"></i></a>
+                 </div>  <div class ="col-sm-1">      
+                         <a href='indexadmin.php?action=chgtStatut&amp;libelle=REFUSE&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>'title='Refusé'><i class="fa fa-thumbs-o-down  fa-2x <?= $refuse ?>"></i></a>
+
+    </div>
             <?php
  }
  ?>
@@ -145,12 +175,18 @@ if ($desactive) {
 </div>
 <h2> Suite(s)</h2>
 <?php
-
-while ($suite = $suites->fetch()) {
+// tableau de liste vote idvote en indice et vote ouvert en valeur
+$tabListVote = [];
+while($listVote= $listStatutVote->fetch()){
+  $tabListVote[$listVote['p5_posts_ART_ID']]=$listVote['VOTE_OUVERT'];  
     
+}
+while ($suite = $suites->fetch()) {
+  
     // score du vote de la suite 
 $jaime = 0;
 $jaimepas=0;
+
 foreach($tableauScores as $element)
 {
    
@@ -158,29 +194,30 @@ foreach($tableauScores as $element)
         $jaime=$element['JAIME'];
         $jaimepas=$element['JAIMEPAS'];
     }
+
 }
 
 if(($suite['ART_AUTEUR']== $_SESSION['userId'])||($statut=='ADMINISTRATEUR')){
     $redaction='';$propose='';$accepte='';$refuse=''; $vote='';
-if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
+    if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 //    echo ' <i class="fa fa-wrench  fa-2x "></i>';
-   $redaction= ' outils ';
-}elseif($suite['STATUT_POST_LIBELLE']=='PROPOSE'){
+    $redaction= ' outils ';
+    }elseif($suite['STATUT_POST_LIBELLE']=='PROPOSE'){
 //    echo'<i class="fa fa-lock  fa-2x "></i>';
    $propose=' outils ';
-}elseif($suite['STATUT_POST_LIBELLE']=='ACCEPTE'){
+    }elseif($suite['STATUT_POST_LIBELLE']=='ACCEPTE'){
 //    echo'<i class="fa fa-thumbs-o-up  fa-2x "></i>';
    $accepte=' outils ';
-}elseif($suite['STATUT_POST_LIBELLE']=='REFUSE'){
+    }elseif($suite['STATUT_POST_LIBELLE']=='REFUSE'){
 //    echo'<i class="fa fa-thumbs-o-down  fa-2x "></i>';
    $refuse=' outils ';
-}elseif($suite['STATUT_POST_LIBELLE']=='VOTE'){
+    }elseif($suite['STATUT_POST_LIBELLE']=='VOTE'){
 //    echo' <i class="fa fa-balance-scale  fa-2x "></i>';
    $vote=' outils ';
-}elseif($suite['STATUT_POST_LIBELLE']=='TERMINE'){
+    }elseif($suite['STATUT_POST_LIBELLE']=='TERMINE'){
 //    echo' <i class="fa fa-balance-scale  fa-2x "></i>';
    $vote=' termine ';
-}
+    }
 
 ?>
     <div class='resume'>
@@ -188,32 +225,39 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 <p><?= nl2br(($suite['ART_CONTENT'])) ?></p>
 <?php 
     if(($suite['STATUT_POST_LIBELLE']=='VOTE')AND($statut<>'ADMINISTRATEUR')){
-       echo ' <i class="fa fa-thumbs-up  fa-2x "></i>
-        <i class="fa fa-thumbs-down  fa-2x "></i>';   
+       echo ' <i class="fa fa-thumbs-up  fa-2x "></i><span class="badge">'.$jaime.'</span>
+        <i class="fa fa-thumbs-down  fa-2x "></i><span class="badge">'.$jaimepas.'</span>';   
 }else{
 ?>
-<div class='icone-admin'>
+<div class='icone-admin row'>
  <?php    
     if(($statut=='ADMINISTRATEUR')||(($suite['STATUT_POST_LIBELLE']=='REDACTION') ||($suite['STATUT_POST_LIBELLE']=='PROPOSE') )){
 
         ?>
-    
+     <div class ="col-sm-1">
                 <a href="indexadmin.php?action=updateSuite&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Modifiez la suite"><i class="fa  fa-edit  fa-2x "></i></a>
+     </div> <div class ="col-sm-1">
                 <a href="#" data-toggle="modal" data-target="#deleteModal<?= htmlspecialchars($suite['ART_ID']) ?>" title="Supprimez la suite"><i class="fa fa-remove  fa-2x"></i></a>
+       </div> <div class ="col-sm-1">          
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=REDACTION&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='en cours de rédaction'><i class="fa fa-wrench  fa-2x <?= $redaction ?>"></i> </a> 
+        </div> <div class ="col-sm-1">         
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=PROPOSE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='proposer le post à la validation'><i class="fa fa-lock  fa-2x <?= $propose ?>"></i></a> 
-               <?php
+         </div>     
+ <?php
     }
                if($statut=='ADMINISTRATEUR'){
                  ?>
+     <div class ="col-sm-1">
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=ACCEPTE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Validé'><i class="fa fa-thumbs-o-up  fa-2x <?= $accepte ?>"></i></a>
+      </div> <div class ="col-sm-1">
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=REFUSE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Refusé'><i class="fa fa-thumbs-o-down  fa-2x <?= $refuse ?>"></i></a>
+         </div> <div class ="col-sm-3">        
                 <a href='indexadmin.php?action=chgtStatutSuite&amp;libelle=VOTE&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='Vote en cours'> <i class="fa fa-balance-scale  fa-2x <?= $vote ?>"></i><span class="badge"><?= $jaime.' ' ?> J'aime</span><span class="badge"><?= $jaimepas.' ' ?>j'aime pas.</span></a>
-<?php
+         </div>
+                    <?php
                }
                ?>
-</div>
-<div class="modal fade" id="deleteModal<?= htmlspecialchars($suite['ART_ID']) ?>" role="dialog">
+    <div class="modal fade" id="deleteModal<?= htmlspecialchars($suite['ART_ID']) ?>" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
@@ -243,6 +287,8 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
         </div>
     </div>
 </div>
+</div>
+
     <?php
 }
 ?>
@@ -254,15 +300,34 @@ if($suite['STATUT_POST_LIBELLE']=='REDACTION'){
 
     <div class='avoter'>
 <p><strong><?= htmlspecialchars($suite['USER_PSEUDO']) ?></strong> le <?= htmlspecialchars($suite['DATE']) ?></p>
-<p><?= nl2br(($suite['ART_CONTENT'])) ?></p>
+<p><?= $suite['ART_CONTENT'] ?></p>
+<?php
+if ((isset($tabListVote[$suite['ART_ID']]))AND($tabListVote[$suite['ART_ID']]==1)){
+?>
 <div class='icone-admin'>
   
     <a href='indexadmin.php?action=votation&amp;bulletin=YES&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaime'><i class="fa fa-thumbs-up  fa-2x <?= $vote ?>"></i><span class="badge"><?= $jaime?></span></a>
      <a href='indexadmin.php?action=votation&amp;bulletin=NO&amp;id=<?= htmlspecialchars($suite['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>&amp;precedent=<?= $suite['ART_PRECEDENT'] ?>&amp;auteur=<?= $suite['ART_AUTEUR'] ?>'title='jaimepas'><i class="fa fa-thumbs-down  fa-2x <?= $vote ?>"></i><span class="badge"><?= $jaimepas ?></span></a>
 
-</div></div>
+</div>
+ <?php
+}else{
+    ?>
+
+ <div class='icone-admin'>
+  <i class="fa fa-thumbs-up  fa-2x "></i><span class="badge"><?=$jaime ?></span>
+  <i class="fa fa-thumbs-down  fa-2x "></i><span class="badge"><?= $jaimepas ?></span>
+   <span class="badge ">Vote suspendu !</span> 
+    
+    </div>
+<?php
+}
+    ?>
+    
+    </div>
 <?php    
 }
+
 }
 ?>
 <h2>Commentaire(s)</h2>

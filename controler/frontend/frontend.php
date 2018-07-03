@@ -13,21 +13,23 @@ require_once('Model/Frontend/MessageManager.php');
 //$OCFramLoader = new SplClassLoader('Frontend', '/Model');
 //$OCFramLoader->register();
  
-// Liste des ouvrages enable 
-function listOuvrages() {
+class FrontendControler {
+    
+   // Liste des ouvrages enable 
+public function listOuvrages() {
     $bookManager = new Frontend\BookManager();
     $books = $bookManager->getBooks();
 
     require('view/frontend/listBooksView.php');
 }
 
-
+ 
 //╔════════════════════════════════════════╗  
 //        List des chapitres depuis getPosts (uniquement publiés) 
 //        - listPostsView
 //╚════════════════════════════════════════╝
 // 
-function listPosts() {
+public function listPosts() {
     $postManager = new Frontend\PostManager();
     $posts = $postManager->getPosts();
 
@@ -39,7 +41,7 @@ function listPosts() {
 //      premiers caractères - Données de l'Ouvrage - listPostsView                                        
 //╚════════════════════════════════════════════╝
 // 
-function listPostsResume() {
+public function listPostsResume() {
     $postManager = new Frontend\PostManager();
     $bookManager = new Frontend\BookManager();
     $posts = $postManager->getPostsResume($_GET['ouv_id']);
@@ -47,26 +49,18 @@ function listPostsResume() {
    
     require('view/frontend/listPostsView.php');
 }
-
+ 
 //╔════════════════════════════════════════╗  
 //   Un chapitre  . Données Ouvrage - Les commentaires- req postView
 //╚════════════════════════════════════════╝
 // 
-function post(){
+public function post(){
      $postManager = new Frontend\PostManager();
     $commentManager = new Frontend\CommentManager();
 
     $bookManager = new Frontend\BookManager();
     $article = $postManager->getPost($_GET['id']);
-   // $statutPost = $postManager->libelleStatutPost($article['p5_statut_post_STATUT_POST_ID']);
-//    if ($article) {
-//        $comments = $commentManager->getComments($_GET['id']);
-//        $book = $bookManager->getBook($_GET['ouv_id']);
-//        $posts = $postManager->getPostsResume($_GET['ouv_id']);
-//        require('view/frontend/postView.php');
-//    } else {
-//        throw new Exception('Chapitre inconnu');
-//    }
+
     if ($article) {
         $comments = $commentManager->getCommentsPremierNiveau($_GET['id']);
         $commentsChild = $commentManager->getCommentsChild($_GET['id']);
@@ -80,7 +74,7 @@ function post(){
 }
 
 
-function postSession($session_id) {
+public function postSession($session_id) {
 
     $postManager = new Frontend\PostManager();
     $commentManager = new Frontend\CommentManager();
@@ -112,7 +106,7 @@ function postSession($session_id) {
 //═════════════════════════════════════════════
 //      COMM                  active un commentaire 
 //═════════════════════════════════════════════
-     function activeComment() {
+     public function activeComment() {
         $commentManager = new Frontend\CommentManager();
         $comment = $commentManager->enableComment($_GET['commId']);
         if ($comment) {
@@ -124,7 +118,7 @@ function postSession($session_id) {
 //═════════════════════════════════════════════
 //      COMM           désactive un commentaire
 //═════════════════════════════════════════════
-function desactiveComment() {
+public function desactiveComment() {
     $commentManager = new Frontend\CommentManager();
     $comment = $commentManager->disableComment($_GET['commId']);
     if($comment){
@@ -133,18 +127,17 @@ function desactiveComment() {
  throw new Exception ('Elément inconnu 337');   
 }
 }
-
-//╔══════════════════════════════════════════╗  
+ //╔══════════════════════════════════════════╗  
 //   COMM  signal  un commentaire 
 //╚══════════════════════════════════════════╝
 // 
 
- function activeSignal() {
+ public function activeSignal() {
     $commentManager = new Frontend\CommentManager();
     $comment = $commentManager->enableSignal($_GET['commId']);
     if($comment){
-    messageSignalementCommentaire();    
-    post();
+    $this->messageSignalementCommentaire();    
+    $this ->post();
 }else{
  throw new Exception ('Elément inconnu 351');   
 }
@@ -154,12 +147,12 @@ function desactiveComment() {
 //╚══════════════════════════════════════════╝
 // 
 
-function desactiveSignal() {
+public function desactiveSignal() {
 
     $commentManager = new Frontend\CommentManager();
     $comment = $commentManager->disableSignal($_GET['commId']);
     if($comment){
-   post();
+   $this->post();
 }else{
  throw new Exception ('Elément inconnu 366');   
 }
@@ -168,24 +161,22 @@ function desactiveSignal() {
 //   ═════════════════════════════════════════════
     //    MESS- Envoi message suite signalement commentaire
     //   ═════════════════════════════════════════════
-function messageSignalementCommentaire(){
+public function messageSignalementCommentaire(){
 //Messagerie
     $userManager = new Frontend\UsersManager();
     $bookManager = new Frontend\BookManager();
     $book = $bookManager->getBooksRights($_GET['ouv_id']);
-    //$article = $postManager->getPost($_GET['id']);
     $root = $userManager -> listSuperadmin();
     $objet = 'Signalement commentaire  ';
     $contenu = 'Un signalement de commentaire est levé par '.$_SESSION['user'];
-    //$auteurId = $auteur;
-    while ($adminBook = $book->fetch()) {
+     while ($adminBook = $book->fetch()) {
     
-    messageSystem($adminBook['p5_USERS_USER_ID'],$_SESSION['userId'], $objet, $contenu);
+    $this->messageSystem($adminBook['p5_USERS_USER_ID'],$_SESSION['userId'], $objet, $contenu);
     // envoyer mess aux administrateur de louvrage
     }
      while ($rootBook = $root->fetch()) {
     
-messageSystem($rootBook['USER_ID'],$_SESSION['userId'] , $objet, $contenu);
+$this ->messageSystem($rootBook['USER_ID'],$_SESSION['userId'] , $objet, $contenu);
     // envoyer mess aux Superadmin 
     }
     /// fin messagerie
@@ -195,19 +186,14 @@ messageSystem($rootBook['USER_ID'],$_SESSION['userId'] , $objet, $contenu);
 //   Ajoute un commentaire au chapitre puis lance la fonction post()
 //╚════════════════════════════════════════╝
 // 
-function ajoutComment($id, $auteur, $comment,$parent,$ouvId) {
+public function ajoutComment($id, $auteur, $comment,$parent,$ouvId) {
     $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\?!:]+)";
-   
-//    $id = preg_replace('([^0-9]+)', '', $_POST['postId']);
-//    $auteur = preg_replace($regex, '', $_POST['authorId']);
-//    $comment = preg_replace($regex, '', $_POST['comment']);
-//    $precedent = preg_replace($regex, '', $_POST['precedent']);
     $commentManager = new Frontend\commentManager();
     $comment = $commentManager->addComment($id, $auteur, $comment,$parent);
    // throw new Exception ('parent: '.$parent);
     $_GET['ouv_id']=$ouvId;
     $_GET['id']=$id;
-    post();
+    $this ->post();
 }
 
 //╔════════════════════════════════════════╗  
@@ -215,13 +201,13 @@ function ajoutComment($id, $auteur, $comment,$parent,$ouvId) {
 //     - lance le script modal.php
 //╚════════════════════════════════════════╝
 // 
-function message($nom, $mailExpediteur, $texte) {
+public function message($nom, $mailExpediteur, $texte) {
 // Mettez ici votre adresse valide
     $passage_ligne = "\n";
     $to = "lionel.claudey@laposte.net";
 
 // Sujet du message 
-    $subject = "Message Internaute pour Jean FORTEROCHE";
+    $subject = "Message Internaute pour LES ROMANS COLLABORATIFS";
 
 // Corps du message, écrit en texte et encodage iso-8859-1
     $message = "Message de :" . $nom . "  Adresse Mail : " . $mailExpediteur . $passage_ligne . $texte;
@@ -240,30 +226,43 @@ function message($nom, $mailExpediteur, $texte) {
     return $info;
 }
 
-function infoMail($info) {
+public function infoMail($info) {
     require('view/frontend/modal.php');
 }
 
 
-function inscription($userName, $userLastname, $userPseudo, $userMail, $userPasswd, $userStatut) {
+public function inscription($userName, $userLastname, $userPseudo, $userMail, $userPasswd, $userStatut) {
 
     $usersManager = new Frontend\UsersManager();
    $newUser = $usersManager->addUser($userName, $userLastname, $userPseudo, $userMail, $userPasswd, $userStatut);
     $root = $usersManager->listSuperadmin();
     $objet = 'Demande inscription   ';
     $contenu = 'demande inscription pour :  ' . $userName . ' ' . $userLastname . ' pseudo :' . $userPseudo . ' email : ' . $userMail;
-    //$contenu = 'demande inscription pour :  ' . $_POST['nom'] . ' ' . $_POST['prenom'] . ' pseudo :' . $_POST['pseudo'] . ' email : ' . $_POST['email'];
-    while ($rootBook = $root->fetch()) {
+      while ($rootBook = $root->fetch()) {
 
-        messageSystem($rootBook['USER_ID'], $rootBook['USER_ID'], $objet, $contenu);
+        $this ->messageSystem($rootBook['USER_ID'], $rootBook['USER_ID'], $objet, $contenu);
         
         // envoyer mess aux Superadmin 
     }
-    post();
+    $this ->post();
 }
 
-function messageSystem($destinataire, $expediteur, $objet, $contenu) {
+public function messageSystem($destinataire, $expediteur, $objet, $contenu) {
         
         $messageManager = new Frontend\MessageManager();
         $envoi = $messageManager->addMessage($destinataire, $expediteur, $objet, $contenu);
     }
+  
+    public function erreur($message){
+    $_POST['message']=$message;
+  require_once('view/frontend/erreurView.php'); 
+    
+}
+    
+    
+}
+
+
+
+
+

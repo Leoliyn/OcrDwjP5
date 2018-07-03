@@ -3,12 +3,8 @@
 
 
 <?php
-//echo $_SESSION['id'];
-$date=new DateTime();
-echo $date->format('Y-m-d H-i-s');
-$date->modify('+5 minute');
-echo'<br />'.$date->format('Y-m-d H-i-s');
-$title ="??????????????????????????????????";
+
+$title = $_SESSION['title'];
 $page= 'listBookView.php';
 $contentMenu = "";
 $listeCarousel = '<div id="myCarousel" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">';
@@ -17,10 +13,10 @@ $iteration=0;
 
 while ($dataBook = $books->fetch())
 {
-//$auteur = 'Jean FORTEROCHE';
+
     $ouvId=htmlspecialchars($dataBook['OUV_ID']);
 $description =htmlspecialchars($dataBook['OUV_DESCRIPTION']);
-$bookPreface =htmlspecialchars($dataBook['OUV_PREFACE']);
+$bookPreface =$dataBook['OUV_PREFACE'];
 $bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
 
 setlocale(LC_CTYPE, 'fr_FR.UTF-8');
@@ -32,7 +28,6 @@ setlocale(LC_CTYPE, 'fr_FR.UTF-8');
 $bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']); 
 
 $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
-//$image ='public/images/couverture2.jpg';
     $contentMenu .= "<li><a href='";
     $contentMenu .= "ouvrage-";
     $contentMenu .= htmlspecialchars($titre);
@@ -103,7 +98,8 @@ $books->closeCursor();
 ?>
 
 <?php $content = ob_get_clean(); ?>
-<?php ob_start(); ?>
+
+    <?php ob_start(); ?>
 
 
 
@@ -121,7 +117,6 @@ $books->closeCursor();
 </a>
 
 </div>
-
 
 
 <?php $slider = ob_get_clean(); ?>

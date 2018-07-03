@@ -133,12 +133,12 @@ class BookManager extends Manager {
         return $book;
     }
 //A proteger seul root
-    public function addBook($title, $preface, $subtitle, $description, $keywords, $image) {
+    public function addBook($title, $preface, $subtitle, $description, $keywords) {
 
 
         $db = $this->dbConnect();
-        $req = $db->prepare('INSERT into p5_ouvrage (OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE,OUV_IMAGE) VALUES(?,?,?,?,?,?,?)');
-        $req->execute(array($title, $preface, $subtitle, $description, $keywords, 0, $image));
+        $req = $db->prepare('INSERT into p5_ouvrage (OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE) VALUES(?,?,?,?,?,?)');
+        $req->execute(array($title, $preface, $subtitle, $description, $keywords, 0));
         $lastId = $db->lastInsertId();
         return $lastId;
         $req->closeCursor ();

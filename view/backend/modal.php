@@ -1,4 +1,3 @@
-<?php $title = 'Jean FORTEROCHE Billet simple pour l\'ALASKA '; ?>
 <?php ob_start(); ?>
 
 <div class="modal fade" id="mailModal" role="dialog">

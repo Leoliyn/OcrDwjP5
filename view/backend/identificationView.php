@@ -1,5 +1,3 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
 <?php ob_start(); ?>
 
 

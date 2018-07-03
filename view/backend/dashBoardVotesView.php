@@ -3,10 +3,6 @@ echo"<div class='resume'>
 
     <h3 >   Vote(s) Ouvert(s)  </h3>";
 
-
-//echo '<table class="table">';
-//echo'<tr><td>VOTE ID</td><td>DEBUT</td><td>FIN</td><td>ART_ID</td><td>AUTEUR</td><td>Titre CHapitre</td><td>numero chapitre</td><td>J\'AIME</td><td>J\'AIME PAS</td><td>Gestion</td></tr>';
-
 while ($donneesVotes = $votesListe->fetch())
  { 
     
@@ -16,14 +12,17 @@ echo '<div class="row">
   Vote N°:  
     <button type="button" class="">
 <span class="badge badge-light">'.$donneesVotes['VOTE_ID'].'</span>
-</button>
-
+</button>';
+$dateDebut=new datetime($donneesVotes['VOTE_DATEDEBUT']);
+$dateD=  $dateDebut -> format('d-m-Y H:i');
+$dateFin=new datetime($donneesVotes['VOTE_DATEFIN']);
+$dateF=  $dateFin -> format('d-m-Y H:i');
     
-  </div>
+  echo'</div>
 <div class="col-sm-3">
   Début : 
     <button type="button" class="">
-    <span class="fa fa-calendar fa-2x"></span> '.$donneesVotes['VOTE_DATEDEBUT'].'
+    <span class="fa fa-calendar fa-2x"></span> '.$dateD.'
     </button>
 
     
@@ -31,7 +30,7 @@ echo '<div class="row">
 <div class="col-sm-3">
 Fin   : 
     <button type="button" class="">
-    <span class="fa fa-calendar fa-2x"></span> '.$donneesVotes['VOTE_DATEFIN'].'
+    <span class="fa fa-calendar fa-2x"></span> '.$dateF.'
     </button>
 
      </div>
@@ -46,8 +45,7 @@ echo'<span><ul class="list-group">
     Suite proposée pour :
   <li class="list-group-item">Chapitre N°: '.$donneesVotes['NUM_CHAPITRE'].'</li>
   <li class="list-group-item">Titre: '.$donneesVotes['TITRE_PRECEDENT'].'</li>
-      <li class="list-group-item">id precedent '.$donneesVotes['LE_PRECEDENT'].'</li>
-    <li class="list-group-item">'.$donneesVotes['CONTENU_SUITE'].'</li>
+  <li class="list-group-item">'.$donneesVotes['CONTENU_SUITE'].'</li>
 </ul></span>
 
 <div class="row">
@@ -126,22 +124,24 @@ echo '<div class="row">
   Vote N°:  
     <button type="button" class="">
 <span class="badge badge-light">'.$donneesVotes['VOTE_ID'].'</span>
-</button>
-
-    
-  </div>
+</button>';
+$dateDebut=new datetime($donneesVotes['VOTE_DATEDEBUT']);
+$dateD=  $dateDebut -> format('d-m-Y H:i');
+$dateFin=new datetime($donneesVotes['VOTE_DATEFIN']);
+$dateF=  $dateFin -> format('d-m-Y H:i');
+  echo'</div>
 <div class="col-sm-3">
   Début : 
     <button type="button" class="">
-    <span class="fa fa-calendar fa-2x"></span> '.$donneesVotes['VOTE_DATEDEBUT'].'
-    </button>
+    <span class="fa fa-calendar fa-2x"></span> '.$dateD.'
+    </button>';
 
     
-  </div>
+  echo'</div>
 <div class="col-sm-3">
 Fin   : 
     <button type="button" class="">
-    <span class="fa fa-calendar fa-2x"></span> '.$donneesVotes['VOTE_DATEFIN'].'
+    <span class="fa fa-calendar fa-2x"></span> '.$dateF.'
     </button>
 
      </div>
@@ -156,8 +156,7 @@ echo'<span><ul class="list-group">
     Suite proposée pour :
   <li class="list-group-item">Chapitre N°: '.$donneesVotes['NUM_CHAPITRE'].'</li>
   <li class="list-group-item">Titre: '.$donneesVotes['TITRE_PRECEDENT'].'</li>
-      <li class="list-group-item">id precedent '.$donneesVotes['LE_PRECEDENT'].'</li>
-    <li class="list-group-item">'.$donneesVotes['CONTENU_SUITE'].'</li>
+  <li class="list-group-item">'.$donneesVotes['CONTENU_SUITE'].'</li>
 </ul></span>
 
 <div class="row">

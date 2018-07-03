@@ -1,6 +1,3 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
-
 <?php ob_start(); 
   
   $chapitre= $chapter[0] +1;

@@ -69,7 +69,7 @@ class UsersManager extends Manager {
         return $req;
         $req->closeCursor();
     }
-    // Verifie qu'une seule répose à la requete sur le login puis verify par bcript que le mot de passe est bon  
+    // Verifie qu'une seule réponse à la requete sur le login puis verify par bcript que le mot de passe est bon  
   public function connexion($pseudo, $password) {
         $db = $this->dbConnect();
         $nbrow = 0;

@@ -91,7 +91,13 @@ $messages = $db->prepare('SELECT MESS_ID,MESS_LU,MESS_OBJET,MESS_CONTENT,
        
         $lu->closeCursor ();
     }
-  
+   public function cleanMessagerie() {
+        $db = $this->dbConnect();
+        $req = $db->prepare('DELETE FROM p5_messages WHERE DEL_DESTINATAIRE = ? AND DEL_EXPEDITEUR = ?');
+        $req->execute(array(1,1));
+        return $req;
+        $req->closeCursor ();
+    }
      public function delMessages($id) {
         $db = $this->dbConnect();
         $req = $db->prepare('DELETE FROM p5_messages WHERE MESS_ID = ?');

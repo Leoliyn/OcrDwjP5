@@ -13,12 +13,7 @@ echo '<div class="modal fade" id="integrationModal'.$donneesVotes['VOTE_ID'].'" 
             <div class="modal-body">
                 <form role="form" action="indexadmin.php" method="get">
                     <div class="form-group">
-                        '.$donneesVotes['OUVRAGE_OUV_ID'].'<br />
-            '.$donneesVotes['USER_PSEUDO'].' <br /> 
-                '.$donneesVotes['VOTE_ID'].'<br />
-                
-               '.$donneesVotes['p5_posts_ART_ID'].' <br />
-                <br />
+                       
                         <input type="hidden" name="action" value="concatSuite" id="action" >
                         <input type="hidden" name="suiteId"  value="'.$donneesVotes['p5_posts_ART_ID'].'" id="suiteId" >
                         <input type="hidden" name="auteur" value="'.$donneesVotes['USER_PSEUDO'].'" id="auteur" >

@@ -7,8 +7,8 @@
                 <span class="icon-bar"></span>                        
             </button>
             <a class="navbar-brand" href="index.php">
-             
-               <i style ="font-size:12px"><?php if(isset($titleOuv)) echo $titleOuv; ?></i>
+             <?= $_SESSION['title']?>
+                <i style ="font-size:12px"><?php if(isset($titleOuv)) echo $titleOuv; ?></i>
             </a>
 
         </div>

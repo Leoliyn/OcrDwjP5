@@ -1,5 +1,3 @@
-<?php $title = 'Jean FORTEROCHE'; ?>
-
 <?php
 ob_start();
 
@@ -11,16 +9,17 @@ if (isset($droits[$_GET['ouv_id']])) {
     throw new Exception("Vous n'avez de droit d'accès 11 ");
 }
 ?>
-<div class='resume'>
+
     <?php
     if(($statut == 'ADMINISTRATEUR')||($statut == 'REDACTEUR')){
         
     ?>
+    <div class='resume'>
     <a href="indexadmin.php?action=newPost&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Ajouter un article"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un chapitre..</a>
-
+   </div>
 <?php
     }
-    echo'</div>';
+ 
     $num_rows=0;
     
   
@@ -78,10 +77,10 @@ if($data['STATUT_POST_LIBELLE']=='REDACTION'){
         ?>
         <h3>
        
-            <p>id: <?= $_GET['ouv_id'] ?>
-           <p>Ouvrage:  <?= htmlspecialchars($data['OUV_TITRE']) ?></p>
-            <p>Chapitre:  <?= htmlspecialchars($data['ART_CHAPTER']) ?></p>
-            <?= htmlspecialchars($data['ART_TITLE']) ?>
+            
+           <p><i class="fa fa-folder-open fa-1x"></i> <?= htmlspecialchars($data['OUV_TITRE']) ?></p>
+            <p><i class="fa fa-file-o   fa-1x"></i>  n°<?= htmlspecialchars($data['ART_CHAPTER']) ?>
+            <?= htmlspecialchars($data['ART_TITLE']) ?></p>
 
         </h3>
 
@@ -142,7 +141,7 @@ if($data['STATUT_POST_LIBELLE']=='REDACTION'){
   }  
   ?>
  <div class ="col-sm-2 bulleComm">
-            <a href="indexadmin.php?action=post&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= htmlspecialchars($_GET['ouv_id']) ?>" title="Accédez aux commentaires"><div class ='nbcomm'><?= htmlspecialchars($data['NBCOMMENT']) ?></div><i class="fa fa-commenting-o fa-2x"></i></a>
+            <a href="indexadmin.php?action=post&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= htmlspecialchars($_GET['ouv_id']) ?>" title="Accédez Au Chapitre,aux commentaires, aux suites"><div class ='nbcomm'><?= htmlspecialchars($data['NBCOMMENT']) ?></div><i class="fa fa-commenting-o fa-2x"></i></a>
             </div>
 <div class ="col-sm-1"></div>
 <?php

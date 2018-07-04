@@ -1,3 +1,8 @@
+<?php
+/**
+ * Section contact frontend
+ */
+?>
 
 <div id="contact" class="resume text-center">
   
@@ -6,9 +11,9 @@
 
     <div class="row">
         <div class="col-md-4">
-            <p>Fan? Laisser un message.</p>
+            <p> Laisser un message.</p>
             <p><span class="glyphicon glyphicon-map-marker"></span>Paris, FR</p>
-            <p><span class="glyphicon glyphicon-envelope"></span>Email: editionTruc@mail.com</p>
+            <p><span class="glyphicon glyphicon-envelope"></span>Email: contact@lesromanscollaboratifs.com</p>
         </div> 
         <form method='post' action='index.php?action=message'>
         <div class="col-md-8">

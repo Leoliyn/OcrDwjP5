@@ -1,12 +1,13 @@
+<?php
+/**
+ * Container dashboard global
+ */
+?>
 <?php ob_start(); ?>
 
-
-
 <div class='resume'>
-   
-  
-    <a href="indexadmin.php?action=newUser" title="Ajouter un article"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un utilisateur..</a>
 
+    <a href="indexadmin.php?action=newUser" title="Ajouter un article"><i class="fa fa-plus-square  fa-4x "></i>   Ajouter un utilisateur..</a>
 </div>
 <?php require ('view/backend/dashBoardUsersView.php'); ?>
 <?php require ('view/backend/dashBoardBooksView.php'); ?>

@@ -1,5 +1,8 @@
 <?php
-// Modal  delete user
+/**
+ * fenetre Modal confirmation suppression user
+ */
+
 echo '<div class="modal fade" id="delUserModal'.$donnees['USER_ID'].'" role="dialog">
     <div class="modal-dialog">
 

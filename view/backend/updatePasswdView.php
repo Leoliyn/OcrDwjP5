@@ -1,17 +1,17 @@
+<?php
+/**
+ *  FORmulaire Modification du mot de pass
+ */
+?>
 <?php ob_start(); ?>
 
-<?php
-if (isset($message)) {
-    echo $message;
-}
-?>
+
+<?php if (isset($message)): ?>
+    <?= $message; ?>
+<?php endif; ?>
 
 <div class='resume'>
-
-    <h3>
-        Modification Mot de passe 
-
-    </h3>
+<h3>Modification Mot de passe</h3>
 
     <form action='indexadmin.php?action=changePsswd' method="post">
 
@@ -56,8 +56,8 @@ if (isset($message)) {
         </div>
     </div>
 </div>
+</div>
 
 
-    <?php $content = ob_get_clean(); ?>
-
-    <?php require('view/backend/template.php'); ?>
+<?php $content = ob_get_clean(); ?>
+<?php require('view/backend/template.php'); ?>

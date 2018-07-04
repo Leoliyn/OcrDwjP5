@@ -1,5 +1,9 @@
 <?php
-// Modal  integration suite
+/**
+ * Modal confirmation integration suite
+ */
+
+ 
 echo '<div class="modal fade" id="integrationModal'.$donneesVotes['VOTE_ID'].'" role="dialog">
     <div class="modal-dialog">
 

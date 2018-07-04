@@ -1,3 +1,8 @@
+<?php
+/**
+ * formulaire reponse commentaire  frontend
+ */
+?>
 
 <form action="index.php?action=addComment" method="post">
     <input class="form-control"type="hidden" id="postId" name="postId" value="<?= htmlspecialchars($_GET['id']) ?>" />

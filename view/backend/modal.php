@@ -1,3 +1,8 @@
+<?php
+/**
+ * fenetre modal envoi mail 
+ */
+?>
 <?php ob_start(); ?>
 
 <div class="modal fade" id="mailModal" role="dialog">

@@ -1,3 +1,8 @@
+<?php
+/**
+ * Formulaire modification chapitre
+ */
+?> 
 <?php ob_start(); ?>
 
 
@@ -7,11 +12,7 @@ $ouvrageTitre = $ouvrage['OUV_TITRE'];
 $ouvId = $_GET['ouv_id'];
 ?>
 <div class='resume'>
-
-    <h3>
-        Modification Article
-
-    </h3>
+    <h3>Modification Chapitre</h3>
 
 
 
@@ -19,10 +20,10 @@ $ouvId = $_GET['ouv_id'];
         <p><label></label></p><p><input type="hidden" id="date" name="art_date" value="<?= htmlspecialchars($data['DATE_fr']) ?>"  ></p>
         <p><label></label></p><p><input type="hidden" id="art_id" name="art_id" value="<?= htmlspecialchars($data['ART_ID']) ?>"  ></p>
        <!-- <p><label> Publier en ligne</label></p><p><input type="checkbox" id="art_desactive" name="art_desactive" checked></p>-->
-         <input type ="hidden" id ="ouv_id"name="ouv_id" value ="<?= $ouvId ?>">
+        <input type ="hidden" id ="ouv_id"name="ouv_id" value ="<?= $ouvId ?>">
         <label> Ouvrage</label><input type="texte" class="form-control" id="ouvrage" name = "ouvrage" value="<?= $ouvrageTitre ?>" readOnly >
         <label> Chapitre</label><input type="texte" class="form-control" id="art_chapter" name = "art_chapter" value="<?= htmlspecialchars($data['ART_CHAPTER']) ?>">
-        <label> Auteur</label><input type="texte" class="form-control" id="art_auteur" name = "art_auteur" value="<?= htmlspecialchars($data['USER_PSEUDO'])  ?>" readOnly>
+        <label> Auteur</label><input type="texte" class="form-control" id="art_auteur" name = "art_auteur" value="<?= htmlspecialchars($data['USER_PSEUDO']) ?>" readOnly>
         <input type="hidden" class="form-control" id="auteur" name = "auteur" value="<?= htmlspecialchars($data['ART_AUTEUR']) ?>">
         <label> Statut</label><input type="texte" class="form-control" id="statut_post" name = "statut_post" value="<?= htmlspecialchars($data['STATUT_POST_LIBELLE']) ?>"readOnly >
         <label> Titre</label><input type="texte" class="form-control" id="art_title" name = "art_title" value="<?= htmlspecialchars($data['ART_TITLE']) ?>">
@@ -31,17 +32,15 @@ $ouvId = $_GET['ouv_id'];
         <label> Description</label><input style="width: 100%;" name="art_description" id="art_description" value="<?= htmlspecialchars($data['ART_DESCRIPTION']) ?>" /><br />
         <label> Mots clés (séparés par une virgule)</label><input style="width: 100%;" name="art_keywords" id="art_keywords"  value="<?= htmlspecialchars($data['ART_KEYWORDS']) ?>"/><br />   
         <br />
-         <?php
-    $file="./uploads/".htmlspecialchars($data['ART_IMAGE']);
-    if(is_file($file))
-  {
-    ?>
-        <img src='./uploads/<?= htmlspecialchars($data['ART_IMAGE']) ?>' class="miniature" />
-        <br />
-        <label> Image du chapitre :<?= htmlspecialchars($data['ART_IMAGE']) ?>
-            <?php
-  }
+        <?php
+        $file = "./uploads/" . htmlspecialchars($data['ART_IMAGE']);
+        if (is_file($file)):
             ?>
+
+            <img src='./uploads/<?= htmlspecialchars($data['ART_IMAGE']) ?>' class="miniature" />
+            <br />
+            <label> Image du chapitre :<?= htmlspecialchars($data['ART_IMAGE']) ?>
+<?php endif; ?>
             <br />
             Pour changer ou charger une image cliquez sur Parcourir (1600x550 ou de ratio 2.909)</label> <input type="file" name="uploaded_file" /> 
         <br />
@@ -55,5 +54,4 @@ $ouvId = $_GET['ouv_id'];
 </div>
 
 <?php $content = ob_get_clean(); ?>
-
 <?php require('view/backend/template.php'); ?>

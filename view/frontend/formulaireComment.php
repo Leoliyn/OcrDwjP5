@@ -1,3 +1,9 @@
+<?php
+/**
+ * formulaire saise du commentaire
+ */
+?>
+
 
 <form action="index.php?action=addComment" method="post">
        

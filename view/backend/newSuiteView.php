@@ -1,5 +1,10 @@
-<?php ob_start(); 
-  
+<?php
+/**
+ * Formulaire nouvel suite 
+ */
+?>
+<?php ob_start(); ?> 
+ <?php 
   $chapitre= 0;
   $ouvrageTitre = $ouvrage['OUV_TITRE'];
   $ouvId = $_GET['ouv_id'];
@@ -24,19 +29,12 @@
          <input type="hidden" class="form-control" id="precedent" name = "precedent" value="<?= $idPrecedent ?>">
          <label> Statut du post</label><input type="texte" class="form-control" id="statut_post" name = "statut_post" value="REDACTION" readOnly>
          <label> Article</label><textarea style="width: 100%;" name="art_content"><br /></textarea>
-        
-       
-        <br />
+    <br />
         <input class="btn btn-primary" type="submit" name="send" value="Envoyer" />
         <input class="btn btn-primary" type="reset" name="reset" value="Reset" />
         <a href="indexadmin.php"><input class="btn btn-primary" type="button" name="retour" value="Retour" /></a>
     </form>
 
 </div>
-
-
-
-
 <?php $content = ob_get_clean(); ?>
-
 <?php require('view/backend/template.php'); ?>

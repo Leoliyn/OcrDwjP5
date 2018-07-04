@@ -1,3 +1,8 @@
+<?php
+/**
+ * vue Chapitre  frontend
+ */
+?>
 
 <?php ob_start(); ?>
 
@@ -6,25 +11,25 @@
 //____________________________________________________________________________________________________   
     //Fonction affichage recursif dans la vue . Ordonne les dépendances des commentaires 
 //dans les tableaux $comments et $commensChild founis par le controleur
-function rechercheEnfant($tableau,$id,$statut){
+function rechercheEnfant($tableau, $id, $statut) {
     echo'<ul>';
-    global $data,$ouvId;
-   
-    foreach($tableau as $cle => $element){
-       
-     if($tableau[$cle]['COMM_PARENT']== $id){
-       echo '<i class="fa fa-arrow-down fa-2x"></i><li class = "listComm"> ';
-       
-     require('view/frontend/commentViewChild.php'); 
-     
-    echo'</li><ul>';
-         rechercheEnfant($tableau,$tableau[$cle]['COMM_ID'],$statut);
-         echo'</ul>'; 
-     }else{
-  
-    } } 
-    echo'</ul>'; 
+    global $data, $ouvId;
+    foreach ($tableau as $cle => $element) {
+
+        if ($tableau[$cle]['COMM_PARENT'] == $id) {
+            echo '<i class="fa fa-arrow-down fa-2x"></i><li class = "listComm"> ';
+            require('view/frontend/commentViewChild.php');
+
+            echo'</li><ul>';
+            rechercheEnfant($tableau, $tableau[$cle]['COMM_ID'], $statut);
+            echo'</ul>';
+        } else {
+            
+        }
+    }
+    echo'</ul>';
 }
+
 ///////////Fin fonction Affichage
 //_______________________________________________________________________________
 
@@ -32,7 +37,6 @@ function rechercheEnfant($tableau,$id,$statut){
 $page='postView.php';
 $dataBook = $book[0];
 
-//$auteur = htmlspecialchars($dataBook['OUV_AUTEUR']);
 $description =htmlspecialchars($dataBook['OUV_DESCRIPTION']);
 $bookPreface =htmlspecialchars($dataBook['OUV_PREFACE']);
 $bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
@@ -43,20 +47,18 @@ $titleOuv=$bookTitre;
  
 // Statut de l'utilisateur 
 $statut= null;
-if(isset($_SESSION['Rights'])){
+if (isset($_SESSION['Rights'])) {
     $droits = unserialize($_SESSION['Rights']);
 
 
     if (isset($droits[$ouvId])) {
         $statut = $droits[$ouvId];
-
+    }
 }
 
-    }
 
 
- 
-   while ($data = $posts->fetch()) {
+while ($data = $posts->fetch()) {
 
             setlocale(LC_CTYPE, 'fr_FR.UTF-8');
             $titre = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $data['ART_TITLE']);
@@ -81,20 +83,12 @@ if(isset($_SESSION['Rights'])){
     $contentMenu .= " </span><span>"; 
     $contentMenu .= htmlspecialchars($data['ART_TITLE']);
     $contentMenu .= "</a></span> </li>";
-   
-//$tabPagination[]=$dataList['ART_CHAPTER'];
+ 
 }
 
 $posts->closeCursor();
 
 ?>
-
-
-<?php //$content = ob_get_clean(); ?>
-
-
-<?php //ob_start(); ?>
-
 
 <?php
 $data = $article;
@@ -119,13 +113,9 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
 </div>
 
  <?php 
- // if(isset($_SESSION['user'])){
- if($statut){
+  if($statut){
  ?>
-
-     
-    <h2>Votre commentaire</h2>
-
+  <h2>Votre commentaire</h2>
 <?php require 'view/frontend/formulaireComment.php'; ?>
 
 <?php
@@ -135,13 +125,9 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
     <h3>Inscrivez vous pour voter et laisser vos impressions ou <a href="indexadmin.php" data-toggle="tooltip" title="Administration ">connectez-vous!</a></h3>
  
   <?php require 'view/frontend/formulaireInscription.php'; ?>   
-
-
-  <?php   
-     
+ <?php   
+   
  }
- 
-
 
 $commentParent = $comments->fetchAll();
 $commentChild =$commentsChild -> fetchAll();
@@ -149,10 +135,7 @@ foreach($commentParent as $cle => $element)//parcours de chaque element du tab p
     {
    
     require('view/frontend/commentView.php');
-   //$controler= new BackendControler();
-   //$position= $controler->rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut);
-   rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut); 
- //echo '</div>';//fermeture container commentView.php
+     rechercheEnfant($commentChild,$commentParent[$cle]['COMM_ID'],$statut); 
 }
 
  
@@ -223,7 +206,5 @@ if (file_exists($filename)) {
     </div>
 
 </div>
-
-                    <?php $slider = ob_get_clean(); ?>
-
+ <?php $slider = ob_get_clean(); ?>
 <?php require('template.php'); ?>

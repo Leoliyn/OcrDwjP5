@@ -34,9 +34,10 @@ class bookManager extends Manager {
     public function getBook($bookId) {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT OUV_ID, OUV_TITRE,OUV_PREFACE,OUV_SOUSTITRE,OUV_DESCRIPTION,OUV_KEYWORDS,OUV_ENABLE FROM p5_ouvrage WHERE OUV_ID = ?');
+        $req->execute(array($bookId));
         $book = $req->fetchAll();
         return $book;
-        $req->closeCursor();
+        
     }
 
     /**

@@ -1,39 +1,38 @@
-<?php ob_start(); ?>
-
-
-
 <?php
-
+/**
+ *  Vue liste des ouvrages 
+ */
+?>
+<?php ob_start(); ?>
+<?php
 $title = $_SESSION['title'];
-$page= 'listBookView.php';
+$page = 'listBookView.php';
 $contentMenu = "";
 $listeCarousel = '<div id="myCarousel" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">';
 $carousel = '<div class="carousel-inner" role="listbox">';
-$iteration=0;
+$iteration = 0;
 
-while ($dataBook = $books->fetch())
-{
+while ($dataBook = $books->fetch()) {
+    $ouvId = htmlspecialchars($dataBook['OUV_ID']);
+    $description = htmlspecialchars($dataBook['OUV_DESCRIPTION']);
+    $bookPreface = $dataBook['OUV_PREFACE'];
+    $bookTitre = htmlspecialchars($dataBook['OUV_TITRE']);
 
-    $ouvId=htmlspecialchars($dataBook['OUV_ID']);
-$description =htmlspecialchars($dataBook['OUV_DESCRIPTION']);
-$bookPreface =$dataBook['OUV_PREFACE'];
-$bookTitre =htmlspecialchars($dataBook['OUV_TITRE']);
-
-setlocale(LC_CTYPE, 'fr_FR.UTF-8');
-            $titre = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $bookTitre);
-            $titre = strtr($titre, "'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ", "-aAAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy");
-            $titre = strtr($titre, " ", "_");
+    setlocale(LC_CTYPE, 'fr_FR.UTF-8');
+    $titre = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $bookTitre);
+    $titre = strtr($titre, "'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ", "-aAAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy");
+    $titre = strtr($titre, " ", "_");
 
 
-$bookSoustitre =htmlspecialchars($dataBook['OUV_SOUSTITRE']); 
+    $bookSoustitre = htmlspecialchars($dataBook['OUV_SOUSTITRE']);
 
-$keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
+    $keywords = htmlspecialchars($dataBook['OUV_KEYWORDS']);
     $contentMenu .= "<li><a href='";
     $contentMenu .= "ouvrage-";
     $contentMenu .= htmlspecialchars($titre);
-   $contentMenu .= "-";
-   $contentMenu .= htmlspecialchars($ouvId);
-   
+    $contentMenu .= "-";
+    $contentMenu .= htmlspecialchars($ouvId);
+
     $contentMenu .= ".html'>";
     $contentMenu .= htmlspecialchars($bookTitre);
     $contentMenu .= "</a></li>";
@@ -59,7 +58,7 @@ $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
 
     $carousel .= '<img class="imgCarousel" src="uploads/' . htmlspecialchars($dataBook['OUV_IMAGE']) . '" alt="illustration chapitre" >';
     $carousel .= '<div class="carousel-caption">';
-    $carousel .= '<a class="lienSlider" href="ouvrage-'. htmlspecialchars($bookTitre) . '-' . htmlspecialchars($dataBook['OUV_ID']) . '.html" >';
+    $carousel .= '<a class="lienSlider" href="ouvrage-' . htmlspecialchars($bookTitre) . '-' . htmlspecialchars($dataBook['OUV_ID']) . '.html" >';
     $carousel .= '<h3>' . htmlspecialchars($bookTitre);
     $carousel .= '</h3></a>';
     $carousel .= '</div></div>';
@@ -67,30 +66,26 @@ $keywords=htmlspecialchars($dataBook['OUV_KEYWORDS']);
 
 ///////////////////
     $iteration = $iteration + 1;
+    ?>  
+    <div class='resumeFrontend'>
+        <div class='text-center'>
+  
+            <h6>  <?= $bookTitre ?> </h6>
+            <img class="imgOuvrage" src="uploads/<?= htmlspecialchars($dataBook['OUV_IMAGE']) ?>" alt="illustration Ouvrage" >
+            <h6>PREFACE</h6>
+        </div>
 
+        <div class="  text-justify ">
 
-?>  
-<div class='resumeFrontend'>
-<div class='text-center'>
-<!--</div>-->
-<!--<div class="  text-center ">-->
-    <h6>  <?= $bookTitre ?> </h6>
-<img class="imgOuvrage" src="uploads/<?= htmlspecialchars($dataBook['OUV_IMAGE'])?>" alt="illustration Ouvrage" >
-<h6>PREFACE</h6>
-</div>
-
-<div class="  text-justify ">
-    
 
     <?= $bookPreface ?>
 
 
 
-<a style="float:right" href="ouvrage-<?= htmlspecialchars($titre)?>-<?= htmlspecialchars($dataBook['OUV_ID']) ?>.html"><i class="fa fa-arrow-right  fa-2x "></i></a>  
-</div></div>
+            <a style="float:right" href="ouvrage-<?= htmlspecialchars($titre) ?>-<?= htmlspecialchars($dataBook['OUV_ID']) ?>.html"><i class="fa fa-arrow-right  fa-2x "></i></a>  
+        </div></div>
 
-<?php
-
+    <?php
 }
 $listeCarousel .= '</ol>';
 $carousel .= '</div>';
@@ -99,7 +94,7 @@ $books->closeCursor();
 
 <?php $content = ob_get_clean(); ?>
 
-    <?php ob_start(); ?>
+<?php ob_start(); ?>
 
 
 
@@ -120,6 +115,5 @@ $books->closeCursor();
 
 
 <?php $slider = ob_get_clean(); ?>
-
 <?php require('view/frontend/template.php'); ?>
 

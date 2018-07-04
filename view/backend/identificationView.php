@@ -1,3 +1,9 @@
+<?php
+/**
+ * Page view identification 
+ * fenetres modales  
+ */
+?>
 <?php ob_start(); ?>
 
 
@@ -54,7 +60,7 @@
                         <label for="usrname"><span class="fa fa-user fa2x"></span> Votre adresse mail</label>
                         <input type="email" class="form-control" id="email" name="emailForget"placeholder="Votre mail xxxx@xx.xx" required>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-block">Envoyez! 
                         <span class="glyphicon glyphicon-ok"></span>
                     </button>
@@ -70,6 +76,4 @@
     </div>
 </div>
 <?php $content = ob_get_clean(); ?>
-<?php
-require('view/backend/template.php');
-?>
+<?php require('view/backend/template.php');?>

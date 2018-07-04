@@ -1,5 +1,9 @@
 <?php
-// Modal  delete vote
+/**
+ * Modal confirmation suppression vote
+ */
+
+
 echo '<div class="modal fade" id="delVoteModal'.$donneesVotes['VOTE_ID'].'" role="dialog">
     <div class="modal-dialog">
 

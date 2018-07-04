@@ -1,19 +1,19 @@
 <?php
 
 /**
- *  PROJET 5 DWJ OPENCLASSROOMS CLAUDEY Lionel Avril 2018 
+ *  PROJET 5 DWJ OPENCLASSROOMS CLAUDEY Lionel  2018 
  * Backend controler
  */
-//require'Model/Commun/SplClassLoader.php';
-//$OCFramLoader = new SplClassLoader('Backend', '/Model');
-//$OCFramLoader->register();
+require'Model/Commun/SplClassLoader.php';
+$OCFramLoader = new SplClassLoader('Backend', '/Model');
+$OCFramLoader->register();
 
-require_once('Model/Backend/PostManager.php');
-require_once('Model/Backend/CommentManager.php');
-require_once('Model/Backend/UsersManager.php');
-require_once('Model/Backend/BookManager.php');
-require_once('Model/Backend/MessageManager.php');
-require_once('Model/Backend/VoteManager.php');
+//require_once('Model/Backend/PostManager.php');
+//require_once('Model/Backend/CommentManager.php');
+//require_once('Model/Backend/UsersManager.php');
+//require_once('Model/Backend/BookManager.php');
+//require_once('Model/Backend/MessageManager.php');
+//require_once('Model/Backend/VoteManager.php');
 
 class BackendControler {
     //═════════════════════════════════════════════

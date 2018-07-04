@@ -3,16 +3,16 @@
 /**
  * PROJET 5 DWJ OPENCLASSROOMS    CLAUDEY Lionel  2018      
  */
-require_once('Model/Frontend/PostManager.php');
-require_once('Model/Frontend/CommentManager.php');
-require_once('Model/Frontend/BookManager.php');
-require_once('Model/Frontend/UsersManager.php');
-require_once('Model/Frontend/MessageManager.php');
+//require_once('Model/Frontend/PostManager.php');
+//require_once('Model/Frontend/CommentManager.php');
+//require_once('Model/Frontend/BookManager.php');
+//require_once('Model/Frontend/UsersManager.php');
+//require_once('Model/Frontend/MessageManager.php');
 
-//require_once('Model/Commun/Manager.php');
-//require'Model/Commun/SplClassLoader.php';
-//$OCFramLoader = new SplClassLoader('Frontend', '/Model');
-//$OCFramLoader->register();
+
+require'Model/Commun/SplClassLoader.php';
+$OCFramLoader = new SplClassLoader('Frontend', '/Model');
+$OCFramLoader->register();
 
 class FrontendControler {
 

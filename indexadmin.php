@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['title']='Les Romans Collaboratifs';
-ini_set('display_errors', 1);
+//ini_set('display_errors', 1);
 //////////////////////////////////////////////////////
 //if(!empty($_POST) OR !empty($_FILES))
 //{
@@ -548,7 +548,19 @@ try {
 }
 catch(Exception $e) {
 $message = $e->getMessage();
+//
+switch($e->getCode()){
+        case 23000:
+            $message="Problème d'intégrité- Vous essayez de supprimer une donnée en lien avec d'autres enregistrement ou bien vous essayez de duppliquer une donnée déjà existante . exemple pseudo déjà présent. ";
+            break;
+        case 42000:
+            $message="Erreur d'exécution système. ";
+            break;       
+    }
 
+//if($e->getCode()===23000){
+//    $message='Entrée dupliquée';
+//}
 $error= new BackendControler();
 $affError= $error->erreur($message);
    

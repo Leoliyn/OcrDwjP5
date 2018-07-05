@@ -3,16 +3,16 @@
 /**
  * PROJET 5 DWJ OPENCLASSROOMS    CLAUDEY Lionel  2018      
  */
-//require_once('Model/Frontend/PostManager.php');
-//require_once('Model/Frontend/CommentManager.php');
-//require_once('Model/Frontend/BookManager.php');
-//require_once('Model/Frontend/UsersManager.php');
-//require_once('Model/Frontend/MessageManager.php');
+require_once('Model/Frontend/PostManager.php');
+require_once('Model/Frontend/CommentManager.php');
+require_once('Model/Frontend/BookManager.php');
+require_once('Model/Frontend/UsersManager.php');
+require_once('Model/Frontend/MessageManager.php');
 
-
-require'Model/Commun/SplClassLoader.php';
-$OCFramLoader = new SplClassLoader('Frontend', '/Model');
-$OCFramLoader->register();
+// AUTOLOAD Fonctionne en local pb chez 000webhost.com
+//require'Model/Commun/SplClassLoader.php';
+//$OCFramLoader = new SplClassLoader('Frontend', '/Model');
+//$OCFramLoader->register();
 
 class FrontendControler {
 
@@ -217,6 +217,8 @@ $headers = "From: Webmaster Site <claudey@lionelclaudey.com>\n"; // ajout du cha
 // $headers = $headers."MIME-Version: 1.0\n"; // ajout du champ de version MIME
 $headers = $headers . "Content-type: text/plain; charset=iso-8859-1\n"; // ajout du type d'encodage du corps
 // Appel à la fonction mail
+?> <script>alert('Fonction mail non encore active sur hébergeur'); </script>
+<?php
 if (mail($to, $subject, $message, $headers) == TRUE) {
     $info = "Envoi du mail réussi.";
 } else {
@@ -253,7 +255,9 @@ while ($rootBook = $root->fetch()) {
 
     // envoyer mess aux Superadmin 
 }
-$this->post();
+?>
+<script>alert('Votre inscription est enregistrée');</script>
+<?php $this->post();
 }
 
 /**

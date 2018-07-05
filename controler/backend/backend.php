@@ -4,16 +4,17 @@
  *  PROJET 5 DWJ OPENCLASSROOMS CLAUDEY Lionel  2018 
  * Backend controler
  */
-require'Model/Commun/SplClassLoader.php';
-$OCFramLoader = new SplClassLoader('Backend', '/Model');
-$OCFramLoader->register();
+//AUTOLOAD fonctionne en local pas chez 000webhost.com
+//require'Model/Commun/SplClassLoader.php';
+//$OCFramLoader = new SplClassLoader('Backend', '/Model');
+//$OCFramLoader->register();
 
-//require_once('Model/Backend/PostManager.php');
-//require_once('Model/Backend/CommentManager.php');
-//require_once('Model/Backend/UsersManager.php');
-//require_once('Model/Backend/BookManager.php');
-//require_once('Model/Backend/MessageManager.php');
-//require_once('Model/Backend/VoteManager.php');
+require_once('Model/Backend/PostManager.php');
+require_once('Model/Backend/CommentManager.php');
+require_once('Model/Backend/UsersManager.php');
+require_once('Model/Backend/BookManager.php');
+require_once('Model/Backend/MessageManager.php');
+require_once('Model/Backend/VoteManager.php');
 
 class BackendControler {
     //═════════════════════════════════════════════
@@ -457,6 +458,7 @@ class BackendControler {
         }
     }
 
+    
     /**
      * MESS methode appelle des messages recus , envoyés , nb message non lu , et nettoyage de la table message 
      * suppression des enregistrements(messages) à la corbeille par l'expediteur ET le destinataire  
@@ -1075,7 +1077,11 @@ class BackendControler {
      */
     public function book() {
         $bookManager = new Backend\BookManager();
+    if (isset($_GET['ouv_id'])){
         $book = $bookManager->getBook($_GET['ouv_id']);
+    }elseif(isset($_POST['ouv_id'])){
+        $book = $bookManager->getBook($_POST['ouv_id']);
+    }
         require('view/backend/bookView.php');
     }
 
@@ -1236,10 +1242,9 @@ class BackendControler {
 
             $bookManager = new Backend\BookManager();
             $dernierId = $bookManager->addBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords);
-
             $image = $this->uploadImageBook($dernierId);
 
-            $book = $bookManager->updateBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords, 0, $id, $image);
+            $book = $bookManager->updateBook($titre, $_POST['ouv_preface'], $subtitle, $description, $keywords, 0, $dernierId, $image);
             $this->listOuvrages();
         } else {
             throw new Exception('Vous n\'avez pas les droits pour ajouter un ouvrage.');

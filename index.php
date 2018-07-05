@@ -51,9 +51,7 @@ try { // On essaie
         $infoMail = $controler->message($_POST['nomMessage'], $_POST['email'], $_POST['message']);
         if ($infoMail) {
             ?>
-            <script>
-                alert("Message envoyé!");
-            </script>
+            <script>alert("Message envoyé!");</script>
             <?php
 
         } else {

@@ -3,6 +3,7 @@
  * Barre de navigation backend
  */
 ?>
+
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -31,7 +32,7 @@
 
 
 
-                    <li><a href="indexadmin.php?action=message"title="Messagerie interne"><i class="fa fa-envelope   fa-3x "></i><span class="badge"><?= $_SESSION['nbMess'] ?></span></a></li>
+                    <li><a href="indexadmin.php?action=message"title="Messagerie interne"><i class="fa fa-envelope   fa-3x "></i><span id="vousAvezUnMessage" class="badge"><?= $_SESSION['nbMess']?></span></a></li>
                 <?php endif; ?>  
 
                 <li><a href='indexadmin.php?action=changePsswd'title="Changement Password"><i class="fa fa-user   fa-3x "></i><span class="badge"><?php if (isset($_SESSION['user'])) {

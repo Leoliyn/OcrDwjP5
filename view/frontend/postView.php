@@ -122,7 +122,7 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
  }else{
      ?>
 
-    <h3>Inscrivez vous pour voter et laisser vos impressions ou <a href="indexadmin.php" data-toggle="tooltip" title="Administration ">connectez-vous!</a></h3>
+    <h7>Inscrivez vous pour voter et laisser vos impressions ou <a href="indexadmin.php" data-toggle="tooltip" title="Administration ">connectez-vous!</a></h7>
  
   <?php require 'view/frontend/formulaireInscription.php'; ?>   
  <?php   

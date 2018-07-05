@@ -272,8 +272,9 @@ textarea {
 
 }
 .resumeFrontend {
-    margin: 10px;
+    margin: 12px;
     padding: 10px;
+    padding-bottom :35px;
     border: 1px solid #c0c0c0;
     border-radius: 10px;
    color:#505050;
@@ -380,14 +381,3 @@ border : none;
      top:-18px;
      
  }
-/* .numeroChapitre {
-     
-     width: 60px;
-     height: 60px;
-     border: 2px solid grey;
-     border-radius: 100%;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-
- }*/

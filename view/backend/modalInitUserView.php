@@ -1,8 +1,7 @@
 <?php
 /**
- * Modal confirmation  init user
+ * Modal confirmation  init user id="initUserModal'
  */
-
 echo '<div class="modal fade" id="initUserModal'.$donnees['USER_ID'].'" role="dialog">
     <div class="modal-dialog">
 

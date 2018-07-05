@@ -3,6 +3,7 @@
  * Container dashboard global
  */
 ?>
+
 <?php ob_start(); ?>
 
 <div class='resume'>
@@ -16,5 +17,4 @@
 <?php require ('view/backend/dashBoardVisitesView.php'); ?>
 
 <?php $content = ob_get_clean(); ?>
-
 <?php require('view/backend/template.php'); ?>

@@ -82,7 +82,7 @@ while ($dataBook = $books->fetch()) {
 
 
 
-            <a style="float:right" href="ouvrage-<?= htmlspecialchars($titre) ?>-<?= htmlspecialchars($dataBook['OUV_ID']) ?>.html"><i class="fa fa-arrow-right  fa-2x "></i></a>  
+            <a class="right" href="ouvrage-<?= htmlspecialchars($titre) ?>-<?= htmlspecialchars($dataBook['OUV_ID']) ?>.html"><i class="fa fa-arrow-right circle  fa-2x "></i></a>  
         </div></div>
 
     <?php

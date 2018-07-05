@@ -34,11 +34,11 @@ if ($niveau == 2) {
                 if (!$desactive) {
                     ?>
                     <div class ="col-sm-1">
-                        <a href="indexadmin.php?action=enableBook&amp;ouv_id=' <?= htmlspecialchars($data['OUV_ID']) ?>" title="Cliquez pour activer  l\'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>';
+                        <a href="indexadmin.php?action=enableBook&amp;ouv_id=<?= htmlspecialchars($data['OUV_ID']) ?>" title="Cliquez pour activer  l'ouvrage"><i class="fa fa-eye-slash  fa-2x "></i></a>
                     </div>
                 <?php } else { ?>
                     <div class ="col-sm-1">
-                        <a href="indexadmin.php?action=disableBook&amp;ouv_id=<?= htmlspecialchars($data['OUV_ID']) ?>" title="Cliquez pour désactiver  l\'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>';
+                        <a href="indexadmin.php?action=disableBook&amp;ouv_id=<?= htmlspecialchars($data['OUV_ID']) ?>" title="Cliquez pour désactiver  l'ouvrage"><i class="fa fa-eye  fa-2x "></i></a>
                     </div>
 
                 <?php } ?>
@@ -100,4 +100,5 @@ if ($niveau == 2) {
     </div>
 <?php } ?>
 <?php $content = ob_get_clean(); ?>
+
 <?php require('view/backend/template.php'); ?>

@@ -345,5 +345,6 @@ foreach ($commentParent as $cle => $element) {//parcours de chaque element du ta
 }
 ?>
 <?php $content = ob_get_clean(); ?>
+
 <?php require('view/backend/template.php'); ?>
 

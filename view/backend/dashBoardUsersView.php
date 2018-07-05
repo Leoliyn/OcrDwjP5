@@ -17,8 +17,8 @@
                 <td><?= $donnees['USER_MAIL'] ?></td>
                 <td><?= $donnees['ROOT'] ?></td>
                 <td><a  data-toggle="modal" data-target="#delUserModal<?= $donnees['USER_ID'] ?>" href="#"><i class="fa fa-trash  fa-2x"></i></td>
-                <td><a href="indexadmin.php?action=updateUser&amp;id='<?= $donnees['USER_ID'] ?>"><i class="fa  fa-edit  fa-2x "></i></a></td>
-                <td><a  data-toggle="modal" data-target="#initUserModal<?= donnees['USER_ID'] ?>" href="#"><i class="fa fa-recycle  fa-2x"></i></a></td></tr>
+                <td><a href="indexadmin.php?action=updateUser&amp;id=<?= $donnees['USER_ID'] ?>"><i class="fa  fa-edit  fa-2x "></i></a></td>
+                <td><a  data-toggle="modal" data-target="#initUserModal<?=$donnees['USER_ID'] ?>" href="#"><i class="fa fa-recycle  fa-2x"></i></a></td></tr>
 
             <?php require 'view/backend/modalDelUserView.php' ?>
             <?php require 'view/backend/modalInitUserView.php' ?>

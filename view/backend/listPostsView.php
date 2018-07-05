@@ -93,12 +93,12 @@ while ($data = $posts->fetch()):
 
             <?php if ($desactive) : ?>
                         <div class ="col-sm-1">
-                            <a href="indexadmin.php?action=enablePost&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id='.$_GET['ouv_id']. '" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>
+                            <a href="indexadmin.php?action=enablePost&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Cliquez pour publiez l\'article"><i class="fa fa-eye-slash  fa-2x "></i></a>
                         </div>
 
             <?php else: ?>
                         <div class ="col-sm-1">
-                            <a href="indexadmin.php?action=disablePost&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id='.$_GET['ouv_id']. '" title="Mettre l\'article en cours de rédaction"><i class="fa fa-eye  fa-2x "></i></a>
+                            <a href="indexadmin.php?action=disablePost&amp;id=<?= htmlspecialchars($data['ART_ID']) ?>&amp;ouv_id=<?= $_GET['ouv_id'] ?>" title="Mettre l\'article en cours de rédaction"><i class="fa fa-eye  fa-2x "></i></a>
                         </div>
 
                     <?php

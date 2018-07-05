@@ -750,7 +750,7 @@ class BackendControler {
     public function changePsswd() {
 
         if ((!empty($_POST['oldmdp']))AND ( strlen($_POST['mdp']) >= 6)AND ( $_POST['mdp'] === $_POST['remdp'])) {
-            $pseudo = $_SESSION['usrname'];
+            $pseudo = $_SESSION['user'];
             $userManager = new Backend\UsersManager();
             $connexion = $userManager->connexion($pseudo, $_POST['oldmdp']);
             if ($connexion) {

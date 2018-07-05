@@ -20,7 +20,7 @@
         </p>  
         <input class="btn btn-primary" type="submit" name="send" value="Envoyer" />
         <input class="btn btn-primary" type="reset" name="reset" value="Reset" />
-        <a href="indexadmin.php?action=dashBoard"><input class="btn btn-primary" type="button" name="retour" value="Retour" /></a>
+        <a href="indexadmin.php?action=dashboard"><input class="btn btn-primary" type="button" name="retour" value="Retour" /></a>
     </form>
     <?php $content = ob_get_clean(); ?>
     <?php require('view/backend/template.php'); ?>

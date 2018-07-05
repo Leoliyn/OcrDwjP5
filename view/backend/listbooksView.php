@@ -87,8 +87,8 @@ endif;
         </div>
 <?php else: ?>
         <div class ="col-sm-1">
-            .<i class="fa fa-eye  fa-2x "></i>
-            .</div>
+            <i class="fa fa-eye  fa-2x "></i>
+            </div>
         <?php endif; ?>
 
 <?php endif; ?>

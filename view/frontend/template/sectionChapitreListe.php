@@ -4,7 +4,4 @@
  */
 ?>
 
-<div id="listChapitre" class="resume">
-    <h3 class="text-center">Chapitres</h3>
-<?= $contentMenuResume ?>
- </div>
+

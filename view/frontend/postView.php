@@ -98,18 +98,22 @@ $keywords = htmlspecialchars($data['ART_KEYWORDS']);
 $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
 ?> 
     
-<div class=''>
 
-    <h3>
- <i class="fa fa-file-o   fa-1x"></i> <?= htmlspecialchars($data['ART_TITLE']) ?>
+<div> <a id="hautSectionArticle"class="updown down-arrow " href="#basSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+    </a></div>
 
-    </h3>
+   
+ <h3> <i class="fa fa-file-o   fa-1x"></i> <?= htmlspecialchars($data['ART_TITLE']) ?></h3>
+
+    
 
     <p><em>le <?= htmlspecialchars($data['DATE_fr']) ?></em></p>
   
 <?= $data['ART_CONTENT'] ?>
-
-  
+<a  id="basSectionArticle" class="updown down-arrow " href="#hautSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
+            <span class="glyphicon glyphicon-chevron-up"></span>
+        </a>
 </div>
 
  <?php 

@@ -21,14 +21,8 @@ $titleOuv = $bookTitre;
 ?>   
 
 
-<div class="  text-center ">
-    <h1>  <?= $bookTitre ?>  </h1>
-</div>
-<div class="  text-center ">
-    <h3>PREFACE</h3>
-<?= $bookPreface ?>
-</div>
-<div class="" >
+
+
     <?php
     $contentMenu = "";
     $contentMenuResume = "";
@@ -97,7 +91,7 @@ $titleOuv = $bookTitre;
 
         $carousel .= '<img class="imgCarousel" src="uploads/' . htmlspecialchars($data['ART_IMAGE']) . '" alt="illustration chapitre" >';
         $carousel .= '<div class="carousel-caption">';
-        $carousel .= '<a class="lienSlider" href="chapitre-' . htmlspecialchars($data['ART_CHAPTER']) . '-' . htmlspecialchars($titre) . '-' . htmlspecialchars($data['ART_ID']) . '.html" ><h3>' . $data['ART_TITLE'] . " Chapitre " . $data['ART_CHAPTER'];
+        $carousel .= '<a class="lienSlider" href="chapitre-' . htmlspecialchars($data['ART_CHAPTER']) . '-' . htmlspecialchars($titre) . '-' . htmlspecialchars($data['ART_ID']) .'-' . $ouvId.'.html" ><h3>' . $data['ART_TITLE'] . " Chapitre " . $data['ART_CHAPTER'];
         $carousel .= '<br />' . htmlspecialchars($data['ART_SUBTITLE']) . '</h3></a>';
         $carousel .= '</div></div>';
 
@@ -112,10 +106,11 @@ $titleOuv = $bookTitre;
     <!--</ul>-->
 
 
-
+       <h1 class="text-center">  <?= $bookTitre ?>  </h1>
+    <h3 class="text-center">Chapitres</h3>
+<div id="listChapitre">
+<?= $contentMenuResume ?>
 </div>
-
-
 <?php $content = ob_get_clean(); ?>
 <?php ob_start(); ?>
 <?= $listeCarousel ?>

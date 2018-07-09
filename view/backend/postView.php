@@ -53,17 +53,22 @@ $desactive = htmlspecialchars($data['ART_DESACTIVE']);
             endif; // 
             ?>
         </div>
+      
 
     <?php $file = "./uploads/" . htmlspecialchars($data['ART_IMAGE']); ?>
     <?php if (is_file($file)): ?>
             <img src="<?= $file ?>" class="miniature" />
             <br />
     <?php endif; ?>
-
+  <div class="text-center"><a id="hautSectionArticle"class="updown down-arrow " href="#basSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
+          <span class="glyphicon glyphicon-chevron-down"></span></a></div>
         <h3><i class="fa fa-file-o   fa-1x"></i> <?= htmlspecialchars($data['ART_TITLE']) ?></h3>
 
         <p><em>le <?= $data['DATE_fr'] ?></em>par :<?= htmlspecialchars($data['USER_PSEUDO']) ?></p>
         <p><?= ($data['ART_CONTENT']) ?></p>
+        
+       <div class="text-center "> <a  id="basSectionArticle" class="updown down-arrow " href="#hautSectionArticle" data-toggle="tooltip" title="Haut du chapitre">
+               <span class="glyphicon glyphicon-chevron-up"></span></a></div>
         <div class='icone-admin row'>
 
 
@@ -158,6 +163,8 @@ endif;
 </div>
 
 <h2> Suite(s)</h2>
+<div class="text-center"><a id="hautSectionSuite"class="updown down-arrow " href="#basSectionSuite" data-toggle="tooltip" title="Bas section suite">
+          <span class="glyphicon glyphicon-chevron-down"></span></a></div>
 <?php
 // tableau de liste vote idvote en indice et vote ouvert en valeur
 $tabListVote = [];
@@ -311,7 +318,11 @@ while ($suite = $suites->fetch()) {
     }
 }
 ?>
+<div class="text-center"><a id="basSectionSuite"class="updown down-arrow " href="#hautSectionSuite" data-toggle="tooltip" title="Haut section suite">
+          <span class="glyphicon glyphicon-chevron-up"></span></a></div>
 <h2>Commentaire(s)</h2>
+  <div class="text-center"><a id="hautSectionCommentaire"class="updown down-arrow " href="#basSectionCommentaire" data-toggle="tooltip" title="Bas des commentaires">
+          <span class="glyphicon glyphicon-chevron-down"></span></a></div>
 <?php
 
 //Fonction affichage recursif dans la vue . Ordonne les dépendances des commentaires 
@@ -344,6 +355,8 @@ foreach ($commentParent as $cle => $element) {//parcours de chaque element du ta
     echo '</div>'; //fermeture container commentView.php
 }
 ?>
+  <div class="text-center"><a id="basSectionCommentaire"class="updown down-arrow " href="#hautSectionCommentaire" data-toggle="tooltip" title="Haut des commentaires">
+          <span class="glyphicon glyphicon-chevron-up"></span></a></div>
 <?php $content = ob_get_clean(); ?>
 
 <?php require('view/backend/template.php'); ?>

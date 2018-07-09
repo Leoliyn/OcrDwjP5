@@ -3,7 +3,7 @@
  * container de gestion users dans dashboard
  */
 ?>
-<div class='resume'>
+<div id='users'class='resume'>
     <h3>   Utilisateurs   </h3>
 
     <table class="table">

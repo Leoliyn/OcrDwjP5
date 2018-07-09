@@ -5,7 +5,7 @@
  */
 ?>
 
-<div class="resume">
+<div id='envoyes'class="resume">
 
     <h3 >   Message(s) envoyé(s)  </h3>
     <div class="row">

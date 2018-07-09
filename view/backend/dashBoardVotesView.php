@@ -3,6 +3,7 @@
  * container Votes dans  dashboard
  */
 ?>
+<div id='votes'>
 <div class='resume'>
 
     <h3 >   Vote(s) Ouvert(s)  </h3>
@@ -111,7 +112,7 @@
 <?php endwhile; ?>
 </div>
 <!--VOTES FERMES-->
-<div class='resume'>
+<div  class='resume'>
     <h3 >   Vote(s) Fermé(s)  </h3>
 
 <?php while ($donneesVotes = $votesListeClose->fetch()): ?>
@@ -202,7 +203,7 @@
 <?php endwhile; ?>
 
 </div>
-
+</div>
 
 
 

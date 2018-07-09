@@ -1,4 +1,4 @@
-<div class='resume'>
+<div id='books' class='resume'>
     <h3 >   Ouvrages   </h3>
     <table class="table">
         <tr><td>OUVRAGE ID</td><td>TITRE</td><td>SOUS TITRE</td><td>PREFACE</td><td>ENABLE</td><td>Droits d'accès</td></tr>

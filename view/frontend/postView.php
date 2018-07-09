@@ -99,7 +99,7 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
 ?> 
     
 
-<div> <a id="hautSectionArticle"class="updown down-arrow " href="#basSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
+<div class='text-center'> <a id="hautSectionArticle"class="updown down-arrow " href="#basSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
             <span class="glyphicon glyphicon-chevron-down"></span>
     </a></div>
 
@@ -111,10 +111,10 @@ $image = 'uploads/' . htmlspecialchars($data['ART_IMAGE']);
     <p><em>le <?= htmlspecialchars($data['DATE_fr']) ?></em></p>
   
 <?= $data['ART_CONTENT'] ?>
-<a  id="basSectionArticle" class="updown down-arrow " href="#hautSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
+<div class='text-center'><a  id="basSectionArticle" class="updown down-arrow " href="#hautSectionArticle" data-toggle="tooltip" title="Bas du chapitre">
             <span class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-</div>
+    </a></div>
+
 
  <?php 
   if($statut){

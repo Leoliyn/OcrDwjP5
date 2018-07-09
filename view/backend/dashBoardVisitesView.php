@@ -4,7 +4,7 @@
  */
 ?>
 
-<div class="resume">
+<div id ='visites'class="resume">
     
     <h3>   Visites & Stats   </h3>
 

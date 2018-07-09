@@ -58,10 +58,10 @@ class MessageManager extends Manager {
      * @param type $content
      * @return type
      */
-    public function addMessage($destinataireId, $expediteurId, $objet, $content) {
+    public function addMessage($destinataireId, $expediteurId,$delDestinataire,$delExpediteur, $objet, $content) {
         $db = $this->dbConnect();
-        $message = $db->prepare('INSERT INTO p5_messages(MESS_OBJET, MESS_CONTENT,DESTINATAIRE,EXPEDITEUR,DATETIME) VALUES(?, ?, ?,?, NOW())');
-        $affectedLines = $message->execute(array($objet, $content, $destinataireId, $expediteurId));
+        $message = $db->prepare('INSERT INTO p5_messages(MESS_OBJET, MESS_CONTENT,DESTINATAIRE,EXPEDITEUR,DEL_DESTINATAIRE,DEL_EXPEDITEUR,DATETIME) VALUES(?,?,?, ?, ?,?, NOW())');
+        $affectedLines = $message->execute(array($objet, $content, $destinataireId, $expediteurId,$delDestinataire,$delExpediteur));
         return $affectedLines;
         $message->closeCursor();
     }

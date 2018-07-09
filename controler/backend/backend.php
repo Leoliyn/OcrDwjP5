@@ -83,11 +83,13 @@ class BackendControler {
         $postManager = new Backend\PostManager();
         $article = $postManager->getPost($_GET['id']);
         $post = $postManager->delPost($_GET['id']);
+        $delDestinataire = 0;
+        $delExpediteur = 0;
         if ($post) {
             $objet = 'Supression du post ' . $article['ART_TITLE'];
             $contenu = 'Post Supprimé';
             $auteurId = $article['ART_AUTEUR'];
-            $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+            $this->messageSystem($auteurId, $_SESSION['userId'],$delDestinataire,$delExpediteur,  $objet, $contenu);
             $this->listPosts($_GET['ouv_id']);
         } else {
             throw new Exception('Elément inconnu ');
@@ -244,7 +246,8 @@ class BackendControler {
         $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
         $auteur = preg_replace($regex, '', $_POST['auteur']);
         $statut_post = preg_replace($regex, '', $_POST['statut_post']);
-
+        $delDestinataire = 0;
+        $delExpediteur = 0;
         $postManager = new Backend\PostManager();
         $idStatutDuPost = $postManager->idStatut($statut_post);
         $dernierId = $postManager->addPost($chapter, $titre, $subtitle, $_POST['art_content'], $description, $keywords, $ouvId, $auteur, $idStatutDuPost['STATUT_POST_ID']);
@@ -259,16 +262,16 @@ class BackendControler {
         $article = $postManager->getPost($_GET['id']);
         $root = $userManager->listSuperadmin();
         $objet = 'Création d\'un chapitre ';
-        $contenu = 'Un chapitre est ajouté à l\'ouvrage  <b> ' . $ouvId . ' de titre :' . $titre . ' </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+        $contenu = 'Un chapitre est ajouté à l\'ouvrage  <b> <a href="indexadmin.php?action=lisPosts&amp;ouv_id= ' . $ouvId . '">Ouvrage '. $ouvId . '</a> de titre :' . $titre . ' </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
         $auteurId = $auteur;
         while ($adminBook = $book->fetch()) {
 
-            $this->messageSystem($adminBook['p5_USERS_USER_ID'], $auteurId, $objet, $contenu);
+            $this->messageSystem($adminBook['p5_USERS_USER_ID'], $auteurId,$delDestinataire,$delExpediteur, $objet, $contenu);
             /* envoyer mess aux administrateur de l'ouvrage */
         }
         while ($rootBook = $root->fetch()) {
 
-            $this->messageSystem($rootBook['USER_ID'], $auteurId, $objet, $contenu);
+            $this->messageSystem($rootBook['USER_ID'], $auteurId,$delDestinataire,$delExpediteur,  $objet, $contenu);
             /* envoyer mess aux Superadmin */
         }
         /* fin messagerie */
@@ -308,6 +311,8 @@ class BackendControler {
         $idStatutActuel = $postManager->statutDuPost($_GET['id']); //id du statut actuel
         $statutActuel = $postManager->libelleStatutPost($idStatutActuel[0]);
         $idStatut = $postManager->idStatut($libelleStatut); // on recupere l id du nouveau libelle 
+        $delDestinataire = 0;
+        $delExpediteur = 0;
         if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR') || (($droits[$_GET['ouv_id']] <> 'ADMINISTRATEUR')AND ( ($statutActuel[0] == 'REDACTION') || ($statutActuel[0] == 'PROPOSE')))) {
 
             $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'], $_GET['id']);
@@ -315,24 +320,28 @@ class BackendControler {
         if ($post) {
             $article = $postManager->getPost($_GET['id']);
             $objet = 'Changement de statut ';
-            $contenu = 'Le Chapitre ( ' . $article['ART_CHAPTER'] . ' titre: ' . $article['ART_TITLE'] . '. <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
+            $contenu = '<a href="indexadmin.php?action=listPosts&apm;ouv_id='.$_GET['ouv_id'].'">Ouvrage'.$_GET['ouv_id'].'</a> :Le Chapitre ( ' . $article['ART_CHAPTER'] . ' titre: ' . $article['ART_TITLE'] . '. <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
             $auteurId = $article['ART_AUTEUR'];
             if ($_SESSION['userId'] == $auteurId) {
                 $bookManager = new Backend\BookManager();
                 $userManager = new Backend\UsersManager();
                 $book = $bookManager->getBooksRights($article['OUVRAGE_OUV_ID']);
                 $root = $userManager->listSuperadmin();
+
                 while ($adminBook = $book->fetch()) {
-                    $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'], $objet, $contenu);
+                    $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'], $delDestinataire, $delExpediteur, $objet, $contenu);
                     // envoyer mess aux administrateur de louvrage
                 }
                 while ($rootBook = $root->fetch()) {
-                    $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'], $objet, $contenu);
+                    $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'], $delDestinataire, $delExpediteur, $objet, $contenu);
                     // envoyer mess aux Superadmin 
                 }
             } else {
                 // auteur prevenu si chgt de statut des chapitre dont il est l'auteur
-                $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+                if($auteurId==$_SESSION['userId']){
+                    $deldestinataire=1;
+                }
+                $this->messageSystem($auteurId, $_SESSION['userId'], $delDestinataire, $delExpediteur, $objet, $contenu);
             }
 
             $this->desactiverPost();
@@ -396,10 +405,13 @@ class BackendControler {
      * @param type $objet
      * @param type $contenu
      */
-    public function messageSystem($destinataire, $expediteur, $objet, $contenu) {
+    public function messageSystem($destinataire, $expediteur,$delDestinataire,$delExpediteur, $objet, $content) {
 
         $messageManager = new Backend\MessageManager();
-        $envoi = $messageManager->addMessage($destinataire, $expediteur, $objet, $contenu);
+        if($destinataire == $expediteur){
+            $delExpediteur=1;
+        }
+        $envoi = $messageManager->addMessage($destinataire, $expediteur,$delDestinataire,$delExpediteur, $objet, $content);
     }
 
     /**
@@ -409,9 +421,9 @@ class BackendControler {
      * @param type $objet
      * @param type $contenu
      */
-    public function envoiMessage($destinataire, $expediteur, $objet, $contenu) {
+    public function envoiMessage($destinataireId, $expediteurId,$delDestinataire,$delExpediteur, $objet, $content) {
 
-        $this->messageSystem($destinataire, $expediteur, $objet, $contenu);
+        $this->messageSystem($destinataireId, $expediteurId,$delDestinataire,$delExpediteur, $objet, $content);
         $this->messagerie();
     }
 
@@ -431,14 +443,16 @@ class BackendControler {
         $root = $userManager->listSuperadmin();
         $objet = 'Signalement commentaire  ';
         $contenu = 'Un signalement de commentaire est levé par ' . $_SESSION['user'];
+        $delDestinataire=0;
+        $delExpediteur=0;
         while ($adminBook = $book->fetch()) {
 
-            $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'], $objet, $contenu);
+            $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'],$delDestinataire, $delExpediteur, $objet, $contenu);
             // envoyer mess aux administrateur de louvrage
         }
         while ($rootBook = $root->fetch()) {
 
-            $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'], $objet, $contenu);
+            $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'],$delDestinataire, $delExpediteur,  $objet, $contenu);
             // envoyer mess aux Superadmin 
         }
     }
@@ -450,10 +464,12 @@ class BackendControler {
         $userManager = new Backend\UsersManager();
         $root = $userManager->listSuperadmin();
         $objet = 'Demande inscription   ';
+        $delDestinataire=0;
+        $delExpediteur=0;
         $contenu = 'demande inscription pour :  ' . $_POST['nom'] . ' ' . $_POST['prenom'] . ' pseudo :' . $_POST['pseudo'] . ' email : ' . $_POST['email'];
         while ($rootBook = $root->fetch()) {
 
-            $this->messageSystem($rootBook['USER_ID'], $rootBook['USER_ID'], $objet, $contenu);
+            $this->messageSystem($rootBook['USER_ID'], $rootBook['USER_ID'],$delDestinataire, $delExpediteur, $objet, $contenu);
             // envoyer mess aux Superadmin 
         }
     }
@@ -489,23 +505,25 @@ class BackendControler {
     public function integrationSuite($suiteId, $auteur, $voteId) {
         $postManager = new Backend\PostManager();
         $voteManager = new Backend\VoteManager();
-
+        $delDestinataire = 0;
+        $delExpediteur = 0;
         $suite = $postManager->getPost($suiteId);
         $contenuSuite = $suite['ART_CONTENT'] . '<br /><b> Fin suite de ' . $auteur . '.</b><br />';
         $precedent = $suite['ART_PRECEDENT'];
         $insertionAuteur = '<b><br /><br />Suite de ' . $auteur . '<br /><br /></b>';
         $concatenation = $postManager->concatSuite($insertionAuteur, $contenuSuite, $precedent);
+
         if ($concatenation) {
             $suiteId = $suite['ART_ID'];
             $effaceScores = $voteManager->delScores($voteId);
             $effaceVote = $voteManager->delVote($voteId);
             $delSuite = $postManager->delPost($suiteId);
         } else {
-            throw new exception('Echec de l\intégration ');
+            throw new exception('Echec de l\'intégration ');
         }
-        $objet = 'Integration de votre texte  ';
-        $contenu = "Bravo '.$auteur.' , votre texte est intégré à l\'ouvrage";
-        $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+//        $objet = 'Integration de votre texte  ';
+//        $contenu = "Bravo '.$auteur.' , votre texte est intégré à l\'ouvrage";
+//        $this->messageSystem($auteur, $_SESSION['userId'],$delDestinataire, $delExpediteur,  $objet, $contenu);
         $this->cokpit();
     }
 
@@ -522,12 +540,14 @@ class BackendControler {
         $postManager = new Backend\PostManager();
         $article = $postManager->getPost($_GET['id']);
         $suite = $postManager->delPost($_GET['id']);
-
+$delDestinataire=0;
+        $delExpediteur=0;
         if ($suite) {
             $objet = 'Supression ' . $article['ART_ID'];
             $contenu = 'Suppression du contenu suivant : ' . $article['ART_CONTENT'];
             $auteurId = $article['ART_AUTEUR'];
-            $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+
+            $this->messageSystem($auteurId, $_SESSION['userId'],$delDestinataire, $delExpediteur, $objet, $contenu);
             $_GET['id'] = $_GET['precedent'];
 
             $this->post();
@@ -544,7 +564,7 @@ class BackendControler {
         $regex = "([^a-zA-Z0-9 .,\'@ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+)";
         $chapter = preg_replace($regex, '', $_POST['art_chapter']);
         $precedent = preg_replace($regex, '', $_POST['precedent']);
-        $contenu = preg_replace($regex, '', $_POST['art_content']);
+        $contenu =  $_POST['art_content'];
         $ouvId = preg_replace($regex, '', $_POST['ouv_id']);
         $auteur = preg_replace($regex, '', $_POST['auteur']);
         $statut_post = preg_replace($regex, '', $_POST['statut_post']);
@@ -568,16 +588,18 @@ class BackendControler {
         $article = $postManager->getPost($_GET['id']);
         $root = $userManager->listSuperadmin();
         $objet = 'Création d\'une suite ';
-        $contenu = 'Une suite est en cours de rédaction  pour l\'ouvrage  <b> ' . $ouvId . '  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
+        $contenu = 'Une suite est en cours de rédaction  pour l\'ouvrage  <b><a href="indexadmin.php?action=lisPosts&amp;ouv_id= ' . $ouvId . '">Ouvrage '. $ouvId . '</a>  </b> Résumé contenu : <i>' . substr($_POST['art_content'], 0, 150) . '(...)</i>';
         $auteurId = $auteur;
+        $delDestinataire=0;
+        $delExpediteur=0;
         while ($adminBook = $book->fetch()) {
-
-            $this->messageSystem($adminBook['p5_USERS_USER_ID'], $auteurId, $objet, $contenu);
+     
+            $this->messageSystem($adminBook['p5_USERS_USER_ID'],$auteurId,$delDestinataire, $delExpediteur, $objet, $contenu);
             // envoyer mess aux administrateur de louvrage
         }
         while ($rootBook = $root->fetch()) {
-
-            $this->messageSystem($rootBook['USER_ID'], $auteurId, $objet, $contenu);
+    
+            $this->messageSystem($rootBook['USER_ID'], $auteurId,$delDestinataire, $delExpediteur, $objet, $contenu);
             // envoyer mess aux Superadmin 
         }
         /// fin messagerie
@@ -643,6 +665,13 @@ class BackendControler {
         $idStatutActuel = $postManager->statutDuPost($_GET['id']); //id du statut actuel
         $statutActuel = $postManager->libelleStatutPost($idStatutActuel[0]);
         $idStatut = $postManager->idStatut($libelleStatut); // on recupere l id du libelle 
+        $delDestinataire = 0;
+        $delExpediteur = 0;
+        $bookManager = new Backend\BookManager();
+        $userManager = new Backend\UsersManager();
+        $article = $postManager->getPost($_GET['id']);
+        $book = $bookManager->getBooksRights($article['OUVRAGE_OUV_ID']);
+        $root = $userManager->listSuperadmin();
         if (($droits[$_GET['ouv_id']] == 'ADMINISTRATEUR') || (($droits[$_GET['ouv_id']] <> 'ADMINISTRATEUR')AND ( ($statutActuel[0] == 'REDACTION') || ($statutActuel[0] == 'PROPOSE')))) {
 
             $post = $postManager->changeStatutPost($idStatut['STATUT_POST_ID'], $_GET['id']);
@@ -652,27 +681,28 @@ class BackendControler {
         if ($post) {
             if ($libelleStatut == 'VOTE') {
                 $vote = $voteManager->vote($_GET['id']); // vote début maintenant durée 15 jours statut vote ouvert 
+                
             }
-            $article = $postManager->getPost($_GET['id']);
+           
             $objet = 'Changement de statut ';
-            $contenu = 'La suite proposée ( ' . $article['ART_ID'] . ') <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
+            $contenu = '<a href="indexadmin.php?action=listPosts&apm;ouv_id='.$_GET['ouv_id'].'">Ouvrage'.$_GET['ouv_id'].'</a> :La suite proposée ( ' . $article['ART_ID'] . ') <b>Change de statut pour ' . $libelleStatut . '</b> de contenu : <i>' . substr($article['ART_CONTENT'], 0, 150) . '(...)</i>';
             $auteurId = $article['ART_AUTEUR'];
             if ($_SESSION['userId'] == $auteurId) {
-                $bookManager = new Backend\BookManager();
-                $userManager = new Backend\UsersManager();
-                $book = $bookManager->getBooksRights($article['OUVRAGE_OUV_ID']);
-                $root = $userManager->listSuperadmin();
+             
+                
                 while ($adminBook = $book->fetch()) {
-                    $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'], $objet, $contenu);
-                    // envoyer mess aux administrateur de louvrage
+                    $this->messageSystem($adminBook['p5_USERS_USER_ID'], $_SESSION['userId'],$delDestinataire,$delExpediteur, $objet, $contenu);
+                    // envoyer mess aux accès  de louvrage
                 }
                 while ($rootBook = $root->fetch()) {
-                    $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'], $objet, $contenu);
+ 
+                    $this->messageSystem($rootBook['USER_ID'], $_SESSION['userId'],$delDestinataire, $delExpediteur,  $objet, $contenu);
                     // envoyer mess aux Superadmin 
                 }
             } else {
+
                 // auteur prevenu si chgt de statut des chapitre dont il est l'auteur
-                $this->messageSystem($auteurId, $_SESSION['userId'], $objet, $contenu);
+                $this->messageSystem($auteurId, $_SESSION['userId'],$delDestinataire, $delExpediteur,$objet, $contenu);
             }
 
             $_GET['id'] = $_GET['precedent'];
@@ -1128,7 +1158,9 @@ class BackendControler {
         $this->accesBook($ouvId);
         $objet = 'Modification accès';
         $contenu = 'Votre accès à ouvrage n°' . $ouvId . ' est supprimé';
-        $this->messageSystem($userId, $_SESSION['userId'], $objet, $contenu);
+        $delDestinataire=0;
+        $delExpediteur=0;
+        $this->messageSystem($userId, $_SESSION['userId'],$delDestinataire, $delExpediteur, $objet, $contenu);
     }
 
     /**
@@ -1193,7 +1225,9 @@ class BackendControler {
             $this->accesBook($ouvId);
             $objet = 'Modification accès';
             $contenu = 'Vous avez un  nouvel accès pour l\'ouvrage  n°' . $ouvId . ' Veuillez vous connecter et vérifier ';
-            $this->messageSystem($userId, $_SESSION['userId'], $objet, $contenu);
+            $delDestinataire=0;
+            $delExpediteur=0;
+            $this->messageSystem($userId, $_SESSION['userId'],$delDestinataire,$delExpediteur, $objet, $contenu);
         } else {
 
             throw new Exception('L\'utilisateur a déjà un accès pour cette ouvrage - Vous devez  supprimer l\'accès avant d\'en créer un nouveau ');

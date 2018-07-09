@@ -206,7 +206,7 @@ while ($suite = $suites->fetch()) {
         ?>
         <div class='resume'>
             <p><strong><?= htmlspecialchars($suite['USER_PSEUDO']) ?></strong> le <?= htmlspecialchars($suite['DATE']) ?></p>
-            <p><?= nl2br(($suite['ART_CONTENT'])) ?></p>
+            <p><?= ($suite['ART_CONTENT']) ?></p>
 
                 <?php if (($suite['STATUT_POST_LIBELLE'] == 'VOTE')AND ( $statut <> 'ADMINISTRATEUR')) { ?>
                 <i class="fa fa-thumbs-up  fa-2x "></i><span class="badge"><?php $jaime ?></span>
